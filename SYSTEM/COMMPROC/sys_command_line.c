@@ -147,9 +147,9 @@ static uint8_t cli_restartpm3(void *para, uint8_t len)
 //按下pm3按钮实现
 static uint8_t cli_presspm3(void *para, uint8_t len)
 {
-	//pm3按钮拉高有效，拉高15ms后拉低
+	//pm3按钮拉高有效，拉高300ms后拉低
 	g_Tim2Array[eTim3] = 0;
-	while(IS_TIMEOUT_1MS(eTim3, 15))
+	while(IS_TIMEOUT_1MS(eTim3, 300))
 	{
 		GPIO_SetBits(PM_BUTTON_GPIO_Port, PM_BUTTON_Pin);
 	}
