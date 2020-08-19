@@ -34,6 +34,8 @@
 
 void ST7789_GPIO_Init(void);//初始化GPIO
 void ST7789_Writ_Bus(u8 dat);//模拟SPI时序
+u8 ST7789_Read_Bus(u8 dat);//读取一个字节
+void ST7789_Read_Busl(u8* buff, u16 num);//读取一个字节
 void ST7789_WR_DATA8(u8 dat);//写入一个字节
 void ST7789_WR_DATA(u16 dat);//写入两个字节
 void ST7789_WR_DATA32(u32 dat);//写入四个字节
