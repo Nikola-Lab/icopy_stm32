@@ -36,6 +36,8 @@ void ST7789_GPIO_Init(void);//初始化GPIO
 void ST7789_Writ_Bus(u8 dat);//模拟SPI时序
 void ST7789_WR_DATA8(u8 dat);//写入一个字节
 void ST7789_WR_DATA(u16 dat);//写入两个字节
+void ST7789_WR_DATA32(u32 dat);//写入四个字节
+void ST7789_WR_DATAl(u8* dat,u16 num);//写入数个字节
 void ST7789_WR_REG(u8 dat);//写入一个指令
 void ST7789_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2);//设置坐标函数
 void ST7789_Init(void);//LCD初始化
