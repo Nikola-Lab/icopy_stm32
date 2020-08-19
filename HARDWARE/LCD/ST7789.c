@@ -64,6 +64,64 @@ void ST7789_Fill(u16 xsta, u16 ysta, u16 xend, u16 yend, u16 color)
 }
 
 /******************************************************************************
+      函数说明：在指定区域写入带透明度的颜色
+      入口数据：	xsta,ysta   起始坐标
+				xend,yend   终止坐标
+				color       要填充的颜色
+				trans		填充色的透明度
+      返回值：  无
+******************************************************************************/
+void ST7789_FillTrans(u16 xsta, u16 ysta, u16 xend, u16 yend, u16 color,u8 transp)
+{    		
+	u16 color1[1], t = 1;
+	u32 num, num1;
+	color1[0] = color;
+	num = (xend - xsta)*(yend - ysta);
+	if (num == 0)
+	{
+		return;
+	}
+	ST7789_Address_Set(xsta, ysta, xend - 1, yend - 1);//设置显示范围
+	SPI_Cmd(SPI1, DISABLE);//关闭SPI
+	SPI1->CR1 |= 1 << 11;//设置SPI16位传输模式
+	SPI_Cmd(SPI1, ENABLE);//使能SPI
+	//就算是切换SPI寄存器消耗的时间，比起16位字长传输带来的速度提升来说也不值一提
+	ST7789_SELECT();//片选lcd
+	while (t)
+	{
+		if (num > 65534)
+		{
+			num -= 65534;
+			num1 = 65534;
+		}
+		else
+		{
+			t = 0;
+			num1 = num;
+		}
+		DMA_16L_NoMemoryInc(DMA1_Channel3, (u32)&SPI1->DR, (u32)color1, num1);
+		SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, ENABLE);
+		MYDMA_Enable(DMA1_Channel3);
+		while (1)
+		{
+			if (DMA_GetFlagStatus(DMA1_FLAG_TC3) != RESET)//等待通道3传输完成
+			{
+				DMA_ClearFlag(DMA1_FLAG_TC3);//清除通道3传输完成标志
+				break;
+			}
+		}
+	}
+	ST7789_UNSELECT();//片选lcd
+	SPI_Cmd(SPI1, DISABLE);//关闭SPI
+	//SPI1->CR1=~SPI1->CR1;
+	//SPI1->CR1|=1<<11;
+	//SPI1->CR1=~SPI1->CR1;//设置SPI8位传输模式
+	SPI1->CR1 &= ~(1 << 11);//第11位置0设置SPI8位传输模式
+	SPI_Cmd(SPI1, ENABLE);//使能SPI
+}
+
+
+/******************************************************************************
       函数说明：在指定位置画点
       入口数据：x,y 画点坐标
                 color 点的颜色
