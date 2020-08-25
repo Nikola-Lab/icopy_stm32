@@ -333,8 +333,7 @@ void Main_Menu(void)
     {
         FlashProtection = 0;
     }
-	g_Tim2Array[eTim1] = 0;
-    while (IS_TIMEOUT_1MS(eTim1, 100))
+    while (1)
     {
        switch(uStatus)
         {

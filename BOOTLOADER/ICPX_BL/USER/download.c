@@ -21,10 +21,10 @@ void SerialDownload(int files)
 		SerialPutString("Waiting for the Address to be write ... \n\r");
 		GetInputString(WriteAddressStr);
 		Str2Int(WriteAddressStr, &WriteAddress);
-//		SerialPutString("ok,address =");
-//		Int2Str(WStr, WriteAddress);
-//		SerialPutString(WStr);
-//		SerialPutString("\n\r");
+		SerialPutString("ok,address =");
+		Int2Str(WStr, WriteAddress);
+		SerialPutString(WStr);
+		SerialPutString("\n\r");
 	}
     SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
 	if (files == 1)
