@@ -3,7 +3,7 @@
 #include "sys.h"
 #include "usart.h"
 #include "sys_command_line.h"
-
+void dummy(){}
 int main(void)
 {
 	u16 led0pwmval = 10;
@@ -17,7 +17,7 @@ int main(void)
 	delay_init();
 	BspTim2Init();
 	KEY_Init();
-	CLI_INIT(115200);			//启动commandline
+	CLI_INIT(9600);			//启动commandline
 //	if(FLASH_GetReadOutProtectionStatus() != SET)
 //	{
 //		FLASH_ReadOutProtection(ENABLE);  
