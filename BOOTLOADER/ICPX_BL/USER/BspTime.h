@@ -10,6 +10,7 @@ enum {
     eTim2,
 	eTim3,
 	eTim4,
+	eTimoff,
     eTimUpdata,
     eTimYModem,
     eTimMax,
