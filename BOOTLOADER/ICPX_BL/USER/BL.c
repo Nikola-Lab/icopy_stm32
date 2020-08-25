@@ -50,7 +50,7 @@ void UART_Init(void)
 }
 int main(void) 	
 {   
-	SCB->VTOR = FLASH_BASE | 0x8000;//中断向量表偏移
+	SCB->VTOR = FLASH_BASE | 0x10000;//中断向量表偏移
 	//由于本机是app，中断要按照原有位置偏移	
 	Hsi_Init();
 	BspTim2Init();
