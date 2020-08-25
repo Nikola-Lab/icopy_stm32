@@ -20,7 +20,7 @@
 #include "timer.h"
 #include "sys_command_line.h"
 
-#define BLAddress 0x8008000
+#define BLAddress 0x8010000
 #ifdef v10
 #define WKUP_Pin 							GPIO_Pin_0
 #define WKUP_GPIO_Port 						GPIOA 

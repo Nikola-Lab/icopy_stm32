@@ -119,38 +119,38 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//---------------------------------------------------------开机页面end
 };
 #undef  BASE_ADDR
-#define BASE_ADDR (u32)0x000A0000
+#define BASE_ADDR (u32)0x00050000
                       
 static typ_fontlib_s ICOPYX_FONTLIBS[] = 
 {
 	//FONTLIB0
 	//16x16
 {
-	.StartADDR = BASE_ADDR + (u32)0x000A0000,
+	.StartADDR = BASE_ADDR + (u32)0x00000000,
 	.DataSize = 16,
 },
 	//FONTLIB1
 	//32x32
 {
-	.StartADDR = BASE_ADDR + (u32)0x000A5000,
+	.StartADDR = BASE_ADDR + (u32)0x00005000,
 	.DataSize = 64,
 },
 	//FONTLIB2
 	//24x24
 {
-	.StartADDR = BASE_ADDR + (u32)0x000B0000,
+	.StartADDR = BASE_ADDR + (u32)0x00010000,
 	.DataSize = 48,
 },
 	//FONTLIB3
 	//20x20
 {
-	.StartADDR = BASE_ADDR + (u32)0x000B5000,
+	.StartADDR = BASE_ADDR + (u32)0x00015000,
 	.DataSize = 40,
 },
 	//FONTLIB4(图标库）
 	//20x20
 {	//0x00160000
-	.StartADDR = BASE_ADDR + (u32)0x000C0000,
+	.StartADDR = BASE_ADDR + (u32)0x00020000,
 	.DataSize = 60,
 }
 		

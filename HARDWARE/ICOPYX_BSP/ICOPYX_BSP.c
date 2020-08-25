@@ -293,7 +293,7 @@ void ICPX_Booting_Screen(u8 init)
 	g_Tim2Array[eTim2] = 0;
 	while (IS_TIMEOUT_1MS(eTim2, 500))
 	{
-	//	ICPX_DNA_CIRCLE();
+		ICPX_DNA_CIRCLE();
 	}
 }
 
