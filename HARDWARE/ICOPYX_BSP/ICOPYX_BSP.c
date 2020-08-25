@@ -144,7 +144,12 @@ void ICPX_Diplay_Image(u16 x, u16 y, typ_image_s inputimage)
 		W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * blocklines);
 		curaddr += inputimage.XSize * 2 * blocklines;
 		ST7789_ShowPicture(x, y + Y, inputimage.XSize, blocklines, LineData);
-		
+//		printf("0x%02x", LineData[0]);
+//		printf(",");
+//		printf("0x%02x", LineData[1]);
+//		printf(",");
+//		printf("0x%02x", LineData[2]);
+//		printf(",\r\n");
 		Y += blocklines;
 	}
 	
