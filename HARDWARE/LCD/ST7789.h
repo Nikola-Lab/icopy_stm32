@@ -5,6 +5,10 @@
 
 
 void ST7789_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color);//指定区域填充颜色
+void ST7789_FillTrans(u16 xsta, u16 ysta, u16 xend, u16 yend, u16 color, u8 trans);//填充带透明度的颜色
+void ST7789_Read(u16 xsta, u16 ysta, u16 xend, u16 yend, u8* buf);//指定区域读出颜色
+
+
 void ST7789_DrawPoint(u16 x,u16 y,u16 color);//在指定位置画一个点
 void ST7789_DrawPointWithCache(u16 x, u16 y, u16 color, u8 flush);//在指定位置画一个点(带缓存)
 void ST7789_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color);//在指定位置画一条线

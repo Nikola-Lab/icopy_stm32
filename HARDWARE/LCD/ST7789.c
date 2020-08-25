@@ -63,6 +63,143 @@ void ST7789_Fill(u16 xsta, u16 ysta, u16 xend, u16 yend, u16 color)
 	SPI_Cmd(SPI1, ENABLE);//使能SPI
 }
 
+
+/******************************************************************************
+      函数说明：在指定区域填充有透明度颜色
+      入口数据：	xsta,ysta   起始坐标
+				xend,yend   终止坐标
+				color       要填充的颜色
+				trans		透明度
+      返回值：  无
+******************************************************************************/
+/*
+void ST7789_FillTrans(u16 xsta, u16 ysta, u16 xend, u16 yend, u16 color,u8 trans)
+{   
+	u16 color1[1], t = 1;
+	u32 num, num1;
+	color1[0] = color;
+	num = (xend - xsta)*(yend - ysta);
+	if (num == 0)
+	{
+		return;
+	}
+	
+	u16 Y = 0;
+	
+	u32 curaddr = inputimage.StartADDR;
+	
+	u16 YSize = yend - ysta;
+	u16 XSize = xend - xsta;
+	
+	u8 blocklines;//刷图每次处理的行数
+	u8 mem_lines_hold = 3000 / XSize;	
+	//内存分配9000个字节，每个像素3字节则是3000个像素
+	//注意！读出时手册要求rgb666
+	//注意！rgb666读出时为byte填充，有效数据仅为7-2位
+	if(mem_lines_hold >= YSize)//内存可以放下所有区域
+	{
+		blocklines = YSize;
+	}
+	else
+	{
+		blocklines = mem_lines_hold;
+	}
+		
+
+	u8 blocks = YSize / blocklines;//记录要刷的次数
+	u8 endblocklines = YSize % blocklines;//记录最后一块行数（不满足一块的尺寸）
+	u8 i;
+	u8 LineData[XSize * 3 * blocklines + 1];//每次处理的数据都丢在里面
+	
+	for (i = 0;i < blocks;i++)//刷整块
+	{
+		W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * blocklines);
+		curaddr += inputimage.XSize * 2 * blocklines;
+		ST7789_ShowPicture(x, y + Y, inputimage.XSize, blocklines, LineData);
+		
+		Y += blocklines;
+	}
+	
+	W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * endblocklines);
+	curaddr += inputimage.XSize * 2 * endblocklines;
+	if (Y < 240)
+	{
+		ST7789_ShowPicture(x, y + Y, inputimage.XSize, endblocklines, LineData);
+	}
+		
+	
+	
+
+	ST7789_Address_Set(xsta, ysta, xend - 1, yend - 1);//设置显示范围
+	SPI_Cmd(SPI1, DISABLE);//关闭SPI
+	SPI1->CR1 |= 1 << 11;//设置SPI16位传输模式
+	SPI_Cmd(SPI1, ENABLE);//使能SPI
+	//就算是切换SPI寄存器消耗的时间，比起16位字长传输带来的速度提升来说也不值一提
+	ST7789_SELECT();//片选lcd
+	while (t)
+	{
+		if (num > 65534)
+		{
+			num -= 65534;
+			num1 = 65534;
+		}
+		else
+		{
+			t = 0;
+			num1 = num;
+		}
+		DMA_16L_NoMemoryInc(DMA1_Channel3, (u32)&SPI1->DR, (u32)color1, num1);
+		SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, ENABLE);
+		MYDMA_Enable(DMA1_Channel3);
+		while (1)
+		{
+			if (DMA_GetFlagStatus(DMA1_FLAG_TC3) != RESET)//等待通道3传输完成
+			{
+				DMA_ClearFlag(DMA1_FLAG_TC3);//清除通道3传输完成标志
+				break;
+			}
+		}
+	}
+	ST7789_UNSELECT();//片选lcd
+	SPI_Cmd(SPI1, DISABLE);//关闭SPI
+	//SPI1->CR1=~SPI1->CR1;
+	//SPI1->CR1|=1<<11;
+	//SPI1->CR1=~SPI1->CR1;//设置SPI8位传输模式
+	SPI1->CR1 &= ~(1 << 11);//第11位置0设置SPI8位传输模式
+	SPI_Cmd(SPI1, ENABLE);//使能SPI
+}
+
+*/
+
+/******************************************************************************
+      函数说明：在指定区域读出颜色
+      入口数据：	xsta,ysta   起始坐标
+				xend,yend   终止坐标
+				buf			要读出的地址指针
+      返回值：  无
+******************************************************************************/
+void ST7789_Read(u16 xsta, u16 ysta, u16 xend, u16 yend, u8* buf)//指定区域读出颜色
+{
+	u16 color1[1], t = 1;
+	u32 nums;
+	nums = (xend - xsta)*(yend - ysta) * 3;
+	if (nums == 0)
+	{
+		return;
+	}
+	ST7789_Address_Set(xsta, ysta, xend - 1, yend - 1);//设置显示范围
+	ST7789_WR_REG(0x3A);//传输格式定义
+	ST7789_WR_DATA8(0x66);//01100110 110代表18bit单像素
+	//ST7789_WR_REG(0x2E);//发送读出指令
+	//ST7789_WR_DATA8(0xff);//传输一个dummy byte
+	//ST7789_WR_DATA8(0xff);//传输一个dummy byte
+	//ST7789_WR_DATA8(0xff);//传输一个dummy byte
+	ST7789_Read_Busl(buf, nums);
+	ST7789_WR_REG(0x3A);//传输格式定义
+	ST7789_WR_DATA8(0x05);//00000101 101代表16bit单像素
+}
+
+
 /******************************************************************************
       函数说明：在指定位置画点
       入口数据：x,y 画点坐标

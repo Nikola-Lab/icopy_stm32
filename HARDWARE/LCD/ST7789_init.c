@@ -70,13 +70,21 @@ u8 ST7789_Read_Bus(u8 dat)
 
 void ST7789_Read_Busl(u8* buff, u16 num)
 {
-	
+	ST7789_SELECT();
+	ST7789_DC_Clr();//写命令
+	ST7789_Writ_Bus(0X2E);
+	ST7789_DC_Set();//写数据
     u16 i;
 	u8 byte;
+	SPI1_ReadWriteByte(0xff);//读取一个字节 
+	SPI1_ReadWriteByte(0xff);//读取一个字节 
+	SPI1_ReadWriteByte(0xff);//读取一个字节 
+	//三个byte是没用的
 	for (i = 0;i < num;i++)
 	{
 		buff[i]=SPI1_ReadWriteByte(0xff);//读取一个字节  
 	}
+	ST7789_UNSELECT();
 }
 
 
@@ -211,7 +219,7 @@ void ST7789_Init(void)
 	ST7789_SELECT();
 	
 	ST7789_PWRON();
-	delay_ms(100);
+	//delay_ms(100);
 
     ST7789_RES_Clr();//复位
     delay_ms(100);
