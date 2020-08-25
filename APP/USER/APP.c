@@ -25,6 +25,7 @@ int main(void)
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH
 	STARTMODETASK();			//开机模式判断
 	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);
+	//W25QXX_Erase_Chip();
 	//ICPX_BB_25Q80(0);
 	//uart_init(115200);		//串口1初始化
 	//	printf("Core start!\r\n");
