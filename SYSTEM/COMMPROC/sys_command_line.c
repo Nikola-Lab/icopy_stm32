@@ -87,6 +87,10 @@ static uint8_t cli_bl(void *para, uint8_t len)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	//Usart1 NVIC 配置
+	g_Tim2Array[eTim1] = 0;
+	while (IS_TIMEOUT_1MS(eTim1, 500))
+	{
+	}
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;//IRQ通道关闭
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
@@ -95,10 +99,6 @@ static uint8_t cli_bl(void *para, uint8_t len)
 	{
 		PRINTF("\r\n[END]: Execute Bl Program \r\n");
 		PRINTF("------------------------------------------\r\n");
-		g_Tim2Array[eTim1] = 0;
-		while (IS_TIMEOUT_1MS(eTim1, 500))
-		{
-		}
 		BspTim2Close();
 		//跳转至bl代码
 		JumpAddress = *(__IO uint32_t*)(BLAddress + 4);
