@@ -46,9 +46,9 @@ void delay(int t)
 ******************************************************************************/
 void ST7789_Writ_Bus(u8 dat)
 {
-	//while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//检查接收标志位
+	while(SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);//检查接收标志位
     SPI_I2S_SendData(SPI1,dat);
-    //delay(1);
+    delay(1);
 }
 
 /******************************************************************************
@@ -213,8 +213,8 @@ void ST7789_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2)
 
 void ST7789_Init(void)
 {
+	ST7789_GPIO_Init();//初始化GPIO
     SPI1_Init();
-    ST7789_GPIO_Init();//初始化GPIO
 	TIM1_PWM_Init(899, 0);	 //不分频。PWM频率=72000000/900=80Khz
 	ST7789_SELECT();
 	
@@ -228,7 +228,7 @@ void ST7789_Init(void)
 
 //    ST7789_BL_ON();//打开背光
 //    delay_ms(100);
-
+    ST7789_UNSELECT();
     //************* Start Initial Sequence **********//
     ST7789_WR_REG(0x11); //Sleep out
     delay_ms(120);              //Delay 120ms
