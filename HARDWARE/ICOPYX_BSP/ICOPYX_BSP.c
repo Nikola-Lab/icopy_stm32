@@ -2,7 +2,7 @@
 
 u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
-
+u8 hasbak = 0;
 //板载gpio初始化
 void ICPX_GPIO_Init(void)
 {
@@ -531,12 +531,41 @@ void STARTMODETASK(void)
 void SHUTDOWNMETH(u16 delay)
 {
 	printf("SHUTDOWN H3!\r\n");
-	//fflush(stdout);
+	fflush(stdout);
+	u8 TIMES = 0;
+	while (1)
+	{
+		printf("ARE YOU OK?\r\n");	
+		fflush(stdout);//询问目标存活状态
+		g_Tim2Array[eTim3] = 0;
+		while (IS_TIMEOUT_1MS(eTim3, 500))
+		{
+			CLI_RUN();
+		}
+		if (hasbak != 0) //有回复
+		{
+			TIMES = 0;
+			hasbak = 0;
+		}
+		else
+		{
+			TIMES++;
+		}
+		if (TIMES > 5)
+		{
+			break;
+		}
+	}
+	printf("OK! You are died\r\n");
+	printf("Prepare to SHUTDOWN!\r\n");
+	fflush(stdout);
 	//延时一个关机时长
 	g_Tim2Array[eTim1] = 0;
 	while (IS_TIMEOUT_1MS(eTim1, delay))
 	{
 	}
+	printf("Bye!\r\n");
+	fflush(stdout);
 	GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
 	if (VCCvol > VCCTHR)
 	{
@@ -549,3 +578,9 @@ void SHUTDOWNMETH(u16 delay)
 		ICPX_Standby();
 	}
 }
+
+void setback()
+{
+	hasbak = 1;
+}
+

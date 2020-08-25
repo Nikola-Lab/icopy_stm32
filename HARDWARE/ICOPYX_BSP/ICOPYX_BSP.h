@@ -18,6 +18,7 @@
 #include "stm32f10x_pwr.h"
 #include "math.h"
 #include "timer.h"
+#include "sys_command_line.h"
 
 #define BLAddress 0x8008000
 #ifdef v10
@@ -208,6 +209,8 @@ void ICPX_Charge_Screen(u8 init);
 void ICPX_Booting_Screen(u8 init);
 void ICPX_Booting_Error_Screen(void);
 void ICPX_DNA_CIRCLE(void);
+
+void setback();
 	
 void MAINKEYTASK(void);
 void CHGKEYTASK(void);

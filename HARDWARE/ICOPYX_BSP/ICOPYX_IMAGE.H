@@ -16,15 +16,15 @@ typedef struct
 	u32		DataSize;
 }typ_fontlib_s;
 
-#define BASE_ADDR (u32)0x00000000
 
 static typ_image_s ICOPYX_IMAGES[] = 
 {
 	//---------------------------------------------------------充电页面
-	//2 充电页 空@1x.ebm
-	//########### 0
+#define BASE_ADDR (u32)0x0
+//2 充电页 空@1x.ebm
+//########### 0
 	{
-		.StartADDR = BASE_ADDR + (u32)0x0,
+		.StartADDR = BASE_ADDR + (u32)0x0,  // 0x0
 		.DataSize = 0x1c200,
 		.XSize = 240,
 		.YSize = 240,
@@ -32,7 +32,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_03.ebm
 	//########### 1
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1c200,
+		.StartADDR = BASE_ADDR + (u32)0x1c200,  // 0x1c200
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -40,7 +40,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_04.ebm
 	//########### 2
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1c900,
+		.StartADDR = BASE_ADDR + (u32)0x1c900,  // 0x1c900
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -48,7 +48,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_05.ebm
 	//########### 3
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1d000,
+		.StartADDR = BASE_ADDR + (u32)0x1d000,  // 0x1d000
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -56,7 +56,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_06.ebm
 	//########### 4
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1d700,
+		.StartADDR = BASE_ADDR + (u32)0x1d700,  // 0x1d700
 		.DataSize = 0x680,
 		.XSize = 13,
 		.YSize = 64,
@@ -64,7 +64,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_08.ebm
 	//########### 5
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1dd80,
+		.StartADDR = BASE_ADDR + (u32)0x1dd80,  // 0x1dd80
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -72,7 +72,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_09.ebm
 	//########### 6
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1e480,
+		.StartADDR = BASE_ADDR + (u32)0x1e480,  // 0x1e480
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -80,7 +80,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_10.ebm
 	//########### 7
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1eb80,
+		.StartADDR = BASE_ADDR + (u32)0x1eb80,  // 0x1eb80
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -88,7 +88,7 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-满格@1x_11.ebm
 	//########### 8
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1f280,
+		.StartADDR = BASE_ADDR + (u32)0x1f280,  // 0x1f280
 		.DataSize = 0x700,
 		.XSize = 14,
 		.YSize = 64,
@@ -96,14 +96,15 @@ static typ_image_s ICOPYX_IMAGES[] =
 	//2-充电页-空@1x_03.ebm
 	//########### 9
 	{
-		.StartADDR = BASE_ADDR + (u32)0x1f980,
+		.StartADDR = BASE_ADDR + (u32)0x1f980,  // 0x1f980
 		.DataSize = 0x38ac,
 		.XSize = 117,
 		.YSize = 62,
 	},
+#undef  BASE_ADDR
+
 	//---------------------------------------------------------充电页面end
 	//---------------------------------------------------------开机页面
-#undef  BASE_ADDR
 #define BASE_ADDR (u32)0x0002322C
 	//1 启动页@1x.ebm
 	//########### 10
