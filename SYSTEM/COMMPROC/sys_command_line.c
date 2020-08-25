@@ -20,6 +20,7 @@ static uint8_t cli_charge(void *para, uint8_t len);
 static uint8_t cli_h3start(void *para, uint8_t len);
 static uint8_t cli_multicmd(void *para, uint8_t len);
 static uint8_t cli_setbaklight(void *para, uint8_t len);
+static uint8_t cli_targetalive(void *para, uint8_t len);
 
 typedef struct {
 #define HANDLE_LEN 1024
@@ -70,6 +71,8 @@ const COMMAND_S CLI_Cmd[] = {
 	
 	//多重指令同步传输
 	{ "multicmd", NULL, NULL, cli_multicmd },
+	//询问存活的回复
+	{ "i'm alive", NULL, NULL, cli_targetalive },
 };
 
 //重启实现
@@ -92,11 +95,15 @@ static uint8_t cli_bl(void *para, uint8_t len)
 	{
 		PRINTF("\r\n[END]: Execute Bl Program \r\n");
 		PRINTF("------------------------------------------\r\n");
+		g_Tim2Array[eTim1] = 0;
+		while (IS_TIMEOUT_1MS(eTim1, 500))
+		{
+		}
 		BspTim2Close();
-		//跳转至用户代码
+		//跳转至bl代码
 		JumpAddress = *(__IO uint32_t*)(BLAddress + 4);
 		Jump_To_Application = (pFunction) JumpAddress;
-		//初始化用户程序的堆栈指针
+		//初始化bl程序的堆栈指针
 		__set_MSP(*(__IO uint32_t*) BLAddress);
 		Jump_To_Application();
 	}
@@ -696,6 +703,13 @@ static uint8_t cli_setbaklight(void *para, uint8_t len)
 	}
 	return TRUE;
 }
+//目标存活指令实现
+
+static uint8_t cli_targetalive(void *para, uint8_t len)
+{
+	setback();
+}
+
 
 //终端初始化实现
 void cli_init(uint32_t baud)
