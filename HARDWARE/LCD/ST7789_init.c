@@ -216,6 +216,7 @@ void ST7789_Init(void)
 	ST7789_GPIO_Init();//初始化GPIO
     SPI1_Init();
 	TIM1_PWM_Init(899, 0);	 //不分频。PWM频率=72000000/900=80Khz
+	ST7789_BL_OFF();
 	ST7789_SELECT();
 	
 	ST7789_PWRON();
@@ -226,8 +227,7 @@ void ST7789_Init(void)
     ST7789_RES_Set();
     delay_ms(100);
 
-//    ST7789_BL_ON();//打开背光
-//    delay_ms(100);
+	
     ST7789_UNSELECT();
     //************* Start Initial Sequence **********//
     ST7789_WR_REG(0x11); //Sleep out

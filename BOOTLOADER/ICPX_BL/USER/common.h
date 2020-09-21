@@ -13,7 +13,7 @@ typedef  void (*pFunction)(void);
 #define ApplicationAddress			0x8000000
 #define SPIFLASHStartAddress		0x00000000
 #define SPIFLASHPAGE_SIZE			(0x400)    /* 1 Kbyte */
-#define SPIFLASH_SIZE				(0x400000)  /* 1024 KBytes */
+#define SPIFLASH_SIZE				(0x100000)  /* 1024 KBytes */
 
 #if defined (STM32F10X_MD) || defined (STM32F10X_MD_VL)
  #define PAGE_SIZE                         (0x400)    /* 1 Kbyte */

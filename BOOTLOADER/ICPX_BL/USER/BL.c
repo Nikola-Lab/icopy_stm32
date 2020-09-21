@@ -19,7 +19,7 @@ void GPIOINIT()
 	
 	GPIO_InitStructure.GPIO_Pin = H3_PWR_ON_OFF_Pin;
 	GPIO_Init(H3_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
-	GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
+	GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
 	
 }
 void UART_Init(void)
@@ -53,16 +53,18 @@ int main(void)
 	SCB->VTOR = FLASH_BASE | 0x10000;//中断向量表偏移
 	//由于本机是app，中断要按照原有位置偏移	
 	Hsi_Init();
+	NVIC_Configuration();
 	BspTim2Init();
 	GPIOINIT();
 	UART_Init();
 	SPI1_Init();
+	
 	W25QXX_Init();
+	
+	Main_Menu();
 	//ICPX_Init_Spi_Bus();	//lcd和25 FLASH
 	//SerialPutString("Start_bootloader\r\n");
 	//ICPX_Find_25Q80();
-	Main_Menu();
-	
 	
 	 
 	if (((*(__IO uint32_t*)ApplicationAddress) & 0x2FFE0000) == 0x20000000)

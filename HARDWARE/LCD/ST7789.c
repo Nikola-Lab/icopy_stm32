@@ -730,11 +730,11 @@ void ST7789_ShowChar(u16 x, u16 y, u8 num, u16 fc, u16 bc, u8 sizey, u8 mode)
 	//读出整个字的数据
 	if(sizey == 16)			ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[0]);
 	//调用8x16字体
-	else if(sizey == 32)	ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[1]);
+	else if(sizey == 20)	ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[1]);
 	//调用16x32字体
 	else if(sizey == 24)	ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[2]);
 	//调用12x24字体
-	else if(sizey == 20)	ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[3]);
+	else if(sizey == 32)	ICPX_Select_Font_Data_all(datatemp, num, TypefaceNum, ICOPYX_FONTLIBS[3]);
 	//调用10x20字体
 	else return;
 	

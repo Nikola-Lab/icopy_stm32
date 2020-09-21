@@ -10,15 +10,10 @@ void ICPX_GPIO_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);	 //使能A端口时钟
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	 //使能B端口时钟
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);	 //使能C端口时钟
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);	 //使能D端口时钟
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);     //使能复用网络时钟
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //关闭jlink，打开SWJ
-	GPIO_PinRemapConfig(GPIO_Remap_PD01, ENABLE);	         //使能PD1复用
-	
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//速度50MHz
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; //推挽输出
-    
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//速度50MHz
+	
 	GPIO_InitStructure.GPIO_Pin = FLASH_PWR_Pin;
 	GPIO_Init(FLASH_PWR_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
@@ -36,11 +31,6 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
 	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
-	
-	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; 
-	GPIO_Init(GPIOD, &GPIO_InitStructure);	
-	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	
@@ -700,25 +690,17 @@ void CHGKEYTASK(void)
 	}
 }
 //扫描充电状态流程
-u8 MAINCHARGETASK(u8 what)
-{	
-	static u8 chargestate = 0;
-	if (what == 1)
+void MAINCHARGETASK(void)
+{	static u8 chargestate = 0;
+	
+	if (VCCvol > VCCTHR && chargestate == 0)
 	{
-		return chargestate;
+		chargestate = 1;
+		printf("CHARGING!\r\n");
 	}
-	else
+	else if (VCCvol <= VCCTHR)
 	{
-		if (VCCvol > VCCTHR && chargestate == 0)
-		{
-			chargestate = 1;
-			printf("CHARGING!\r\n");
-		}
-		else if (VCCvol <= VCCTHR && chargestate == 1)
-		{
-			chargestate = 0;
-			printf("DISCHARGING!\r\n");
-		}
+		chargestate = 0;
 	}
 	
 }
@@ -747,20 +729,16 @@ void STARTMODETASK(void)
 		//电池开机
 		while(KEY_POWER(0) < 3000)
 		{
+			if (BATvol <= BATNOLOADTHR)
+			{
+				//立即睡眠
+				ICPX_Standby();
+			}
 			if (KEY_POWER(0) == 0)
 			{
 				//立即睡眠
 				ICPX_Standby();
 			}
-		}
-		//到这里按键时间超过开机标准了，开始处理开机
-		u16 batvol = BATvol;
-		if (batvol <= BATNOLOADTHR)
-		{
-			printf("lowbattery,vol:%d\r\n", batvol);
-			fflush(stdout);
-			//立即睡眠
-			ICPX_Standby();
 		}
 		KEY_POWER(1);
 		startmode = START_MODE_BAT;

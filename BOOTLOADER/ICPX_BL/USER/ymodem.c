@@ -278,6 +278,9 @@ int32_t Ymodem_Receive_To_Flash(uint8_t *buf,uint32_t startaddress)
 									Send_Byte(CA);
 									return -1;
 								}
+								
+								// 可以在这里擦除区域
+								
 								Send_Byte(ACK);
 								Send_Byte(CRC16);
 							}
@@ -295,11 +298,12 @@ int32_t Ymodem_Receive_To_Flash(uint8_t *buf,uint32_t startaddress)
 						{
 							memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
 							//RamSource = (uint32_t)buf;
-							
 							if (FlashDestination <  startaddress + size)
 							{//长度没有超限制
-								W25QXX_Write(buf, FlashDestination, packet_length);
-								FlashDestination += 128;
+								W25QXX_Write_with_slowdown(buf, FlashDestination, packet_length);
+								//W25QXX_Write_with_corr(buf, FlashDestination, packet_length);
+								//W25QXX_Write(buf, FlashDestination, packet_length);
+								FlashDestination += packet_length;
 							
 //							for (j = 0; (j < packet_length) && (FlashDestination <  startaddress + size); j += 4)
 //							{

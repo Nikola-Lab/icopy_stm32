@@ -21,7 +21,9 @@ static uint8_t cli_h3start(void *para, uint8_t len);
 static uint8_t cli_multicmd(void *para, uint8_t len);
 static uint8_t cli_setbaklight(void *para, uint8_t len);
 static uint8_t cli_targetalive(void *para, uint8_t len);
-
+static uint8_t cli_lcd2h3(void *para, uint8_t len);
+static uint8_t cli_lcd2st(void *para, uint8_t len);
+static uint8_t cli_shutdowning(void *para, uint8_t len);
 typedef struct {
 #define HANDLE_LEN 1024
 	u8 buff[HANDLE_LEN];
@@ -58,8 +60,10 @@ const COMMAND_S CLI_Cmd[] = {
 	//查询充电状态指令序列(耗时问题)
 	{ "charge", NULL, NULL, cli_charge},
 	{ "h3start", NULL, NULL, cli_h3start},
-	
-	
+	//转交屏幕权限指令
+	{ "givemelcd", NULL, NULL, cli_lcd2h3},
+	{ "giveyoulcd", NULL, NULL, cli_lcd2st},
+	{ "shutdowning", NULL, NULL, cli_shutdowning},
 	
 	//显示操作指令
 	{ "fillscreen", NULL, NULL, cli_fillscreen },
@@ -131,13 +135,13 @@ static uint8_t cli_ledpm3(void *para, uint8_t len)
 //打开pm3实现
 static uint8_t cli_turnonpm3(void *para, uint8_t len)
 {
-	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
+	turnonpm3();
 	return TRUE;
 }
 //关掉pm3实现
 static uint8_t cli_turnoffpm3(void *para, uint8_t len)
 {
-	GPIO_ResetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
+	turnoffpm3();
 	return TRUE;
 }
 //重启pm3实现
@@ -146,9 +150,9 @@ static uint8_t cli_restartpm3(void *para, uint8_t len)
 	g_Tim2Array[eTim3] = 0;
 	while (IS_TIMEOUT_1MS(eTim3, 30))//关闭pm3延时
 	{
-		GPIO_ResetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
+		turnoffpm3();
 	}
-	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
+	turnonpm3();
 	return TRUE;
 }
 //按下pm3按钮实现
@@ -166,28 +170,52 @@ static uint8_t cli_presspm3(void *para, uint8_t len)
 //读取电池电压实现
 static uint8_t cli_volbat(void *para, uint8_t len)
 {	
-	printf("#batvol:%d", BATvol);
+	printf("#batvol:%d", BATvolavl);
 	fflush(stdout);
 	return TRUE;
 }
 //读取电源电压实现
 static uint8_t cli_volinput(void *para, uint8_t len)
 {
-	printf("#vccvol:%d", VCCvol);
+	printf("#vccvol:%d", VCCvolavl);
 	fflush(stdout);
 	return TRUE;
 }
 //查询充电是否完成实现
 static uint8_t cli_charge(void *para, uint8_t len)
 {
+	//TODO: 查询输入状态
+	printf("#charge:%d", MAINCHARGETASK(1));
+	fflush(stdout);
 	return TRUE;
 }
 //开机完成指令
 static uint8_t cli_h3start(void *para, uint8_t len)
 {
-	isstarting = 0;
 	return TRUE;
 }	
+//lcd转交给h3指令
+static uint8_t cli_lcd2h3(void *para, uint8_t len)
+{
+	isstarting = 0;
+	SPISELH3();
+	return TRUE;
+}
+
+//lcd转交给st指令
+static uint8_t cli_lcd2st(void *para, uint8_t len)
+{
+	SPISELST();
+	return TRUE;
+}
+
+//h3关机指令
+static uint8_t cli_shutdowning(void *para, uint8_t len)
+{
+	ICPX_Shutdown_Screen(0);
+	return TRUE;
+}
+
 
 //填充屏幕实现
 //指令        参数颜色   参数颜色值      
@@ -830,7 +858,7 @@ static void cli_tx_handle(void)
 void cli_run(void)
 {
 	cli_rx_handle(&cli_rx_buff);
-	cli_tx_handle();
+	//cli_tx_handle();
 }
 //中断接收，传入queue
 void USART1_IRQHandler(void)

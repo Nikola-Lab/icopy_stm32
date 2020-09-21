@@ -57,6 +57,7 @@
   <ItemGroup>
     <ClCompile Include="..\CORE\startup_stm32f10x_md.s" />
     <ClCompile Include="..\HARDWARE\ADC\adc.c" />
+    <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c" />
     <ClCompile Include="..\HARDWARE\KEY\key.c" />
     <ClCompile Include="..\HARDWARE\TIMER\timer.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_adc.c" />

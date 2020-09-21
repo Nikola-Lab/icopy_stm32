@@ -51,6 +51,17 @@ u8 SPI1_ReadWriteByte(u8 TxData)
 	return SPI_I2S_ReceiveData(SPI1); //返回通过SPIx最近接收的数据					    
 }
 
+//SPI1速度设置函数
+//SpeedSet:0~7
+//SPI速度=fAPB1/2^(SpeedSet+1)
+void SPI1_SetSpeed(u8 SpeedSet)
+{
+	SpeedSet &= 0X07;			//限制范围
+	SPI1->CR1 &= 0XFFC7; 
+	SPI1->CR1 |= SpeedSet << 3;	//设置SPI2速度  
+	SPI1->CR1 |= 1 << 6; 		//SPI设备使能	  
+} 
+
 
 
 

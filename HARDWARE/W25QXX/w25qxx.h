@@ -50,6 +50,7 @@ void W25QXX_Write_NoCheck(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
 void W25QXX_Read(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead);   //读取flash
 void W25QXX_FastRead(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead);	//快速读取flash
 void W25QXX_Write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);//写入flash
+u8 W25QXX_Write_with_corr(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite);//三次重试的写入  
 void W25QXX_Erase_Chip(void);    	  	//整片擦除
 void W25QXX_Erase_Sector(u32 Dst_Addr);	//扇区擦除
 void W25QXX_Wait_Busy(void);           	//等待空闲

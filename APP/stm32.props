@@ -9,7 +9,7 @@
 <!-- In order to build this project manually (outside VisualGDB), please provide TOOLCHAIN_ROOT, BSP_ROOT, EFP_BASE and TESTFW_BASE variables via Environment or Make command line -->
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<PreprocessorDefinitions>ARM_MATH_CM3;flash_layout;STM32F103C8;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+			<PreprocessorDefinitions>ARM_MATH_CM3;flash_layout;STM32F103CB;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
 			<AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
 		</ClCompile>
 	</ItemDefinitionGroup>

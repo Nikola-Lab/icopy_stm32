@@ -341,7 +341,7 @@ void Main_Menu(void)
 	        SerialPutString("\r\n*********************************************************\r\n");
             SerialPutString( "1.update app\r\n");  
             SerialPutString( "2.start app\r\n");
-	        SerialPutString("3.update spi flash\r\n");
+	        SerialPutString( "3.update spi flash\r\n");
             SerialPutString( "*********************************************************\r\n");
             SerialPutString( "choose:\r\n");
             uStatus = 1;

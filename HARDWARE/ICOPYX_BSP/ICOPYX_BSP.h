@@ -100,14 +100,15 @@
 												  
 #define CHARG_STATE_Pin 					GPIO_Pin_15
 #define CHARG_STATE_GPIO_Port 				GPIOB 
-												  
-												  
+
+#define CHARG_EN_Pin 						GPIO_Pin_12
+#define CHARG_EN_GPIO_Port 					GPIOB
+												  												  
 #define SWDIO_Pin 							GPIO_Pin_13
 #define SWDIO_GPIO_Port 					GPIOA 
 #define SWCLK_Pin 							GPIO_Pin_14
 #define SWCLK_GPIO_Port 					GPIOA 
-												  
-												  
+												  											  
 #define BUTRIGHT_Pin 						GPIO_Pin_12
 #define BUTRIGHT_GPIO_Port 					GPIOA 
 #define BUTUP_Pin 							GPIO_Pin_15
@@ -131,6 +132,9 @@
 #define H3_PWR_ON_OFF_GPIO_Port 			GPIOB 
 #define PM_PWR_ON_OFF_Pin 					GPIO_Pin_9
 #define PM_PWR_ON_OFF_GPIO_Port 			GPIOB 
+
+#define SPI_SEL_Pin 						GPIO_Pin_13
+#define SPI_SEL_GPIO_Port 					GPIOB 
 												  
 #define PM_BUTTON_Pin 						GPIO_Pin_15
 #define PM_BUTTON_GPIO_Port 				GPIOC
@@ -157,16 +161,29 @@
 #define VCCRESNET							(1.666666666666667)
 #define REFVOL								(3.301)
 
-#define VCCvol   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(REFVOL / 4096) * 1000 * VCCRESNET))
-#define BATvol   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(REFVOL / 4096) * 1000 * BATRESNET))
+#define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 50)*(REFVOL / 4096) * 1000 * VCCRESNET))
+#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 50)*(REFVOL / 4096) * 1000 * BATRESNET))
+#define VCCvol   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
+#define BATvol   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
+
+#define turnoffpm3()	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin)
+#define turnoffh3()		GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin)
+#define turnonpm3()		GPIO_ResetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin)
+#define turnonh3()		GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin)
+
+#define turnonchg()		GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+#define turnoffchg()	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+
+#define SPISELH3()		GPIO_SetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
+#define SPISELST()		GPIO_ResetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
 
 #define START_MODE_NONE		0
 #define START_MODE_BAT		1
 #define START_MODE_VCC		2
 
 #define VCCTHR				4000
-#define BATNOLOADTHR		3550
-#define BATWITHLOADTHR		3500
+#define BATNOLOADTHR		3500
+#define BATWITHLOADTHR		3450
 /////////////////////////////////////////////////dna动画////////////////////////
 //dna动画位置
 #define dnaxstart 68
@@ -175,7 +192,7 @@
 #define dnaystop 178
 
 #define dnaangle 320		//dna动画总角度
-#define dnaspeed 60			//dna动画速度
+#define dnaspeed 10			//dna动画速度
 
 #define xstep   1
 
@@ -187,8 +204,6 @@
 #define PII 3.14159265
 #define y_frame   (max_y_hight - node_radius)
 /////////////////////////////////////////////////dna动画end////////////////////////
-
-
 #endif
 
 u8 startmode;
@@ -207,17 +222,20 @@ u32 GetMCUID(void);
 void ICPX_Standby(void);
 void ICPX_Charge_Screen(u8 init);
 void ICPX_Booting_Screen(u8 init);
+void ICPX_Shutdown_Screen(u8 init);
 void ICPX_Booting_Error_Screen(void);
 void ICPX_DNA_CIRCLE(void);
+void ICPX_write_file_addr_cache(u8 id, u32 addr);
+void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas);
 
 void setback();
 	
 void MAINKEYTASK(void);
 void CHGKEYTASK(void);
-void MAINCHARGETASK(void);
+u8 MAINCHARGETASK(u8 what);
 void MAINBATCHECKTASK(void);
 void STARTMODETASK(void);	
-void SHUTDOWNMETH(u16 delay);
+void SHUTDOWNMETH();
 #endif // !__ICPX_BSP_H
 
 

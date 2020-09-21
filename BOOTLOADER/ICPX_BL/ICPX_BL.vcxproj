@@ -63,7 +63,6 @@
     <ClInclude Include="..\..\CORE\core_cm3.h" />
     <ClInclude Include="USER\stm32f10x.h" />
     <ClInclude Include="USER\stm32f10x_conf.h" />
-    <None Include="stm32.props" />
     <None Include="ICPX_BL-Debug.vgdbsettings" />
     <None Include="ICPX_BL-Release.vgdbsettings" />
     <None Include="stm32.xml" />

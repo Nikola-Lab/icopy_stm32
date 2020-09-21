@@ -16,9 +16,16 @@ void ICPX_GPIO_Init(void)
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //关闭jlink，打开SWJ
 	GPIO_PinRemapConfig(GPIO_Remap_PD01, ENABLE);	         //使能PD1复用
 	
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//速度50MHz
+	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD; 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; 
+	GPIO_Init(GPIOD, &GPIO_InitStructure);	
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	
+	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
+	
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; //推挽输出
-    
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//速度50MHz
+	
 	GPIO_InitStructure.GPIO_Pin = FLASH_PWR_Pin;
 	GPIO_Init(FLASH_PWR_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
@@ -36,11 +43,6 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
 	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
-	
-	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; 
-	GPIO_Init(GPIOD, &GPIO_InitStructure);	
-	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	
@@ -747,20 +749,19 @@ void STARTMODETASK(void)
 		//电池开机
 		while(KEY_POWER(0) < 3000)
 		{
+			u16 batvol = BATvol;
+			if(batvol <= BATNOLOADTHR)
+			{
+				printf("lowbattery,vol:%d\r\n", batvol);
+				fflush(stdout);
+				//立即睡眠
+				ICPX_Standby();
+			}
 			if (KEY_POWER(0) == 0)
 			{
 				//立即睡眠
 				ICPX_Standby();
 			}
-		}
-		//到这里按键时间超过开机标准了，开始处理开机
-		u16 batvol = BATvol;
-		if (batvol <= BATNOLOADTHR)
-		{
-			printf("lowbattery,vol:%d\r\n", batvol);
-			fflush(stdout);
-			//立即睡眠
-			ICPX_Standby();
 		}
 		KEY_POWER(1);
 		startmode = START_MODE_BAT;

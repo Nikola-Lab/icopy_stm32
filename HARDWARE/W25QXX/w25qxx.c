@@ -18,7 +18,7 @@ void W25QXX_Init(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);//PORTB时钟使能 
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;  // PB12 推挽 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;  // PB2 推挽 
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -28,7 +28,12 @@ void W25QXX_Init(void)
 	//SPI1_Init();		   	//初始化SPI
 	//SPI1_SetSpeed(SPI_BaudRatePrescaler_2);//设置为18M时钟,高速模式
 	//W25QXX_WAKEUP();
-	W25QXX_TYPE = W25QXX_ReadID();//读取FLASH ID.  
+	while(W25QXX_TYPE != W25Q80)
+	{
+		W25QXX_TYPE = W25QXX_ReadID();//读取FLASH ID.  
+	}
+	
+	printf("W25Qxx init  ID:%02X\r\n", W25QXX_TYPE);
 
 }  
 
@@ -242,7 +247,9 @@ void W25QXX_Write(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
 			}
 			W25QXX_Write_NoCheck(W25QXX_BUF, secpos * 4096, 4096);//写入整个扇区  
 
-		}else W25QXX_Write_NoCheck(pBuffer, WriteAddr, secremain);//写已经擦除了的,直接写入扇区剩余区间. 				   
+		}else W25QXX_Write_NoCheck(pBuffer, WriteAddr, secremain);//写已经擦除了的,直接写入扇区剩余区间. 
+		
+		
 		if (NumByteToWrite == secremain)break;//写入结束了
 		else//写入未结束
 		{
@@ -258,6 +265,76 @@ void W25QXX_Write(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
 	}
 	;	 
 }
+//写SPI FLASH  
+//函数带回读确认，如果写入错误会尝试重试三次
+//pBuffer:数据存储区
+//WriteAddr:开始写入的地址(24bit)						
+//NumByteToWrite:要写入的字节数(最大65535)  
+//返回1代表重试超时，返回0代表写入成功
+u8 W25QXX_Write_with_corr(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)   
+{ 
+	u8 readtemp[NumByteToWrite];
+	u8 trys = 0;
+	memcpy(readtemp, 0, NumByteToWrite);
+	W25QXX_Write(pBuffer, WriteAddr, NumByteToWrite);
+	while (1)
+	{
+		u8 ans = memcmp(readtemp, pBuffer, NumByteToWrite);
+		if ((!(ans == 0)) && trys < 4)
+		{
+			//不一致
+			W25QXX_Write(pBuffer, WriteAddr, NumByteToWrite);
+			W25QXX_FastRead(readtemp, WriteAddr, NumByteToWrite);
+			trys++;
+		}
+		else
+		{
+			if (trys >= 4)
+			{
+				return 1;
+			}
+			else if(ans == 0)
+			{
+				return 0;
+			}
+		}
+	}
+}
+
+//写SPI FLASH  
+//函数带自动降速，在使用回读确认方式重试失败后，降低spi速度写入
+//pBuffer:数据存储区
+//WriteAddr:开始写入的地址(24bit)						
+//NumByteToWrite:要写入的字节数(最大65535)  
+//返回1代表降速后也超时，返回0代表写入成功
+u8 W25QXX_Write_with_slowdown(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)   
+{ 
+	u8 res = W25QXX_Write_with_corr(pBuffer, WriteAddr, NumByteToWrite);
+	u8 speed = 2;
+	while (1)
+	{
+		if (res == 1 && speed <= 7)
+		{
+			SPI1_SetSpeed(speed);
+			speed++;
+			res = W25QXX_Write_with_corr(pBuffer, WriteAddr, NumByteToWrite);
+		}
+		else {
+			if (res == 0)
+			{
+				return 0;
+			}
+			else if (speed > 7)
+			{
+				return 1;
+			}
+		}
+	}
+	
+}
+
+
+
 //擦除整个芯片		  
 //等待时间超长...
 void W25QXX_Erase_Chip(void)   

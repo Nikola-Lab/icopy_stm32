@@ -46,9 +46,6 @@
     <ClInclude Include="USER\stm32f10x_conf.h">
       <Filter>Source files</Filter>
     </ClInclude>
-    <None Include="stm32.props">
-      <Filter>Source files\Device-specific files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="stm32.props">
