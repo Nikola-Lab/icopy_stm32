@@ -27,7 +27,12 @@
 #define KEY_ALL_PRES		9
 #define KEY_WKUP_PRES 		10
 
-void KEY_Init(void);//IO初始化
+void KEY_Init(void);	//IO初始化
 u8 KEY_Scan(u8 mode);  	//按键扫描函数
 u16 KEY_POWER(u8 clean);
+u16 KEY_ICPY_UP(u8 clean);
+u16 KEY_ICPY_DOWN(u8 clean);
+u16 KEY_ICPY_LEFT(u8 clean);
+u16 KEY_ICPY_RIGHT(u8 clean);
+	
 #endif

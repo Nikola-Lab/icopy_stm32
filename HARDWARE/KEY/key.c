@@ -132,3 +132,111 @@ u16 KEY_POWER(u8 clean)
 	}
 	return 0;// 无按键按下
 }
+u16 KEY_ICPY_UP(u8 clean)
+{	 
+	static u16 downtime = 0;
+	if (clean) 
+	{
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	if (KEYUP == 1)
+	{
+		delay_ms(5);//去抖动 
+		if (KEYUP == 1)
+		{
+			
+			downtime = g_Tim2Array[eTim1];
+			return downtime;
+		}
+
+	}
+	else if (KEYUP == 0)
+	{
+		//抬起
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	return 0;// 无按键按下
+}
+u16 KEY_ICPY_DOWN(u8 clean)
+{	 
+	static u16 downtime = 0;
+	if (clean) 
+	{
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	if (KEYDOWN == 1)
+	{
+		delay_ms(5);//去抖动 
+		if (KEYDOWN == 1)
+		{
+			
+			downtime = g_Tim2Array[eTim1];
+			return downtime;
+		}
+
+	}
+	else if (KEYDOWN == 0)
+	{
+		//抬起
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	return 0;// 无按键按下
+}
+u16 KEY_ICPY_RIGHT(u8 clean)
+{	 
+	static u16 downtime = 0;
+	if (clean) 
+	{
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	if (KEYRIGHT == 1)
+	{
+		delay_ms(5);//去抖动 
+		if (KEYRIGHT == 1)
+		{
+			
+			downtime = g_Tim2Array[eTim1];
+			return downtime;
+		}
+
+	}
+	else if (KEYRIGHT == 0)
+	{
+		//抬起
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	return 0;// 无按键按下
+}
+u16 KEY_ICPY_LEFT(u8 clean)
+{	 
+	static u16 downtime = 0;
+	if (clean) 
+	{
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	if (KEYLEFT == 1)
+	{
+		delay_ms(5);//去抖动 
+		if (KEYLEFT == 1)
+		{
+			
+			downtime = g_Tim2Array[eTim1];
+			return downtime;
+		}
+
+	}
+	else if (KEYLEFT == 0)
+	{
+		//抬起
+		g_Tim2Array[eTim1] = 0;
+		downtime = 0;
+	}
+	return 0;// 无按键按下
+}
