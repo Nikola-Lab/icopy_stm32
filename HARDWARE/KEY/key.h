@@ -11,11 +11,8 @@
 #define KEYM2			GPIO_ReadInputDataBit(BUTM2_GPIO_Port,BUTM2_Pin)
 #define KEY_PWR_CAN		GPIO_ReadInputDataBit(BUTPWR_CAN_GPIO_Port,BUTPWR_CAN_Pin)
 #define KEY_ALL			GPIO_ReadInputDataBit(BUTALL_GPIO_Port,BUTALL_Pin)
-
 #define KEY_WKUP		GPIO_ReadInputDataBit(WKUP_GPIO_Port,WKUP_Pin)
 
- 
-	
 #define KEYUP_PRES 			1	
 #define KEYDOWN_PRES		2	
 #define KEYRIGHT_PRES		3	

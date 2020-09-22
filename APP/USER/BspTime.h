@@ -10,6 +10,10 @@ enum {
     eTim2,
     eTim3,
     eTim4,
+	eTimup,
+	eTimdown,
+	eTimleft,
+	eTimright,
     eTimMax,
 };
 

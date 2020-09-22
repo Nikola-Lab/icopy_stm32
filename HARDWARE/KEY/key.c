@@ -134,109 +134,109 @@ u16 KEY_POWER(u8 clean)
 }
 u16 KEY_ICPY_UP(u8 clean)
 {	 
-	static u16 downtime = 0;
+	static u16 downtimeup = 0;
 	if (clean) 
 	{
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimup] = 0;
+		downtimeup = 0;
 	}
-	if (KEYUP == 1)
+	if (KEYUP == 0)
 	{
 		delay_ms(5);//去抖动 
-		if (KEYUP == 1)
+		if (KEYUP == 0)
 		{
 			
-			downtime = g_Tim2Array[eTim1];
-			return downtime;
+			downtimeup = g_Tim2Array[eTimup];
+			return downtimeup;
 		}
 
 	}
-	else if (KEYUP == 0)
+	else if (KEYUP == 1)
 	{
 		//抬起
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimup] = 0;
+		downtimeup = 0;
 	}
 	return 0;// 无按键按下
 }
 u16 KEY_ICPY_DOWN(u8 clean)
 {	 
-	static u16 downtime = 0;
+	static u16 downtimedown = 0;
 	if (clean) 
 	{
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimdown] = 0;
+		downtimedown = 0;
 	}
-	if (KEYDOWN == 1)
+	if (KEYDOWN == 0)
 	{
 		delay_ms(5);//去抖动 
-		if (KEYDOWN == 1)
+		if (KEYDOWN == 0)
 		{
 			
-			downtime = g_Tim2Array[eTim1];
-			return downtime;
+			downtimedown = g_Tim2Array[eTimdown];
+			return downtimedown;
 		}
 
 	}
-	else if (KEYDOWN == 0)
+	else if (KEYDOWN == 1)
 	{
 		//抬起
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimdown] = 0;
+		downtimedown = 0;
 	}
 	return 0;// 无按键按下
 }
 u16 KEY_ICPY_RIGHT(u8 clean)
 {	 
-	static u16 downtime = 0;
+	static u16 downtimeright = 0;
 	if (clean) 
 	{
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimright] = 0;
+		downtimeright = 0;
 	}
-	if (KEYRIGHT == 1)
+	if (KEYRIGHT == 0)
 	{
 		delay_ms(5);//去抖动 
-		if (KEYRIGHT == 1)
+		if (KEYRIGHT == 0)
 		{
 			
-			downtime = g_Tim2Array[eTim1];
-			return downtime;
+			downtimeright = g_Tim2Array[eTimright];
+			return downtimeright;
 		}
 
 	}
-	else if (KEYRIGHT == 0)
+	else if (KEYRIGHT == 1)
 	{
 		//抬起
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimright] = 0;
+		downtimeright = 0;
 	}
 	return 0;// 无按键按下
 }
 u16 KEY_ICPY_LEFT(u8 clean)
 {	 
-	static u16 downtime = 0;
+	static u16 downtimeleft = 0;
 	if (clean) 
 	{
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimleft] = 0;
+		downtimeleft = 0;
 	}
-	if (KEYLEFT == 1)
+	if (KEYLEFT == 0)
 	{
 		delay_ms(5);//去抖动 
-		if (KEYLEFT == 1)
+		if (KEYLEFT == 0)
 		{
 			
-			downtime = g_Tim2Array[eTim1];
-			return downtime;
+			downtimeleft = g_Tim2Array[eTimleft];
+			return downtimeleft;
 		}
 
 	}
-	else if (KEYLEFT == 0)
+	else if (KEYLEFT == 1)
 	{
 		//抬起
-		g_Tim2Array[eTim1] = 0;
-		downtime = 0;
+		g_Tim2Array[eTimleft] = 0;
+		downtimeleft = 0;
 	}
 	return 0;// 无按键按下
 }
