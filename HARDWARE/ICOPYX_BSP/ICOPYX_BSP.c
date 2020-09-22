@@ -35,7 +35,7 @@ void ICPX_GPIO_Init(void)
 	
 	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
 	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
-	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
+	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
 	
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; 
@@ -243,7 +243,6 @@ u8 ICPX_find_RES_by_id(u8 id)
 	}
 	return 255;
 }
-
 //写入地址到文件缓存
 void ICPX_write_file_addr_cache(u8 id, u32 addr)
 {
@@ -319,12 +318,10 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 	}
 	
 }
-
 u32 GetMCUID(void)
 {
 	return (*(u32*)(0x1FFFF7E8));
 }
-
 void ICPX_Standby()
 {
 	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
@@ -336,7 +333,6 @@ void ICPX_Standby()
 	PWR_EnterSTANDBYMode();//进入待机
 	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
 }
-
 void ICPX_Charge_Screen(u8 init)
 {
 	static u8 firstshow = 0;
@@ -415,7 +411,6 @@ void ICPX_Charge_Screen(u8 init)
 		CHGKEYTASK();
 	}
 }	
-
 void ICPX_Booting_Screen(u8 init)
 {
 	static u8 firstshow = 0;
@@ -442,7 +437,6 @@ void ICPX_Booting_Screen(u8 init)
 		ICPX_DNA_CIRCLE();
 	}
 }
-
 void ICPX_Shutdown_Screen(u8 init)
 {
 	static u8 firstshow = 0;
@@ -503,7 +497,6 @@ void ICPX_Shutdown_Screen(u8 init)
 		ST7789_ShowString(84, 200, "   ...", YELLOW, ICPX_BLUE_BAK, 24, 0);
 	}
 }
-
 void ICPX_Booting_Error_Screen(void)
 {
 	g_Tim2Array[eTim2] = 0;
@@ -512,8 +505,6 @@ void ICPX_Booting_Error_Screen(void)
 		ST7789_ShowString(0, 0, "boot error!!", YELLOW, BLACK, 32, 0);
 	}
 }
-
-
 double tsin(double x)
 {
 	double g = 0; //g为sinx()最终结果 
@@ -526,7 +517,6 @@ double tsin(double x)
 	}while (fabs(t) >= 1e-6) ; //fabs()求double型变量的绝对值 
 	return g;
 }
-
 double tcos(double x)
 {
 	x += PII; 
@@ -536,7 +526,6 @@ double tcos(double x)
 
 	return (tsin(x));
 }
-
 void ICPX_DNA_CIRCLE(void)
 {
 	int node = 0;
@@ -624,7 +613,6 @@ void ICPX_DNA_CIRCLE(void)
 	}
 	return;
 }
-
 //主扫描按键流程
 void MAINKEYTASK(void)
 {
@@ -637,6 +625,80 @@ void MAINKEYTASK(void)
 			SHUTDOWNMETH();//关机指令
 		}
 	}
+	
+	if (KEY_ICPY_UP(0) > 1000)
+	{
+		KEY_ICPY_UP(1);
+		while (1)
+		{
+			if (KEY_ICPY_UP(0) > 100)
+			{
+				KEY_ICPY_UP(1);
+				printf("KEYUP_PRES!\r\n");
+				fflush(stdout);
+			}
+			if (KEY_ICPY_UP(0) == 0)
+			{
+				KEY_ICPY_UP(1);
+				break;
+			}
+		}
+	}
+	if (KEY_ICPY_DOWN(0) > 1000)
+	{
+		KEY_ICPY_DOWN(1);
+		while (1)
+		{
+			if (KEY_ICPY_DOWN(0) > 100)
+			{
+				KEY_ICPY_DOWN(1);
+				printf("KEYDOWN_PRES!\r\n");
+				fflush(stdout);
+			}
+			if (KEY_ICPY_DOWN(0) == 0)
+			{
+				KEY_ICPY_DOWN(1);
+				break;
+			}
+		}
+	}
+	if (KEY_ICPY_LEFT(0) > 1000)
+	{
+		KEY_ICPY_LEFT(1);
+		while (1)
+		{
+			if (KEY_ICPY_LEFT(0) > 100)
+			{
+				KEY_ICPY_LEFT(1);
+				printf("KEYLEFT_PRES!\r\n");
+				fflush(stdout);
+			}
+			if (KEY_ICPY_LEFT(0) == 0)
+			{
+				KEY_ICPY_LEFT(1);
+				break;
+			}
+		}
+	}
+	if (KEY_ICPY_RIGHT(0) > 1000)
+	{
+		KEY_ICPY_RIGHT(1);
+		while (1)
+		{
+			if (KEY_ICPY_RIGHT(0) > 100)
+			{
+				KEY_ICPY_RIGHT(1);
+				printf("KEYRIGHT_PRES!\r\n");
+				fflush(stdout);
+			}
+			if (KEY_ICPY_RIGHT(0) == 0)
+			{
+				KEY_ICPY_RIGHT(1);
+				break;
+			}
+		}
+	}
+	
 	key = KEY_Scan(0);	//得到键值
 	if(key)
 	{						   
@@ -726,7 +788,7 @@ void MAINBATCHECKTASK(void)
 {
 	if (BATvol <= BATWITHLOADTHR)
 	{
-		printf("lowbattery");
+		printf("LOWBATTERY!!\r\n");
 		ICPX_Booting_Screen(1);//初始化开机界面状态
 		ICPX_Charge_Screen(1);//初始化充电界面状态
 		SHUTDOWNMETH();
@@ -734,6 +796,53 @@ void MAINBATCHECKTASK(void)
 	
 }
 //开机模式判断
+u32 BATVOL2PERCENT(u16 VOL)
+{
+	//100%	4.20V	1
+	//90 %	4.06V		80%-100%	白
+	//80 %	3.98V	1
+	//70 %	3.92V		60%-80%		白
+	//60 %	3.87V	1
+	//50 %	3.82V		40%-60%		白
+	//40 %	3.79V	1
+	//30 %	3.77V		20%-40%		白
+	//20 %	3.74V	1
+	//10 %	3.68V		5%-20%		红
+	//5 %	3.45V	1				关机
+	//0 %	3.00V
+#define P100VOL	4200
+#define P80VOL	3980
+#define P60VOL	3870
+#define P40VOL	3790
+#define P20VOL	3740
+#define P5VOL	3450
+	
+	if(VOL > P80VOL)
+	{//80-100
+		return map(VOL, P80VOL, P100VOL, 80, 100);
+	}
+	else if(VOL > P60VOL)
+	{//60-80
+		return map(VOL, P60VOL, P80VOL, 60, 80);
+	}
+	else if(VOL > P40VOL)
+	{//40-60
+		return map(VOL, P40VOL, P60VOL, 40, 60);
+	}
+	else if(VOL > P20VOL)
+	{//20-60
+		return map(VOL, P20VOL, P40VOL, 20, 40);
+	}
+	else if(VOL > P5VOL)
+	{//5-20
+		return map(VOL, P5VOL, P20VOL, 5, 20);
+	}
+	else 
+	{//<5
+		return 1;
+	}
+}
+//电池电压计算
 void STARTMODETASK(void)
 {
 	//注意，这个流程只会在唤醒时运行一次
@@ -825,5 +934,8 @@ void SHUTDOWNMETH()
 void setback()
 {
 	hasbak = 1;
+}
+u32 map(u32 x, u32 in_min, u32 in_max, u32 out_min, u32 out_max) {
+	return (u32)((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 

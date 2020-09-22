@@ -229,10 +229,12 @@ void ICPX_write_file_addr_cache(u8 id, u32 addr);
 void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas);
 
 void setback();
+u32 map(u32 x, u32 in_min, u32 in_max, u32 out_min, u32 out_max);
 	
 void MAINKEYTASK(void);
 void CHGKEYTASK(void);
 u8 MAINCHARGETASK(u8 what);
+u32 BATVOL2PERCENT(u16 VOL);
 void MAINBATCHECKTASK(void);
 void STARTMODETASK(void);	
 void SHUTDOWNMETH();
