@@ -5,14 +5,10 @@
 #include "sys_command_line.h"
 
 
-// TODO: 添加方向键长按处理
+// TODO:
 // 添加加解密算法
-// 添加屏幕权限切换
 // 添加bl模式下的屏幕切换
-// 添加资源库自动解析
-// 充电状态回报
-// 添加重新初始化屏幕的指令
-
+// 添加低电量关机指令
 
 void dummy(){}
 int main(void)
@@ -79,10 +75,13 @@ int main(void)
 			//{
 			//	isstarting = 2;
 			//}
+			if(isstarting == 0)			//0代表开机完成
+			{
+				MAINKEYTASK();
+				MAINCHARGETASK(0);
+				MAINBATCHECKTASK();
+			}
 			CLI_RUN();
-			MAINKEYTASK();
-			MAINCHARGETASK(0);
-			//MAINBATCHECKTASK();
 		//主流程
 		}
 	}
