@@ -15,6 +15,7 @@ static uint8_t cli_turnoffpm3(void *para, uint8_t len);
 static uint8_t cli_turnonpm3(void *para, uint8_t len);
 static uint8_t cli_restartpm3(void *para, uint8_t len);
 static uint8_t cli_volbat(void *para, uint8_t len);
+static uint8_t cli_pctbat(void *para, uint8_t len);
 static uint8_t cli_volinput(void *para, uint8_t len);
 static uint8_t cli_charge(void *para, uint8_t len);
 static uint8_t cli_h3start(void *para, uint8_t len);
@@ -56,6 +57,7 @@ const COMMAND_S CLI_Cmd[] = {
 	{ "restartpm3", NULL, NULL, cli_restartpm3},
 	//电源电压指令序列
 	{ "volbat", NULL, NULL, cli_volbat},
+	{ "pctbat", NULL, NULL, cli_pctbat},
 	{ "volvcc", NULL, NULL, cli_volinput},
 	//查询充电状态指令序列(耗时问题)
 	{ "charge", NULL, NULL, cli_charge},
@@ -174,6 +176,14 @@ static uint8_t cli_volbat(void *para, uint8_t len)
 	fflush(stdout);
 	return TRUE;
 }
+//读取电池百分比实现
+static uint8_t cli_pctbat(void *para, uint8_t len)
+{	
+	printf("#batpct:%d", BATVOL2PERCENT(BATvolavl));
+	fflush(stdout);
+	return TRUE;
+}
+
 //读取电源电压实现
 static uint8_t cli_volinput(void *para, uint8_t len)
 {
@@ -192,6 +202,7 @@ static uint8_t cli_charge(void *para, uint8_t len)
 //开机完成指令
 static uint8_t cli_h3start(void *para, uint8_t len)
 {
+	//isstarting = 0;
 	return TRUE;
 }	
 //lcd转交给h3指令
@@ -732,13 +743,10 @@ static uint8_t cli_setbaklight(void *para, uint8_t len)
 	return TRUE;
 }
 //目标存活指令实现
-
 static uint8_t cli_targetalive(void *para, uint8_t len)
 {
 	setback();
 }
-
-
 //终端初始化实现
 void cli_init(uint32_t baud)
 {
