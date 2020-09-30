@@ -43,6 +43,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\CORE;..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;v11;STM32F10X_MD;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <GeneratePreprocessorOutput>true</GeneratePreprocessorOutput>
     </ClCompile>
     <Link>
       <AdditionalLinkerInputs>;%(Link.AdditionalLinkerInputs)</AdditionalLinkerInputs>

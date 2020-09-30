@@ -4,12 +4,6 @@
 #include "usart.h"
 #include "sys_command_line.h"
 
-
-// TODO:
-// 添加加解密算法
-// 添加bl模式下的屏幕切换
-// 添加低电量关机指令
-
 void dummy(){}
 int main(void)
 {
