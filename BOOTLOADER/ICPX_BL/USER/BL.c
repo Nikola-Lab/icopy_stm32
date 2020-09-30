@@ -21,6 +21,9 @@ void GPIOINIT()
 	GPIO_Init(H3_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
 	GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
 	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_SetBits(GPIOB, GPIO_Pin_11);
 }
 void UART_Init(void)
 {

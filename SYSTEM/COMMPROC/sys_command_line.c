@@ -179,7 +179,7 @@ static uint8_t cli_volbat(void *para, uint8_t len)
 //读取电池百分比实现
 static uint8_t cli_pctbat(void *para, uint8_t len)
 {	
-	printf("#batpct:%d", BATVOL2PERCENT(BATvolavl));
+	printf("#batpct:%d", BATVOL2PERCENT(ICPX_BAT_VOL_REVICE(1)));
 	fflush(stdout);
 	return TRUE;
 }

@@ -716,9 +716,9 @@ void ST7789_ShowChar(u16 x, u16 y, u8 num, u16 fc, u16 bc, u8 sizey, u8 mode)
 	sizex = sizey / 2;
 	
 	if (sizey == 16)		TypefaceNum = ICOPYX_FONTLIBS[0].DataSize;
-	else if(sizey == 32)	TypefaceNum = ICOPYX_FONTLIBS[1].DataSize;
+	else if(sizey == 32)	TypefaceNum = ICOPYX_FONTLIBS[3].DataSize;
 	else if(sizey == 24)	TypefaceNum = ICOPYX_FONTLIBS[2].DataSize;
-	else if(sizey == 20)	TypefaceNum = ICOPYX_FONTLIBS[3].DataSize;
+	else if(sizey == 20)	TypefaceNum = ICOPYX_FONTLIBS[1].DataSize;
 
 	
 	num = num - ' ';    //得到偏移后的值

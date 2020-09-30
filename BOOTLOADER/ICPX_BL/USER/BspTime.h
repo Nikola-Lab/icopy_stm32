@@ -6,13 +6,16 @@
 #define NULL        ((void *)0)
 #endif
 enum {
-    eTim1,
-    eTim2,
+	eTim1,
+	eTim2,
 	eTim3,
 	eTim4,
-	eTimoff,
-    eTimUpdata,
-    eTimYModem,
+	eTimup,
+	eTimdown,
+	eTimleft,
+	eTimright,
+	eTimbat,
+	eTimbatmv,
     eTimMax,
 };
 

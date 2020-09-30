@@ -157,14 +157,14 @@
 #define LCD_BKLT_Pin 						GPIO_Pin_8
 #define LCD_BKLT_GPIO_Port 					GPIOA
 
-#define BATRESNET							(2)
+#define BATRESNET							(1.333333333333333)
 #define VCCRESNET							(1.666666666666667)
 #define REFVOL								(3.301)
 
-#define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 50)*(REFVOL / 4096) * 1000 * VCCRESNET))
-#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 50)*(REFVOL / 4096) * 1000 * BATRESNET))
+#define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(REFVOL / 4096) * 1000 * VCCRESNET))
+#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(REFVOL / 4096) * 1000 * BATRESNET))
 #define VCCvol   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
-#define BATvol   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
+//#define BATvol   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
 
 #define turnoffpm3()	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin)
 #define turnoffh3()		GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin)
@@ -182,8 +182,9 @@
 #define START_MODE_VCC		2
 
 #define VCCTHR				4000
-#define BATNOLOADTHR		3500
-#define BATWITHLOADTHR		3450
+#define BATNOLOADTHR		3200
+#define NOBATTHR			1000
+#define BATWITHLOADTHR		3400
 /////////////////////////////////////////////////dna动画////////////////////////
 //dna动画位置
 #define dnaxstart 68
@@ -223,19 +224,21 @@ void ICPX_Standby(void);
 void ICPX_Charge_Screen(u8 init);
 void ICPX_Booting_Screen(u8 init);
 void ICPX_Shutdown_Screen(u8 init);
-void ICPX_Booting_Error_Screen(void);
+void ICPX_Booting_Error_Screen(u8 init);
 void ICPX_DNA_CIRCLE(void);
 void ICPX_write_file_addr_cache(u8 id, u32 addr);
 void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas);
+u16 ICPX_BAT_VOL_GATHER(u8 MODE);
+u16 ICPX_BAT_VOL_REVICE(u8 what);
 
 void setback();
 u32 map(u32 x, u32 in_min, u32 in_max, u32 out_min, u32 out_max);
 	
 void MAINKEYTASK(void);
-void CHGKEYTASK(void);
+void CHGKEYTASK(u8 en);
 u8 MAINCHARGETASK(u8 what);
 u32 BATVOL2PERCENT(u16 VOL);
-void MAINBATCHECKTASK(void);
+u16 MAINBATCHECKTASK(u8 what);
 void STARTMODETASK(void);	
 void SHUTDOWNMETH();
 #endif // !__ICPX_BSP_H

@@ -14,6 +14,8 @@ enum {
 	eTimdown,
 	eTimleft,
 	eTimright,
+	eTimbat,
+	eTimbatmv,
     eTimMax,
 };
 

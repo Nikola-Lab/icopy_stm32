@@ -33,7 +33,7 @@ void W25QXX_Init(void)
 		W25QXX_TYPE = W25QXX_ReadID();//读取FLASH ID.  
 	}
 	
-	printf("W25Qxx init  ID:%02X\r\n", W25QXX_TYPE);
+	//printf("W25Qxx init  ID:%02X\r\n", W25QXX_TYPE);
 
 }  
 

@@ -31,7 +31,18 @@ int main(void)
 	STARTMODETASK();			//开机模式判断
 	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);
 	
-	ICPX_Test_25Q80();	//测试25flash
+//	while (1)
+//	{	
+//		ST7789_SetBaklight(100);
+//		ST7789_DrawRectangle(0, 0, ST7789_H-1, ST7789_W-1, YELLOW);
+//		g_Tim2Array[eTim1] = 0;
+//		while (IS_TIMEOUT_1MS(eTim1, 500)) ;
+//		ST7789_DrawRectangle(0, 0, ST7789_H-1, ST7789_W-1, BLACK);
+//		g_Tim2Array[eTim1] = 0;
+//		while (IS_TIMEOUT_1MS(eTim1, 500)) ;
+//	}
+	
+	//ICPX_Test_25Q80();	//测试25flash
 	KFS_repair_fs();	//从文件系统里读出文件
 	
 	//printf("%04X\r\n",GetMCUID()); //uuid
@@ -45,7 +56,8 @@ int main(void)
 			turnoffh3();
 			ICPX_Charge_Screen(0);
 			//充电动画循环实现
-			CHGKEYTASK();
+			CHGKEYTASK(1);
+			MAINBATCHECKTASK(0);
 			if (VCCvol < VCCTHR)
 			{//电源拔掉了
 				ICPX_Standby();
@@ -66,20 +78,24 @@ int main(void)
 				//ICPX_Shutdown_Screen(0);
 				//启动动画实现
 				//等待启动指令修改状态
+				ICPX_Booting_Error_Screen(1);//初始化一次启动错误页面，让他可以在需要的时候刷背景
 			}
 			else if(isstarting == 2)	//2代表开机失败
 			{
-				ICPX_Booting_Error_Screen();
+				ICPX_Booting_Error_Screen(0);
+				CLI_RUN();
 			}
-			//if (!IS_TIMEOUT_1MS(eTim4, 10000))
-			//{
-			//	isstarting = 2;
-			//}
+			if (!IS_TIMEOUT_1MS(eTim4, 40000) && isstarting != 0)
+			{
+				isstarting = 2;
+			}
 			if(isstarting == 0)			//0代表开机完成
 			{
+				boottimerneedreset = 0;
 				MAINKEYTASK();
 				MAINCHARGETASK(0);
-				MAINBATCHECKTASK();
+				MAINBATCHECKTASK(0);
+				ICPX_BAT_VOL_REVICE(0);
 			}
 			CLI_RUN();
 		//主流程

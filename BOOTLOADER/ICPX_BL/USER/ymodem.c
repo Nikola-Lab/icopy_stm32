@@ -221,7 +221,8 @@ int32_t Ymodem_Receive_To_Flash(uint8_t *buf,uint32_t startaddress)
 {
 	uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], file_size[FILE_SIZE_LENGTH], *file_ptr, *buf_ptr;
 	int32_t i, j, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
-
+	static u8 times = 0;
+	
 	//初始化Flash地址变量
 	FlashDestination = startaddress;
 
@@ -297,22 +298,23 @@ int32_t Ymodem_Receive_To_Flash(uint8_t *buf,uint32_t startaddress)
 						else
 						{
 							memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
-							//RamSource = (uint32_t)buf;
 							if (FlashDestination <  startaddress + size)
-							{//长度没有超限制
-								W25QXX_Write_with_slowdown(buf, FlashDestination, packet_length);
-								//W25QXX_Write_with_corr(buf, FlashDestination, packet_length);
-								//W25QXX_Write(buf, FlashDestination, packet_length);
-								FlashDestination += packet_length;
-							
-//							for (j = 0; (j < packet_length) && (FlashDestination <  startaddress + size); j += 4)
-//							{
-//								//把接收到的数据编写到Flash中
-//								W25QXX_Write(RamSource, FlashDestination, 4);
-//								FlashDestination += 4;
-//								RamSource += 4;
-//							}
-							Send_Byte(ACK);
+							{   
+								//长度没有超限制
+								u16 crc = Cal_CRC16(buf, packet_length);
+								u16 crcin = 0;
+								crcin += packet_data[packet_length + PACKET_TRAILER + 1] << 8;
+								crcin += packet_data[packet_length + PACKET_TRAILER + 2];
+								if (crcin == crc)
+								{
+									W25QXX_Write_with_slowdown(buf, FlashDestination, packet_length);
+									FlashDestination += packet_length;
+									Send_Byte(ACK);
+								}
+								else
+								{
+									Send_Byte(NAK);
+								}
 							}
 						}
 						packets_received++;

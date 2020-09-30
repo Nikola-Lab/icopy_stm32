@@ -38,6 +38,7 @@ void ICPX_GPIO_Init(void)
 	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
 	
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
+	//D0用于拉低电池采集引脚电压
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; 
 	GPIO_Init(GPIOD, &GPIO_InitStructure);	
 	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
@@ -93,16 +94,16 @@ void ICPX_Test_25Q80(void)
 	W25QXX_ReadUID(datatemp);
 	sprintf(dataprint, "0x%02X%02X%02X%02X%02X%02X%02X%02X", datatemp[0], datatemp[1], datatemp[2], datatemp[3], datatemp[4], datatemp[5], datatemp[6], datatemp[7]);
 	printf("W25Qxx UID:%s\r\n", dataprint);
-//	printf("readdata:");
-//	for (i = 0;i < 128;i++)
-//	{
-//		memset(datatemp, 0, sizeof(datatemp));
-//		memset(dataprint, 0, sizeof(dataprint));
-//		W25QXX_Read(datatemp, 0x00000000 + i , 1);
-//		sprintf(dataprint, "0x%02X,", datatemp[0]);
-//		printf("%s", dataprint);
-//	}
-//	printf("\r\n");
+	printf("readdata:");
+	for (i = 0;i < 128;i++)
+	{
+		memset(datatemp, 0, sizeof(datatemp));
+		memset(dataprint, 0, sizeof(dataprint));
+		W25QXX_Read(datatemp, 0x0001C200 + i, 1);
+		sprintf(dataprint, "0x%02X,", datatemp[0]);
+		printf("%s", dataprint);
+	}
+	printf("\r\n");
 	fflush(stdout);
 //	u8 testdata[5120];
 //	memset(testdata, 0, sizeof(testdata));
@@ -236,7 +237,7 @@ u8 ICPX_find_RES_by_id(u8 id)
 	}
 	else
 	{
-		for(i = 0 ; i < 11 ; i++)
+		for(i = 0 ; i < 12 ; i++)
 		{
 			if (ICOPYX_IMAGES[i].id == id) return i;
 		}
@@ -318,99 +319,43 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 	}
 	
 }
-u32 GetMCUID(void)
-{
-	return (*(u32*)(0x1FFFF7E8));
-}
-void ICPX_Standby()
-{
-	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
-	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//开电源管理时钟PWR_Regulator_LowPower
 
-	PWR_WakeUpPinCmd(ENABLE);//使能唤醒引脚，默认PA0
 
-	PWR_EnterSTANDBYMode();//进入待机
-	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
-}
+
+
+
 void ICPX_Charge_Screen(u8 init)
 {
 	static u8 firstshow = 0;
+	static u8 showpic = 1;//1-9
 	if (init)
 	{
 		firstshow = 0;
+		showpic = 1;
 		return;
 	}
 	if (!firstshow)
 	{
-		g_Tim2Array[eTim2] = 0;
-		while (IS_TIMEOUT_1MS(eTim2, 500))
-		{
-			ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[0]);
-			CHGKEYTASK();
-			ST7789_BL_ON();
-		}
+		ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[0]);
+		CHGKEYTASK(0);
+		ST7789_BL_ON();
 		firstshow = 1;
-	}
-	else
-	{
 		g_Tim2Array[eTim2] = 0;
-		while (IS_TIMEOUT_1MS(eTim2, 500))
-		{
-			ICPX_Diplay_Image(54, 89, ICOPYX_IMAGES[9]);
-			CHGKEYTASK();
-		}
-		
 	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
+	if (MAINBATCHECKTASK(1) > 4190)
 	{
-		ICPX_Diplay_Image(54, 89, ICOPYX_IMAGES[1]);
-		CHGKEYTASK();
+		ICPX_Diplay_Image(ICOPYX_IMAGES[11].x, ICOPYX_IMAGES[11].y, ICOPYX_IMAGES[11]);
+		return;
 	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
+	if (g_Tim2Array[eTim2] > 500)
 	{
-		ICPX_Diplay_Image(68, 89, ICOPYX_IMAGES[2]);
-		CHGKEYTASK();
+		ICPX_Diplay_Image(ICOPYX_IMAGES[showpic].x, ICOPYX_IMAGES[showpic].y, ICOPYX_IMAGES[showpic]);
+		CHGKEYTASK(0);
+		showpic++;
+		if (showpic > 9)showpic = 1;
+		g_Tim2Array[eTim2] = 0;
 	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(82, 89, ICOPYX_IMAGES[3]);
-		CHGKEYTASK();
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(96, 89, ICOPYX_IMAGES[4]);
-		CHGKEYTASK();
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(119, 89, ICOPYX_IMAGES[5]);
-		CHGKEYTASK();
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(133, 89, ICOPYX_IMAGES[6]);
-		CHGKEYTASK();
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(147, 89, ICOPYX_IMAGES[7]);
-		CHGKEYTASK();
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 500))
-	{
-		ICPX_Diplay_Image(161, 89, ICOPYX_IMAGES[8]);
-		CHGKEYTASK();
-	}
-}	
+}
 void ICPX_Booting_Screen(u8 init)
 {
 	static u8 firstshow = 0;
@@ -497,14 +442,31 @@ void ICPX_Shutdown_Screen(u8 init)
 		ST7789_ShowString(84, 200, "   ...", YELLOW, ICPX_BLUE_BAK, 24, 0);
 	}
 }
-void ICPX_Booting_Error_Screen(void)
+void ICPX_Booting_Error_Screen(u8 init)
 {
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 1))
+	static u8 firstshow = 0;
+	if (init)
 	{
-		ST7789_ShowString(0, 0, "boot error!!", YELLOW, BLACK, 32, 0);
+		firstshow = 0;
+		return;
 	}
+	if (!firstshow)
+	{
+		ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[10]);
+		firstshow = 1;
+	}
+	g_Tim2Array[eTim3] = 0;
+	while (IS_TIMEOUT_1MS(eTim3, 300)) ;
+	ST7789_ShowString(18, 180, "boot timeout!", YELLOW, ICPX_BLUE_BAK, 32, 0);
+	g_Tim2Array[eTim3] = 0;
+	while (IS_TIMEOUT_1MS(eTim3, 300)) ;
+	ST7789_ShowString(18, 180, "             ", YELLOW, ICPX_BLUE_BAK, 32, 0);
 }
+
+
+
+
+
 double tsin(double x)
 {
 	double g = 0; //g为sinx()最终结果 
@@ -613,9 +575,20 @@ void ICPX_DNA_CIRCLE(void)
 	}
 	return;
 }
+
+
+
+
 //主扫描按键流程
 void MAINKEYTASK(void)
 {
+	//长按标志位，代表当前周期已经是长按期间需要处理连按
+	
+	static u8 uplongpress = 0;
+	static u8 downlongpress = 0;
+	static u8 leftlongpress = 0;
+	static u8 rightlongpress = 0;
+	
 	u8 key = 0;
 	if (KEY_POWER(0) > 3000)
 	{
@@ -625,80 +598,109 @@ void MAINKEYTASK(void)
 			SHUTDOWNMETH();//关机指令
 		}
 	}
-	
-	if (KEY_ICPY_UP(0) > 1000)
+	//---------------------------------------------上键
+	//长按处理
+	if (uplongpress == 1)
 	{
-		KEY_ICPY_UP(1);
-		while (1)
+		//长按超过1000ms后置位，进入长按处理
+		if(KEY_ICPY_UP(0) == 0)
 		{
-			if (KEY_ICPY_UP(0) > 100)
-			{
-				KEY_ICPY_UP(1);
-				printf("KEYUP_PRES!\r\n");
-				fflush(stdout);
-			}
-			if (KEY_ICPY_UP(0) == 0)
-			{
-				KEY_ICPY_UP(1);
-				break;
-			}
+			//按键抬起
+			KEY_ICPY_UP(1);
+			uplongpress = 0;
 		}
+		if (KEY_ICPY_UP(0) > 100)
+		{
+			//按键长按超过100ms
+			KEY_ICPY_UP(1);
+			printf("KEYUP_PRES!\r\n");
+			fflush(stdout);
+		}
+
 	}
-	if (KEY_ICPY_DOWN(0) > 1000)
+	if (KEY_ICPY_UP(0) > 1000 && uplongpress == 0)
+	{
+		//长按超过1000ms且长按标置位未置位
+		KEY_ICPY_UP(1);
+		uplongpress = 1;
+	}
+	//---------------------------------------------下键
+	//长按处理
+	if(downlongpress == 1)
+	{
+		//长按超过1000ms后置位，进入长按处理
+		if(KEY_ICPY_DOWN(0) == 0)
+		{
+			//按键抬起
+			KEY_ICPY_DOWN(1);
+			downlongpress = 0;
+		}
+		if (KEY_ICPY_DOWN(0) > 100)
+		{
+			//按键长按超过100ms
+			KEY_ICPY_DOWN(1);
+			printf("KEYDOWN_PRES!\r\n");
+			fflush(stdout);
+		}
+
+	}
+	if (KEY_ICPY_DOWN(0) > 1000 && downlongpress == 0)
 	{
 		KEY_ICPY_DOWN(1);
-		while (1)
-		{
-			if (KEY_ICPY_DOWN(0) > 100)
-			{
-				KEY_ICPY_DOWN(1);
-				printf("KEYDOWN_PRES!\r\n");
-				fflush(stdout);
-			}
-			if (KEY_ICPY_DOWN(0) == 0)
-			{
-				KEY_ICPY_DOWN(1);
-				break;
-			}
-		}
-	}
-	if (KEY_ICPY_LEFT(0) > 1000)
-	{
-		KEY_ICPY_LEFT(1);
-		while (1)
-		{
-			if (KEY_ICPY_LEFT(0) > 100)
-			{
-				KEY_ICPY_LEFT(1);
-				printf("KEYLEFT_PRES!\r\n");
-				fflush(stdout);
-			}
-			if (KEY_ICPY_LEFT(0) == 0)
-			{
-				KEY_ICPY_LEFT(1);
-				break;
-			}
-		}
-	}
-	if (KEY_ICPY_RIGHT(0) > 1000)
-	{
-		KEY_ICPY_RIGHT(1);
-		while (1)
-		{
-			if (KEY_ICPY_RIGHT(0) > 100)
-			{
-				KEY_ICPY_RIGHT(1);
-				printf("KEYRIGHT_PRES!\r\n");
-				fflush(stdout);
-			}
-			if (KEY_ICPY_RIGHT(0) == 0)
-			{
-				KEY_ICPY_RIGHT(1);
-				break;
-			}
-		}
+		downlongpress = 1;
 	}
 	
+	//---------------------------------------------左键
+	//长按处理
+	if(leftlongpress == 1)
+	{
+		//长按超过1000ms后置位，进入长按处理
+		if(KEY_ICPY_LEFT(0) == 0)
+		{
+			//按键抬起
+			KEY_ICPY_LEFT(1);
+			leftlongpress = 0;
+		}
+		if (KEY_ICPY_LEFT(0) > 100)
+		{
+			//按键长按超过100ms
+			KEY_ICPY_LEFT(1);
+			printf("KEYLEFT_PRES!\r\n");
+			fflush(stdout);
+		}
+
+	}
+	if (KEY_ICPY_LEFT(0) > 1000 && leftlongpress == 0)
+	{
+		KEY_ICPY_LEFT(1);
+		leftlongpress = 1;
+	}
+	//---------------------------------------------右键
+	//长按处理
+	if(rightlongpress == 1)
+	{
+		//长按超过1000ms后置位，进入长按处理
+		if(KEY_ICPY_RIGHT(0) == 0)
+		{
+			//按键抬起
+			KEY_ICPY_RIGHT(1);
+			rightlongpress = 0;
+		}
+		if (KEY_ICPY_RIGHT(0) > 100)
+		{
+			//按键长按超过100ms
+			KEY_ICPY_RIGHT(1);
+			printf("KEYRIGHT_PRES!\r\n");
+			fflush(stdout);
+		}
+
+	}
+	if (KEY_ICPY_RIGHT(0) > 1000 && rightlongpress == 0)
+	{
+		KEY_ICPY_RIGHT(1);
+		rightlongpress = 1;
+	}
+	//---------------------------------------------短按键	
 	key = KEY_Scan(0);	//得到键值
 	if(key)
 	{						   
@@ -735,22 +737,34 @@ void MAINKEYTASK(void)
 	}
 }
 //充电扫描按键流程
-void CHGKEYTASK(void)
+void CHGKEYTASK(u8 en)
 {
 	u8 key = 0;
-	if (KEY_POWER(0) > 3000)
+	if (KEY_POWER(0) > 3000 && en == 1)
 	{
-		//printf("FROM_CHG_GO_INTO_MAIN!\r\n");
-		//fflush(stdout);
+		printf("FROM_CHG_GO_INTO_MAIN!\r\n");
+		fflush(stdout);
 		KEY_POWER(1);
-		if (BATvol <= BATNOLOADTHR)
+		while (MAINBATCHECKTASK(2) == 0) ;
+		u16 batvol = MAINBATCHECKTASK(1);
+		printf("CHG_PWRON_BAT_VOL %d!\r\n", batvol);
+		fflush(stdout);
+		if (batvol <= BATNOLOADTHR)
 		{
 			//显示电量太低提示
-			//添加完下面三行删除
-			startmode = START_MODE_BAT;
-			isstarting = 1;
-			ICPX_Booting_Screen(1);//初始化开机界面状态
-			ICPX_Charge_Screen(1);//初始化充电界面状态
+			ICPX_Diplay_Image(54, 89, ICOPYX_IMAGES[9]);
+			for (u8 i = 0; i < 5; i++)
+			{
+				printf("CHG_PWRON_BAT_VOL_TOO_LOW!\r\n", batvol);
+				fflush(stdout);
+				g_Tim2Array[eTim3] = 0;
+				while (IS_TIMEOUT_1MS(eTim3, 300))
+				ST7789_ShowString(30, 180, "BATTERY IS TOO LOW", WHITE, ICPX_BLUE_BAK, 20, 0);
+				g_Tim2Array[eTim3] = 0;
+				while (IS_TIMEOUT_1MS(eTim3, 300))
+				ST7789_ShowString(30, 180, "                  ", WHITE, ICPX_BLUE_BAK, 20, 0);
+			}
+			ICPX_Charge_Screen(1);
 		}
 		else
 		{
@@ -761,7 +775,13 @@ void CHGKEYTASK(void)
 		}
 	}
 }
+
+
+
+
 //扫描充电状态流程
+//输入为0的时候才判断（并且输出到标准输出）
+//输入为1的时候不进行判断，而是直接返回充电状态
 u8 MAINCHARGETASK(u8 what)
 {	
 	static u8 chargestate = 0;
@@ -779,23 +799,111 @@ u8 MAINCHARGETASK(u8 what)
 		else if (VCCvol <= VCCTHR && chargestate == 1)
 		{
 			chargestate = 0;
-			printf("DISCHARGING!\r\n");
+			printf("DISCHARGIN!\r\n");
 		}
 	}
 	
 }
-void MAINBATCHECKTASK(void)
+//电池检测流程
+//输入为0的时候进行电量检测，包含低电量关机
+//输入为1的时候不进行判断，而是直接返回电池电压状态（上个周期采集的）
+//输入为2的时候强制开始新的电压判断（无视充电等待时间）
+u16 MAINBATCHECKTASK(u8 what)
 {
-	if (BATvol <= BATWITHLOADTHR)
-	{
-		printf("LOWBATTERY!!\r\n");
-		ICPX_Booting_Screen(1);//初始化开机界面状态
-		ICPX_Charge_Screen(1);//初始化充电界面状态
-		SHUTDOWNMETH();
-	}
+	static u16 batvolsense = 0;
+	static u8 step = 0;
+	//上一个采集流程
+	//0 空闲状态（此时充电，需要等待一段时间）
+	//等待一段时间
+	//关闭充电过程
+	//1 充电关闭（需要等待后采集）
+	//等待一段时间
+	//采集
+	//下一个采集流程
+	static u8 inprocess = 0;
+	static u8 updateok = 0;
 	
+	if (what == 1)	return batvolsense;//返回值
+	if (what == 0)
+	{
+		if (step == 0 && inprocess == 0)//充电，重置计时器
+		{
+			g_Tim2Array[eTimbat] = 0;
+			inprocess = 1;//标志等待流程开始
+		}
+		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] >= 10000)//充电等待流程结束
+		{
+			turnoffchg();
+			step = 1;
+			inprocess = 0;
+			updateok = 0;
+		}
+		else if(step == 1 && inprocess == 0)//充电关闭了，等待采集开始
+		{
+			g_Tim2Array[eTimbat] = 0;
+			inprocess = 1;//标志等待流程开始
+		}
+	
+		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500)//等待电压回落
+		{
+			//采集
+			batvolsense = ICPX_BAT_VOL_GATHER(1);
+			updateok = 1;
+			turnonchg();
+			//归位，回到初始流程
+			step = 0;
+			inprocess = 0;
+			//printf("batvol 0 %d \r\n", batvolsense);
+			//fflush(stdout);
+		}
+	}
+	if (what == 2)
+	{
+		if (batvolsense != 0) return 1;
+		if (step == 0)//充电，重置计时器
+		{
+			inprocess = 1;//标志等待流程开始
+			turnoffchg();
+			step = 1;
+			inprocess = 0;
+			updateok = 0;
+		}
+		else if(step == 1 && inprocess == 0)//充电关闭了，等待采集开始
+		{
+			g_Tim2Array[eTimbat] = 0;
+			inprocess = 1;//标志等待流程开始
+		}
+	
+		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500)//等待电压回落
+		{
+			//采集
+			batvolsense = ICPX_BAT_VOL_GATHER(1);
+			updateok = 1;
+			turnonchg();
+			//归位，回到初始流程
+			step = 0;
+			inprocess = 0;
+			//printf("batvol 2 %d \r\n", batvolsense);
+			//fflush(stdout);
+		}
+		return updateok;
+	}
+	//低电量关机判断
+	if(batvolsense <= BATWITHLOADTHR && step == 0 && inprocess == 0)
+	{
+		g_Tim2Array[eTimbat] = 0;
+		while (IS_TIMEOUT_1MS(eTimbat, 5));
+		if (BATvolavl <= BATWITHLOADTHR)
+		{
+			printf("LOWBATTERY!!\r\n");
+			ICPX_Booting_Screen(1);//初始化开机界面状态
+			ICPX_Charge_Screen(1);//初始化充电界面状态
+			SHUTDOWNMETH();
+		}
+	}
+
 }
-//开机模式判断
+//电池电压到百分比计算
 u32 BATVOL2PERCENT(u16 VOL)
 {
 	//100%	4.20V	1
@@ -842,7 +950,89 @@ u32 BATVOL2PERCENT(u16 VOL)
 		return 1;
 	}
 }
-//电池电压计算
+//电池采集流程
+//输入1时启用判断下降沿
+u16 ICPX_BAT_VOL_GATHER(u8 MODE)
+{
+	if (MODE == 1)
+	{
+		//需要停止充电之后再调用
+		u16 LASTVOL = BATvolavl;
+		u16 THISVOL = BATvolavl;
+		while(  THISVOL < LASTVOL)
+		{
+			LASTVOL = THISVOL;
+			THISVOL = BATvolavl;
+		}
+		return THISVOL;
+	}
+	else if (MODE == 0)
+	{
+		//此时直接采集
+		return BATvolavl;
+	}
+	else
+	{
+		//mode是错误值，返回0
+		return 0;
+	}
+}
+//电池动画函数，用来修正目标值防止跳变
+u16 ICPX_BAT_VOL_REVICE(u8 what)
+{
+	//动画用于在电压跳变时修正电量，采用电压逐次追踪方法
+	//变化时间不小于5分钟，以电压值差值运算
+	//5分钟300000ms，跟踪值一次变化1，每次运算后得到下一个增长周期
+	static u16 outvol = 0;
+	static u16 aimvol = 0;
+	static u32 timetowait = 0;
+	static u8 mode = 0; // 模式0代表等待未开始(数据准备），模式1代表等待中
+	
+	if (what == 1)		return outvol;
+	if (outvol == 0)	outvol = MAINBATCHECKTASK(1);
+
+	aimvol = MAINBATCHECKTASK(1);
+	
+	if (aimvol != 0 && outvol != 0)
+	{//两个值都有效，开始处理
+		signed int dvalue = aimvol - outvol;	//目标值和当前值的差
+		if (dvalue <= 1 && dvalue >= -1)
+		{
+			//差值太小
+			timetowait = 10000;			//十秒后更新
+			mode = 1;
+		}
+		else
+		{
+			if (dvalue > 0)timetowait = 300000 / dvalue;//更新一次需要的时间
+			if (dvalue < 0)timetowait = 300000 / (-dvalue);//更新一次需要的时间
+			mode = 1;
+		}
+		if (mode == 0)
+		{
+			g_Tim2Array[eTimbatmv] = 0;
+			
+		}
+		else
+		{
+			if (g_Tim2Array[eTimbatmv] > timetowait)
+			{
+				g_Tim2Array[eTimbatmv] = 0;
+				mode = 0;
+				if (dvalue > 0)		outvol++;
+				if (dvalue < 0)		outvol--;
+				if (dvalue == 0)	return 0;
+				//printf("outvol %d aimvol %d\r\n", outvol, aimvol);
+				//fflush(stdout);
+			}
+		}
+		
+	}
+	
+	
+	
+}
+
 void STARTMODETASK(void)
 {
 	//注意，这个流程只会在唤醒时运行一次
@@ -850,6 +1040,8 @@ void STARTMODETASK(void)
 	{
 		//vcc开机
 		startmode = START_MODE_VCC;
+		printf("The power is already plugged in!\r\n");
+		fflush(stdout);
 	}
 	else
 	{
@@ -858,12 +1050,15 @@ void STARTMODETASK(void)
 		{
 			if (KEY_POWER(0) == 0)
 			{
+				printf("The press time is not long enough!\r\n");
+				fflush(stdout);
 				//立即睡眠
 				ICPX_Standby();
 			}
 		}
 		//到这里按键时间超过开机标准了，开始处理开机
-		u16 batvol = BATvol;
+		while(MAINBATCHECKTASK(2) == 0);
+		u16 batvol = MAINBATCHECKTASK(1);
 		if (batvol <= BATNOLOADTHR)
 		{
 			printf("lowbattery,vol:%d\r\n", batvol);
@@ -871,6 +1066,8 @@ void STARTMODETASK(void)
 			//立即睡眠
 			ICPX_Standby();
 		}
+		printf("all done! power on!\r\n");
+		fflush(stdout);
 		KEY_POWER(1);
 		startmode = START_MODE_BAT;
 		ICPX_Booting_Screen(1);//初始化开机界面状态
@@ -931,6 +1128,27 @@ void SHUTDOWNMETH()
 		ICPX_Standby();
 	}
 }
+u32 GetMCUID(void)
+{
+	return (*(u32*)(0x1FFFF7E8));
+}
+void ICPX_Standby()
+{
+	printf("i'm sleepy!\r\n");
+	fflush(stdout);
+	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
+	
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//开电源管理时钟PWR_Regulator_LowPower
+
+	PWR_WakeUpPinCmd(ENABLE);//使能唤醒引脚，默认PA0
+
+	PWR_EnterSTANDBYMode();//进入待机
+	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
+}
+
+
+
+
 void setback()
 {
 	hasbak = 1;

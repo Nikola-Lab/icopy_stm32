@@ -32,4 +32,5 @@
 int32_t Ymodem_Receive (uint8_t *);
 int32_t Ymodem_Receive_To_Flash(uint8_t *buf, uint32_t startaddress);
 uint8_t Ymodem_Transmit (uint8_t *,const  uint8_t* , uint32_t );
+uint16_t Cal_CRC16(const uint8_t* data, uint32_t size);
 #endif  /* _YMODEM_H_ */

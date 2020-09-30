@@ -1,7 +1,7 @@
 #include "common.h"
 
 extern uint8_t file_name[FILE_NAME_LENGTH];
-uint8_t tab_1024[1024] =
+uint8_t tab_1024[4096] =
 {
     0
 };

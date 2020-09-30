@@ -79,6 +79,10 @@ u8 KFS_read_data(u32 ReadAddr, u32* lastaddr)
 				addr += KFS_ReadByte() << 8;
 				addr += KFS_ReadByte();
 				//至此已经读到一个文件必要信息，写入目标文件的缓存里
+//				printf("write para id = %2d, romaddr = 0x%8x\r\n",
+//					id,
+//					addr);
+//				fflush(stdout);
 				ICPX_write_file_addr_cache(id, addr);
 				//将当前数据地址指针送向解析数据段函数
 				*lastaddr = KFS_read_case(id, KFS_ReadCur());
@@ -130,12 +134,11 @@ u32 KFS_read_case(u8 id, u32 addr)
 				u8 datas[length+1];
 				for (k = 0; k < length; k++)
 				{
-					datas[k] = KFS_ReadByte();
+			 		datas[k] = KFS_ReadByte();
 				}
 //				if (length == 1)
 //				{
-//					printf("write para id = %2d, addr = %2x , length = %2d ,datas=0x%02X\r\n",
-//						id,
+//					printf("	para addr = %2x , length = %2d ,datas=0x%02X\r\n",
 //						FILEPARAS[i],
 //						length,
 //						datas[0]);
@@ -143,8 +146,7 @@ u32 KFS_read_case(u8 id, u32 addr)
 //				}
 //				else
 //				{
-//					printf("write para id = %2d, addr = %2x , length = %2d ,datas=0x%02X%02X%02X%02X\r\n",
-//						id,
+//					printf("	para addr = %2x , length = %2d ,datas=0x%02X%02X%02X%02X\r\n",
 //						FILEPARAS[i],
 //						length,
 //						datas[0],
