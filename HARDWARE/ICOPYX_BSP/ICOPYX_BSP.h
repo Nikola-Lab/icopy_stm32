@@ -181,7 +181,8 @@
 #define START_MODE_BAT		1
 #define START_MODE_VCC		2
 
-#define VCCTHR				4000
+#define VCCTHRHIGH			4100
+#define VCCTHRLOW			4000
 #define BATNOLOADTHR		3200
 #define NOBATTHR			1000
 #define BATWITHLOADTHR		3400
@@ -241,6 +242,7 @@ u32 BATVOL2PERCENT(u16 VOL);
 u16 MAINBATCHECKTASK(u8 what);
 void STARTMODETASK(void);	
 void SHUTDOWNMETH();
+void CHARGE_OTG();
 #endif // !__ICPX_BSP_H
 
 

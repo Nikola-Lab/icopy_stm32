@@ -46,7 +46,7 @@ extern u8 FILEPARAS[];
  *BOXSTARTbyte	RESID	(0x00)	RESADDR			4x(0x00)	|	Nx(0x00)	|	......		BOXSTOPbyte	BOXSTARTbyte
  **/
 
-void KFS_repair_fs();
+u8 KFS_repair_fs();
 //从文件系统里读出文件
 
 u8 KFS_read_data(u32 ReadAddr, u32* lastaddr);

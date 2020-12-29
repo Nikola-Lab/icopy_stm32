@@ -10,7 +10,7 @@ u32 KFS_Aim_Addr = (u32)0x00000000;
 
 //83886080（dec）字节地址为5000000（hex）
 
-void KFS_repair_fs()
+u8 KFS_repair_fs()
 {
 	u32 tempaddr = 0x00000000;
 	u8 nextdata = 0x00;
@@ -19,7 +19,11 @@ void KFS_repair_fs()
 	{
 		if (nextdata != 0xff)
 		{//数据不为空，开始处理
-			KFS_read_data(tempaddr, &tempaddr);
+			if(KFS_read_data(tempaddr, &tempaddr) == 255)
+			{
+				//出现数据损坏
+				return 255;
+			}
 			//读取结束后，tempaddr指向末尾位地址
 			KFS_Read(&nextdata, tempaddr, 1);
 			//读出末尾位判断是否正确
@@ -34,18 +38,19 @@ void KFS_repair_fs()
 					continue;//下一个周期
 				}
 				else
-				{
-					return;//错误，下一包不是正确包
+				{	//需要添加数据完整性判断
+					return 255;//错误，下一包不是正确包（此时可能为处理结束，也可能为数据不完整）
+					
 				}
 			}
 			else
 			{
-				return;//错误，这一包结尾不正确
+				return 255;//错误，这一包结尾不正确（数据损坏）
 			}
 		}
 		else
 		{
-			return;//错误，0地址为空
+			return 255;//错误，文件系统0地址为空（数据损坏）
 		}	
 	}
 	
@@ -61,7 +66,7 @@ u8 KFS_read_data(u32 ReadAddr, u32* lastaddr)
 	u8 temp = KFS_ReadByte();
 	if (temp != BOXSTARTbyte)
 	{
-		//地址不是开始地址
+		//地址不是开始地址（数据损坏）
 		return 0;	
 	}
 	else //找到了起始位
@@ -78,6 +83,11 @@ u8 KFS_read_data(u32 ReadAddr, u32* lastaddr)
 				addr += KFS_ReadByte() << 16;
 				addr += KFS_ReadByte() << 8;
 				addr += KFS_ReadByte();
+				if (addr < 0x01 || addr > KFS_MAX_ADDR)
+				{
+					//数据地址超限（数据损坏）
+					return 255;
+				}
 				//至此已经读到一个文件必要信息，写入目标文件的缓存里
 //				printf("write para id = %2d, romaddr = 0x%8x\r\n",
 //					id,
@@ -90,14 +100,14 @@ u8 KFS_read_data(u32 ReadAddr, u32* lastaddr)
 			}
 			else
 			{
-				//数据地址格式错误
-				return 0;
+				//数据地址标志格式错误（数据损坏）
+				return 255;
 			}
 		}
 		else
 		{
-			//数据id格式错误
-			return 0;
+			//数据id格式错误（数据损坏）
+			return 255;
 		}
 	}
 
@@ -115,15 +125,19 @@ u32 KFS_read_case(u8 id, u32 addr)
 		FILEPARA_num = sizeof(FILEPARASFONT);
 		FILEPARAS = FILEPARASFONT;
 	}
-	else
+	else if (id < 100&& id != 0)
 	{
 		FILEPARA_num = sizeof(FILEPARASPIC);
 		FILEPARAS = FILEPARASPIC;
 	}
+	else
+	{
+		return 0XDEEDBEEF;
+	}
 	for (i = 0; i < FILEPARA_num; i++)
 	{
 		KFS_SetCur(addr);
-		while (1)
+		for (j = 0; j < FILEPARA_num; j++)
 		{
 			temp = KFS_ReadByte();
 			if (FILEPARAS[i] == temp)

@@ -22,7 +22,7 @@
       <PreprocessorMacros>
         <string>ARM_MATH_CM3</string>
         <string>flash_layout</string>
-        <string>STM32F103CB</string>
+        <string>STM32F103C8</string>
       </PreprocessorMacros>
       <IncludeDirectories>
         <string>.</string>
