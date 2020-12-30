@@ -33,15 +33,13 @@ void setup()
 //	}
 
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH初始化
-	turnonh3();
-	turnonpm3();
-	while (1) ;
+	//turnonh3();
+	//turnonpm3();
+	//while (1) ;
 	STARTMODETASK();			//开机模式判断
 	
 	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);
-	
-	KFS_repair_fs();			//维护文件系统，重建内部文件信息缓存
-
+	KFS_POWERON_SEARCH();		//维护文件系统，重建内部文件信息缓存
 	//printf("%04X\r\n",GetMCUID()); //uuid
 	//MCO_GPIO_Config();
 	//MCO_OUT_Config();

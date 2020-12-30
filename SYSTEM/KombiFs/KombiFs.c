@@ -10,11 +10,48 @@ u32 KFS_Aim_Addr = (u32)0x00000000;
 
 //83886080（dec）字节地址为5000000（hex）
 
+//从存储器寻找文件系统，并维护相关文件列表
+void KFS_POWERON_SEARCH()
+{
+	u8 fs_env = KFS_repair_fs();
+	if (fs_env == 254)			
+		{
+			ICPX_img_data_ok = 1;
+		}
+	else if (fs_env == 255)
+	{
+		ICPX_img_data_ok = 0;
+	}
+	else
+	{
+		ICPX_img_data_ok = 0;
+	}
+}
 u8 KFS_repair_fs()
 {
-	u32 tempaddr = 0x00000000;
+	u32 tempaddr = RESBaseaddr;
 	u8 nextdata = 0x00;
 	KFS_Read(&nextdata, RESBaseaddr, 1);
+	//开始读取版本号
+	if(nextdata != 0xff && nextdata != 0x00)
+	{
+		//数据不为空，开始处理
+		KFS_SetCur(tempaddr);
+		if (KFS_ReadByte() != 0x96)
+		{
+			//出现数据损坏
+			return 255;
+		}
+		ICOPYX_FW_VERSION = KFS_ReadByte();
+		ICOPYX_FW_SUBVERSION = KFS_ReadByte();
+		if (KFS_ReadByte() != 0x3F)
+		{
+			//出现数据损坏
+			return 255;
+		}
+	}
+	tempaddr = KFS_Aim_Addr;//将地址指针指向当前位置
+	//开始处理文件列表
 	while (1)
 	{
 		if (nextdata != 0xff)
@@ -38,9 +75,31 @@ u8 KFS_repair_fs()
 					continue;//下一个周期
 				}
 				else
-				{	//需要添加数据完整性判断
-					return 255;//错误，下一包不是正确包（此时可能为处理结束，也可能为数据不完整）
-					
+				{	//数据完整性判断
+					if(nextdata == 0xff)
+					{//后面遇到了空白，再读出10个byte试试
+						KFS_SetCur(tempaddr);
+						u8 ffcounter = 0;
+						for (ffcounter = 0;ffcounter < 11;ffcounter++)
+						{
+							if (KFS_ReadByte() != 0xff)
+							{
+								break;
+							}
+						}
+						if (ffcounter >= 5)
+						{
+							//空白多于5个字节，认为结束，开始完整性检查
+							if(Check_img_lib() == 1)
+							{	//数据完整，可以运行了
+								return 254;
+							}
+							else
+							{	//数据不完整
+								return 255;
+							}
+						}
+					}
 				}
 			}
 			else
@@ -67,7 +126,7 @@ u8 KFS_read_data(u32 ReadAddr, u32* lastaddr)
 	if (temp != BOXSTARTbyte)
 	{
 		//地址不是开始地址（数据损坏）
-		return 0;	
+		return 255;	
 	}
 	else //找到了起始位
 	{

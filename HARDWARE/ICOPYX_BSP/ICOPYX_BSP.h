@@ -163,6 +163,7 @@
 
 #define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(REFVOL / 4096) * 1000 * VCCRESNET))
 #define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(REFVOL / 4096) * 1000 * BATRESNET))
+#define Intvolavl	((u16)(Get_Adc_Average(ADC_Channel_17, 10)*(REFVOL / 4096) * 1000 * BATRESNET))
 #define VCCvol   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
 //#define BATvol   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
 

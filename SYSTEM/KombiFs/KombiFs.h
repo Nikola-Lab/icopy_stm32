@@ -46,6 +46,8 @@ extern u8 FILEPARAS[];
  *BOXSTARTbyte	RESID	(0x00)	RESADDR			4x(0x00)	|	Nx(0x00)	|	......		BOXSTOPbyte	BOXSTARTbyte
  **/
 
+void KFS_POWERON_SEARCH();
+//开机维护文件系统
 u8 KFS_repair_fs();
 //从文件系统里读出文件
 

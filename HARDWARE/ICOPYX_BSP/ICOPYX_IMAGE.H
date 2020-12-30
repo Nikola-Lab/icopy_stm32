@@ -24,4 +24,11 @@ typedef struct
 
 extern typ_image_s ICOPYX_IMAGES[20];
 extern typ_fontlib_s ICOPYX_FONTLIBS[20];
+extern int32_t ICOPYX_FW_VERSION;
+extern int32_t ICOPYX_FW_SUBVERSION;
+//检查数据库已经完整
+u8 Check_img_lib();
+//检查数据是否存在
+u8 Check_img_data(u8 id);
+u8 ICPX_img_data_ok;
 #endif
