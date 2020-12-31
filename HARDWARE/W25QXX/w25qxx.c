@@ -101,7 +101,7 @@ u16 W25QXX_ReadID(void)
 }
 //读取UID寄存器 
 void W25QXX_ReadUID(u8* pBuffer)
-{
+{ 
 	u8 Temp = 0;	  
 	W25QXX_CS = 0;				    
 	SPI1_ReadWriteByte(W25X_UniqueID);//发送读取ID命令	    

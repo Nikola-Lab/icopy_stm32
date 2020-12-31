@@ -113,23 +113,23 @@ void ICPX_Test_25Q80(void)
 	}
 	printf("\r\n");
 	fflush(stdout);
-//	u8 testdata[5120];
-//	memset(testdata, 0, sizeof(testdata));
-//	testdata[0] = 0x02;
-//
-//	W25QXX_Write(testdata, 0x00000000, 5120);
-//	//W25QXX_Write(testdata, 0x00036800, 5120);
-//
-//	printf("readdata:");
-//	for (i = 0;i < 128;i++)
-//	{
-//		memset(datatemp, 0, sizeof(datatemp));
-//		memset(dataprint, 0, sizeof(dataprint));
-//		W25QXX_Read(datatemp, 0x00000000 + i, 1);
-//		sprintf(dataprint, "0x%02X,", datatemp[0]);
-//		printf("%s", dataprint);
-//	}
-//	fflush(stdout);
+	//	u8 testdata[5120];
+	//	memset(testdata, 0, sizeof(testdata));
+	//	testdata[0] = 0x02;
+	//
+	//	W25QXX_Write(testdata, 0x00000000, 5120);
+	//	//W25QXX_Write(testdata, 0x00036800, 5120);
+	//
+	//	printf("readdata:");
+	//	for (i = 0;i < 128;i++)
+	//	{
+	//		memset(datatemp, 0, sizeof(datatemp));
+	//		memset(dataprint, 0, sizeof(dataprint));
+	//		W25QXX_Read(datatemp, 0x00000000 + i, 1);
+	//		sprintf(dataprint, "0x%02X,", datatemp[0]);
+	//		printf("%s", dataprint);
+	//	}
+	//	fflush(stdout);
 }
 //25Q80坏快测试
 void ICPX_BB_25Q80(u16 block)
@@ -189,18 +189,18 @@ void ICPX_Diplay_Image(u16 x, u16 y, typ_image_s inputimage)
 	u8 LineData[inputimage.XSize * 2 * blocklines + 1];
 
 	for (i = 0; i < blocks; i++) //刷整块
-	{
-		W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * blocklines);
-		curaddr += inputimage.XSize * 2 * blocklines;
-		ST7789_ShowPicture(x, y + Y, inputimage.XSize, blocklines, LineData);
-//		printf("0x%02x", LineData[0]);
-//		printf(",");
-//		printf("0x%02x", LineData[1]);
-//		printf(",");
-//		printf("0x%02x", LineData[2]);
-//		printf(",\r\n");
-		Y += blocklines;
-	}
+		{
+			W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * blocklines);
+			curaddr += inputimage.XSize * 2 * blocklines;
+			ST7789_ShowPicture(x, y + Y, inputimage.XSize, blocklines, LineData);
+			//		printf("0x%02x", LineData[0]);
+			//		printf(",");
+			//		printf("0x%02x", LineData[1]);
+			//		printf(",");
+			//		printf("0x%02x", LineData[2]);
+			//		printf(",\r\n");
+					Y += blocklines;
+		}
 
 	W25QXX_FastRead(LineData, curaddr, inputimage.XSize * 2 * endblocklines);
 	curaddr += inputimage.XSize * 2 * endblocklines;
@@ -248,7 +248,7 @@ u8 ICPX_find_RES_by_id(u8 id)
 	}
 	else
 	{
-		for (i = 0 ; i < 12 ; i++)
+		for (i = 0; i < 12; i++)
 		{
 			if (ICOPYX_IMAGES[i].id == id)
 			{
@@ -297,7 +297,7 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 		//FONTSIZE		0x76
 		//FONTX			0x77
 		//FONTY			0x78
-		switch (PARAS)
+		switch(PARAS)
 		{
 		case 0x76:
 			ICOPYX_FONTLIBS[pos].DataSize = datatemp;
@@ -318,7 +318,7 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 		//PICX			0x73
 		//PICY			0x74
 		//PICSIZE		0x75
-		switch (PARAS)
+		switch(PARAS)
 		{
 		case 0x71:
 			ICOPYX_IMAGES[pos].XSize = datatemp;
@@ -403,64 +403,72 @@ void ICPX_Booting_Screen(u8 init)
 	}
 }
 void ICPX_Shutdown_Screen(u8 init)
-{
-	static u8 firstshow = 0;
-	if (init)
+{	
+	if (ICPX_img_data_ok == 1)
 	{
-		firstshow = 0;
-		return;
-	}
-	if (!firstshow)
-	{
-		g_Tim2Array[eTim2] = 0;
-		while (IS_TIMEOUT_1MS(eTim2, 50))
+		static u8 firstshow = 0;
+		if (init)
 		{
-			//ST7789_Fill(0, 0, 240, 240, ICPX_BLUE_BAK);
-			ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[10]);
-			ST7789_ShowString(54, 176, "Shutingdown", WHITE, ICPX_BLUE_BAK, 24, 0);
-			ST7789_BL_ON();
+			firstshow = 0;
+			return;
 		}
-		firstshow = 1;
+		if (!firstshow)
+		{
+			g_Tim2Array[eTim2] = 0;
+			while (IS_TIMEOUT_1MS(eTim2, 50))
+			{
+				//ST7789_Fill(0, 0, 240, 240, ICPX_BLUE_BAK);
+				ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[10]);
+				ST7789_ShowString(54, 176, "Shutingdown", WHITE, ICPX_BLUE_BAK, 24, 0);
+				ST7789_BL_ON();
+			}
+			firstshow = 1;
+		}
+		else
+		{
+			// 非第一次显示
+			//g_Tim2Array[eTim2] = 0;
+			//while (IS_TIMEOUT_1MS(eTim2, 50))
+			//{
+			//	ST7789_Fill(0, 0, 240, 240, BLUE);
+			//}
+
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, ".   ..", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, "..   .", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, "...   ", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, " ...  ", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, "  ... ", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
+		g_Tim2Array[eTim2] = 0;
+		while (IS_TIMEOUT_1MS(eTim2, 100))
+		{
+			ST7789_ShowString(84, 200, "   ...", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		}
 	}
 	else
 	{
-		// 非第一次显示
-		//g_Tim2Array[eTim2] = 0;
-		//while (IS_TIMEOUT_1MS(eTim2, 50))
-		//{
-		//	ST7789_Fill(0, 0, 240, 240, BLUE);
-		//}
-
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, ".   ..", YELLOW, ICPX_BLUE_BAK, 24, 0);
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, "..   .", YELLOW, ICPX_BLUE_BAK, 24, 0);
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, "...   ", YELLOW, ICPX_BLUE_BAK, 24, 0);
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, " ...  ", YELLOW, ICPX_BLUE_BAK, 24, 0);
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, "  ... ", YELLOW, ICPX_BLUE_BAK, 24, 0);
-	}
-	g_Tim2Array[eTim2] = 0;
-	while (IS_TIMEOUT_1MS(eTim2, 100))
-	{
-		ST7789_ShowString(84, 200, "   ...", YELLOW, ICPX_BLUE_BAK, 24, 0);
+		ST7789_BL_ON();
+		ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLUE);	//没有资源的情况下，关机显示蓝屏
 	}
 }
 void ICPX_Booting_Error_Screen(u8 init)
@@ -553,7 +561,7 @@ void ICPX_DNA_CIRCLE(void)
 	static u8 zerotime = 0;
 
 	//开始查表运算目标点位置
-	for (node = 0 ; node < max_node_number ; node++)
+	for(node = 0 ; node < max_node_number ; node++)
 	{
 		//循环每个节点
 		int aimangle = (node * bb + cc) % 360;
@@ -563,12 +571,12 @@ void ICPX_DNA_CIRCLE(void)
 		nodes[node][3] = sizecosb[aimangle];
 	}
 	//过零检测
-	if (cc % 360 ==  0)
+	if(cc % 360 ==  0)
 	{
 		zerotime++;
 	}
 	//检测一周期完成
-	if (zerotime == 1)
+	if(zerotime == 1)
 	{
 		frame = 0;
 		zerotime = 0;
@@ -580,15 +588,15 @@ void ICPX_DNA_CIRCLE(void)
 	static int halfheight = (dnaystart + dnaystop) / 2;
 
 	//显示当前帧数据
-	for (node = 0; node < max_node_number; node++)
+	for(node = 0 ; node < max_node_number ; node++)
 	{
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][0] + halfheight	, (u8)((nodeslast[node][1] + node_radius) / 2)	, ICPX_BLUE_BAK);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][0] + halfheight		, (u8)((nodes[node][1] + node_radius) / 2)		, WHITE);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][2] + halfheight	, (u8)((nodeslast[node][3] + node_radius) / 2)	, ICPX_BLUE_BAK);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][2] + halfheight		, (u8)((nodes[node][3] + node_radius) / 2)		, 0xDEFB);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][0] + halfheight, (u8)((nodeslast[node][1] + node_radius) / 2), ICPX_BLUE_BAK);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][0] + halfheight, (u8)((nodes[node][1] + node_radius) / 2), WHITE);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][2] + halfheight, (u8)((nodeslast[node][3] + node_radius) / 2), ICPX_BLUE_BAK);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][2] + halfheight, (u8)((nodes[node][3] + node_radius) / 2), 0xDEFB);
 	}
 	//保存当前帧数据到上一帧寄存器
-	for (node = 0; node < max_node_number; node++)
+	for(node = 0 ; node < max_node_number ; node++)
 	{
 		//循环每个节点
 		nodeslast[node][0] = nodes[node][0];
@@ -622,10 +630,10 @@ void MAINKEYTASK(void)
 	}
 	//---------------------------------------------上键
 	//长按处理
-	if (uplongpress == 1)
+	if(uplongpress == 1)
 	{
 		//长按超过1000ms后置位，进入长按处理
-		if (KEY_ICPY_UP(0) == 0)
+		if(KEY_ICPY_UP(0) == 0)
 		{
 			//按键抬起
 			KEY_ICPY_UP(1);
@@ -648,10 +656,10 @@ void MAINKEYTASK(void)
 	}
 	//---------------------------------------------下键
 	//长按处理
-	if (downlongpress == 1)
+	if(downlongpress == 1)
 	{
 		//长按超过1000ms后置位，进入长按处理
-		if (KEY_ICPY_DOWN(0) == 0)
+		if(KEY_ICPY_DOWN(0) == 0)
 		{
 			//按键抬起
 			KEY_ICPY_DOWN(1);
@@ -674,10 +682,10 @@ void MAINKEYTASK(void)
 
 	//---------------------------------------------左键
 	//长按处理
-	if (leftlongpress == 1)
+	if(leftlongpress == 1)
 	{
 		//长按超过1000ms后置位，进入长按处理
-		if (KEY_ICPY_LEFT(0) == 0)
+		if(KEY_ICPY_LEFT(0) == 0)
 		{
 			//按键抬起
 			KEY_ICPY_LEFT(1);
@@ -699,10 +707,10 @@ void MAINKEYTASK(void)
 	}
 	//---------------------------------------------右键
 	//长按处理
-	if (rightlongpress == 1)
+	if(rightlongpress == 1)
 	{
 		//长按超过1000ms后置位，进入长按处理
-		if (KEY_ICPY_RIGHT(0) == 0)
+		if(KEY_ICPY_RIGHT(0) == 0)
 		{
 			//按键抬起
 			KEY_ICPY_RIGHT(1);
@@ -724,7 +732,7 @@ void MAINKEYTASK(void)
 	}
 	//---------------------------------------------短按键
 	key = KEY_Scan(0);	//得到键值
-	if (key)
+	if(key)
 	{
 		switch (key)
 		{
@@ -801,12 +809,11 @@ void CHGKEYTASK(u8 en)
 		}
 	}
 }
-////////////////////////////////////////////////////////////////////   按键相关END   /////////////////////
-
+////////////////////////////////////////////////////////////////////   按键相关END   ////////////////////////
 //OTG状态判断，主流程扫描运行
 //在otg插入时需要断开充电开关，防止回流
 //在otg拔出后启用充电开关
-void CHARGE_OTG(void)
+void CHARGE_OTG()
 {
 	//判断是否插入otg,按需控制充电开关
 	if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1))
@@ -878,26 +885,27 @@ u16 MAINBATCHECKTASK(u8 what)
 		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] < 10000) //充电期间，要考虑是否真的在充电
 		{
 			if (VCCvol < VCCTHRLOW || otgon == 1)
-			{	//没有在充电（或者OTG打开，这时VCC也很高），那么这一步直接跳过
+			{
+					//没有在充电（或者OTG打开，这时VCC也很高），那么这一步直接跳过
 				step = 1;
 				inprocess = 0;
 				updateok = 0;
 			}
 		}
-		else if (step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] >= 10000) //充电等待流程结束
+		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] >= 10000) //充电等待流程结束
 		{
 			turnoffchg();
 			step = 1;
 			inprocess = 0;
 			updateok = 0;
 		}
-		else if (step == 1 && inprocess == 0) //充电关闭了，等待采集开始
+		else if(step == 1 && inprocess == 0) //充电关闭了，等待采集开始
 		{
 			g_Tim2Array[eTimbat] = 0;
 			inprocess = 1;//标志等待流程开始
 		}
 
-		else if (step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
+		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
 			Vcc3v3 = (u16)(4915200 / Intvolavl);		//采集内部电压基准并且计算当前3V3电压
@@ -925,13 +933,13 @@ u16 MAINBATCHECKTASK(u8 what)
 			inprocess = 0;
 			updateok = 0;
 		}
-		else if (step == 1 && inprocess == 0) //充电关闭了，等待采集开始
+		else if(step == 1 && inprocess == 0) //充电关闭了，等待采集开始
 		{
 			g_Tim2Array[eTimbat] = 0;
 			inprocess = 1;//标志等待流程开始
 		}
 
-		else if (step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
+		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
 			batvolsense = ICPX_BAT_VOL_GATHER(1);
@@ -946,10 +954,10 @@ u16 MAINBATCHECKTASK(u8 what)
 		return updateok;
 	}
 	//低电量关机判断
-	if (batvolsense <= BATWITHLOADTHR && step == 0 && inprocess == 0)
+	if(batvolsense <= BATWITHLOADTHR && step == 0 && inprocess == 0)
 	{
 		g_Tim2Array[eTimbat] = 0;
-		while (IS_TIMEOUT_1MS(eTimbat, 5));
+		while (IS_TIMEOUT_1MS(eTimbat, 5)) ;
 		if (BATvolavl <= BATWITHLOADTHR)
 		{
 			printf("LOWBATTERY!!\r\n");
@@ -982,27 +990,27 @@ u32 BATVOL2PERCENT(u16 VOL)
 #define P20VOL	3740
 #define P5VOL	3450
 
-	if (VOL > P80VOL)
+	if(VOL > P80VOL)
 	{
 		//80-100
 		return map(VOL, P80VOL, P100VOL, 80, 100);
 	}
-	else if (VOL > P60VOL)
+	else if(VOL > P60VOL)
 	{
 		//60-80
 		return map(VOL, P60VOL, P80VOL, 60, 80);
 	}
-	else if (VOL > P40VOL)
+	else if(VOL > P40VOL)
 	{
 		//40-60
 		return map(VOL, P40VOL, P60VOL, 40, 60);
 	}
-	else if (VOL > P20VOL)
+	else if(VOL > P20VOL)
 	{
 		//20-60
 		return map(VOL, P20VOL, P40VOL, 20, 40);
 	}
-	else if (VOL > P5VOL)
+	else if(VOL > P5VOL)
 	{
 		//5-20
 		return map(VOL, P5VOL, P20VOL, 5, 20);
@@ -1024,7 +1032,7 @@ u16 ICPX_BAT_VOL_GATHER(u8 MODE)
 		//需要停止充电之后再调用
 		u16 LASTVOL = BATvolavl;
 		u16 THISVOL = BATvolavl;
-		while (  THISVOL < LASTVOL)
+		while (THISVOL < LASTVOL)
 		{
 			LASTVOL = THISVOL;
 			THISVOL = BATvolavl;
@@ -1058,7 +1066,7 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 	static u32 timetowait = 0;
 	static u8 mode = 0; // 模式0代表等待未开始(数据准备），模式1代表等待中
 
-	if (what == 1)
+	if(what == 1)
 	{
 		return outvol;
 	}
@@ -1073,7 +1081,7 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 	{
 		//两个值都有效，开始处理
 		signed int dvalue = aimvol - outvol;	//目标值和当前值的差
-		if (dvalue <= 1 && dvalue >= -1)
+		if(dvalue <= 1 && dvalue >= -1)
 		{
 			//差值太小
 			timetowait = 10000;			//十秒后更新
@@ -1127,7 +1135,7 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 void STARTMODETASK(void)
 {
 	//注意，这个流程只会在唤醒时运行一次
-	if (VCCvol > VCCTHRHIGH) //存在电源输入
+	if(VCCvol > VCCTHRHIGH) //存在电源输入
 	{
 		//vcc开机
 		startmode = START_MODE_VCC;
@@ -1137,7 +1145,7 @@ void STARTMODETASK(void)
 	else
 	{
 		//电池开机
-		while (KEY_POWER(0) < 3000)
+		while(KEY_POWER(0) < 3000)
 		{
 			if (KEY_POWER(0) == 0)
 			{
@@ -1148,7 +1156,7 @@ void STARTMODETASK(void)
 			}
 		}
 		//到这里按键时间超过开机标准了，开始处理开机
-		while (MAINBATCHECKTASK(2) == 0);
+		while(MAINBATCHECKTASK(2) == 0);
 		u16 batvol = MAINBATCHECKTASK(1);
 		if (batvol <= BATNOLOADTHR)
 		{
@@ -1181,10 +1189,10 @@ void SHUTDOWNMETH()
 			CLI_RUN();
 		}
 		if (hasbak != 0) //有回复
-		{
-			TIMES = 0;
-			hasbak = 0;
-		}
+			{
+				TIMES = 0;
+				hasbak = 0;
+			}
 		else
 		{
 			TIMES++;
@@ -1244,4 +1252,3 @@ u32 map(u32 x, u32 in_min, u32 in_max, u32 out_min, u32 out_max)
 {
 	return (u32)((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
-

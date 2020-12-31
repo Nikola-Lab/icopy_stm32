@@ -76,8 +76,15 @@ void loop()
 	{
 		//vcc唤醒意味着进入充电模式了
 		turnoffh3();
-		ICPX_Charge_Screen(0);
-		//充电动画循环实现
+		if (ICPX_img_data_ok == 1)
+		{
+			ICPX_Charge_Screen(0);//充电动画循环实现
+		}
+		else
+		{
+			ST7789_BL_ON();
+			ST7789_Fill(0, 0, ST7789_H, ST7789_W, GREEN);	//没有资源的情况下，充电显示绿屏
+		}	
 		CHGKEYTASK(1);
 		MAINBATCHECKTASK(0);
 		if (VCCvol < VCCTHRLOW)
@@ -97,15 +104,31 @@ void loop()
 		turnonh3();
 		if (isstarting == 1)		//1代表开机过程
 		{
-			ICPX_Booting_Screen(0);
-			//ICPX_Shutdown_Screen(0);
-			//启动动画实现
-			//等待启动指令修改状态
-			ICPX_Booting_Error_Screen(1);//初始化一次启动错误页面，让他可以在需要的时候刷背景
+			if (ICPX_img_data_ok == 1)
+			{
+				ICPX_Booting_Screen(0);
+				//ICPX_Shutdown_Screen(0);
+				//启动动画实现
+				//等待启动指令修改状态
+				ICPX_Booting_Error_Screen(1);//初始化一次启动错误页面，让他可以在需要的时候刷背景
+			}
+			else
+			{
+				ST7789_BL_ON();
+				ST7789_Fill(0, 0, ST7789_H, ST7789_W, WHITE);	//没有资源的情况下，开机显示白屏
+			}
 		}
 		else if (isstarting == 2)	//2代表开机失败
 		{
-			ICPX_Booting_Error_Screen(0);
+			if (ICPX_img_data_ok == 1)
+			{
+				ICPX_Booting_Error_Screen(0);
+			}
+			else
+			{
+				ST7789_BL_ON();
+				ST7789_Fill(0, 0, ST7789_H, ST7789_W, RED);	//没有资源的情况下，开机失败显示红屏
+			}
 			MAINBATCHECKTASK(0);
 			CLI_RUN();
 		}

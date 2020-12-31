@@ -22,13 +22,13 @@
       <PreprocessorMacros>
         <string>ARM_MATH_CM3</string>
         <string>flash_layout</string>
-        <string>STM32F103CB</string>
+        <string>STM32F103C8</string>
       </PreprocessorMacros>
       <IncludeDirectories>
         <string>.</string>
       </IncludeDirectories>
       <LDFLAGS>--specs=nano.specs --specs=nosys.specs</LDFLAGS>
-      <LinkerScript>D:/icopy_stm32_VS/icopy_stm32_VS/BOOTLOADER/ICPX_BL/STM32F103C8_flash.lds</LinkerScript>
+      <LinkerScript>D:/icopy_stm32/BOOTLOADER/ICPX_BL/STM32F103C8_flash.lds</LinkerScript>
       <COMMONFLAGS>-mcpu=cortex-m3 -mthumb</COMMONFLAGS>
       <EnableLinkerGroups>true</EnableLinkerGroups>
     </CompilationFlags>

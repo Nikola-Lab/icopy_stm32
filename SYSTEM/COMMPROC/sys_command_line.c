@@ -23,6 +23,7 @@ static uint8_t cli_multicmd(void *para, uint8_t len);
 static uint8_t cli_setbaklight(void *para, uint8_t len);
 static uint8_t cli_targetalive(void *para, uint8_t len);
 static uint8_t cli_getversion(void *para, uint8_t len);
+static uint8_t cli_getid(void *para, uint8_t len);
 static uint8_t cli_lcd2h3(void *para, uint8_t len);
 static uint8_t cli_lcd2st(void *para, uint8_t len);
 static uint8_t cli_shutdowning(void *para, uint8_t len);
@@ -81,6 +82,7 @@ const COMMAND_S CLI_Cmd[] = {
 	//询问存活的回复
 	{ "i'm alive", NULL, NULL, cli_targetalive },
 	{ "version", NULL, NULL, cli_getversion },
+	{ "idid", NULL, NULL, cli_getid },
 };
 
 //重启实现
@@ -753,10 +755,35 @@ static uint8_t cli_targetalive(void *para, uint8_t len)
 static uint8_t cli_getversion(void *para, uint8_t len)
 {
 	printf("#version:%d.%d.%d.%d",
-		SW_Version,
-		SW_Subversion,
+		ICOPYX_SW_VERSION,
+		ICOPYX_SW_SUBVERSION,
 		ICOPYX_FW_VERSION,
 		ICOPYX_FW_SUBVERSION);
+	fflush(stdout);
+	return TRUE;
+}
+//获取内部id指令实现
+static uint8_t cli_getid(void *para, uint8_t len)
+{
+	u8 datatemp[10];
+	memset(datatemp, 0, sizeof(datatemp));
+	W25QXX_ReadUID(datatemp);
+	u8 dataprint[42];
+	memset(dataprint, 0, sizeof(dataprint));
+	sprintf(dataprint,
+		"%08lX%08lX%08lX%02X%02X%02X%02X%02X%02X%02X%02X", 
+		(*(u32*)(0x1FFFF7E8)),
+		(*(u32*)(0x1FFFF7EC)),
+		(*(u32*)(0x1FFFF7F0)),
+		datatemp[0], 
+		datatemp[1], 
+		datatemp[2], 
+		datatemp[3], 
+		datatemp[4], 
+		datatemp[5], 
+		datatemp[6], 
+		datatemp[7]);
+	printf("#theid:%s\r\n", dataprint);
 	fflush(stdout);
 	return TRUE;
 }

@@ -21,7 +21,6 @@
     <ProjectFile>icopy_stm32_VS.vcxproj</ProjectFile>
     <RemoteBuildEnvironment>
       <Records />
-      <EnvironmentSetupFiles />
     </RemoteBuildEnvironment>
     <ParallelJobCount>1</ParallelJobCount>
     <SuppressDirectoryChangeMessages>true</SuppressDirectoryChangeMessages>
@@ -161,7 +160,7 @@
       <InterfaceID>com.sysprogs.debug.jlink.jlinksw</InterfaceID>
       <InterfaceSerialNumber>000069612467</InterfaceSerialNumber>
       <Configuration xsi:type="com.visualgdb.edp.segger.settings">
-        <CommandLine>-select USB -device $$SYS:MCU_ID$$ -speed auto -if SWD</CommandLine>
+        <CommandLine>-select USB -device "STM32F103C8 (allow opt. bytes)" -speed auto -if SWD</CommandLine>
         <ProgramMode>Enabled</ProgramMode>
         <StartupCommands>
           <string>target remote :$$SYS:GDB_PORT$$</string>

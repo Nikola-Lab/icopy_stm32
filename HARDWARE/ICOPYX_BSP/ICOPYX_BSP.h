@@ -1,7 +1,6 @@
 #ifndef __ICPX_BSP_H
 #define __ICPX_BSP_H
 
-
 #include "ICOPYX_IMAGE.H"
 #include "sys.h"
 #include "string.h"
@@ -20,10 +19,10 @@
 #include "timer.h"
 #include "sys_command_line.h"
 
-#define SW_Version (1)
-#define SW_Subversion (0)
+#define ICOPYX_SW_VERSION (1)
+#define ICOPYX_SW_SUBVERSION (0)
 
-#define BLAddress 0x8010000
+#define BLAddress 0x0800B400
 
 #define WKUP_Pin 							GPIO_Pin_0
 #define WKUP_GPIO_Port 						GPIOA 
@@ -99,7 +98,6 @@
 #define VCCRESNET							(1.666666666666667)
 #define REFVOL								(3.301)
 #define INTREFVOL							(1.200)
-
 
 #define Intvolavl	((u16)(Get_Adc_Average(ADC_Channel_17, 10)))
 
@@ -190,8 +188,3 @@ void STARTMODETASK(void);
 void SHUTDOWNMETH();
 void CHARGE_OTG();
 #endif // !__ICPX_BSP_H
-
-
-
-
-
