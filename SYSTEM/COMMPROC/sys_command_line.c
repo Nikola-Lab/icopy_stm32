@@ -22,6 +22,7 @@ static uint8_t cli_h3start(void *para, uint8_t len);
 static uint8_t cli_multicmd(void *para, uint8_t len);
 static uint8_t cli_setbaklight(void *para, uint8_t len);
 static uint8_t cli_targetalive(void *para, uint8_t len);
+static uint8_t cli_getversion(void *para, uint8_t len);
 static uint8_t cli_lcd2h3(void *para, uint8_t len);
 static uint8_t cli_lcd2st(void *para, uint8_t len);
 static uint8_t cli_shutdowning(void *para, uint8_t len);
@@ -79,6 +80,7 @@ const COMMAND_S CLI_Cmd[] = {
 	{ "multicmd", NULL, NULL, cli_multicmd },
 	//询问存活的回复
 	{ "i'm alive", NULL, NULL, cli_targetalive },
+	{ "version", NULL, NULL, cli_getversion },
 };
 
 //重启实现
@@ -746,6 +748,17 @@ static uint8_t cli_setbaklight(void *para, uint8_t len)
 static uint8_t cli_targetalive(void *para, uint8_t len)
 {
 	setback();
+}
+//获取版本号指令实现
+static uint8_t cli_getversion(void *para, uint8_t len)
+{
+	printf("#version:%d.%d.%d.%d",
+		SW_Version,
+		SW_Subversion,
+		ICOPYX_FW_VERSION,
+		ICOPYX_FW_SUBVERSION);
+	fflush(stdout);
+	return TRUE;
 }
 //终端初始化实现
 void cli_init(uint32_t baud)

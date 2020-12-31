@@ -1,8 +1,11 @@
 #include "ICOPYX_BSP.h"
-
+static u8 otgon = 0;
 u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
 u8 hasbak = 0;
+
+u16 Vcc3v3 = 0;
+
 //板载gpio初始化
 void ICPX_GPIO_Init(void)
 {
@@ -337,9 +340,6 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////   页面相关   ////////////////////////
 void ICPX_Charge_Screen(u8 init)
 {
@@ -485,8 +485,6 @@ void ICPX_Booting_Error_Screen(u8 init)
 }
 ////////////////////////////////////////////////////////////////////   页面相关END   /////////////////////
 
-
-
 ////////////////////////////////////////////////////////////////////   动画相关   ////////////////////////
 double tsin(double x)
 {
@@ -601,7 +599,6 @@ void ICPX_DNA_CIRCLE(void)
 	return;
 }
 ////////////////////////////////////////////////////////////////////   动画相关END   /////////////////////
-
 
 ////////////////////////////////////////////////////////////////////   按键相关   ////////////////////////
 //主扫描按键流程
@@ -809,16 +806,18 @@ void CHGKEYTASK(u8 en)
 //OTG状态判断，主流程扫描运行
 //在otg插入时需要断开充电开关，防止回流
 //在otg拔出后启用充电开关
-void CHARGE_OTG()
+void CHARGE_OTG(void)
 {
 	//判断是否插入otg,按需控制充电开关
 	if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1))
 	{
 		turnoffchg();
+		otgon = 1;
 	}
 	else
 	{
 		turnonchg();
+		otgon = 0;
 	}
 }
 //扫描充电状态流程
@@ -846,8 +845,8 @@ u8 MAINCHARGETASK(u8 what)
 	}
 
 }
-//电池检测流程
-//输入为0的时候进行电量检测，包含低电量关机
+//电池检测流程，包含低电量关机
+//输入为0的时候进行电量检测
 //输入为1的时候不进行判断，而是直接返回电池电压状态（上个周期采集的）
 //输入为2的时候强制开始新的电压判断（无视充电等待时间）
 u16 MAINBATCHECKTASK(u8 what)
@@ -876,6 +875,15 @@ u16 MAINBATCHECKTASK(u8 what)
 			g_Tim2Array[eTimbat] = 0;
 			inprocess = 1;//标志等待流程开始
 		}
+		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] < 10000) //充电期间，要考虑是否真的在充电
+		{
+			if (VCCvol < VCCTHRLOW || otgon == 1)
+			{	//没有在充电（或者OTG打开，这时VCC也很高），那么这一步直接跳过
+				step = 1;
+				inprocess = 0;
+				updateok = 0;
+			}
+		}
 		else if (step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] >= 10000) //充电等待流程结束
 		{
 			turnoffchg();
@@ -892,7 +900,8 @@ u16 MAINBATCHECKTASK(u8 what)
 		else if (step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
-			batvolsense = ICPX_BAT_VOL_GATHER(1);
+			Vcc3v3 = (u16)(4915200 / Intvolavl);		//采集内部电压基准并且计算当前3V3电压
+			batvolsense = ICPX_BAT_VOL_GATHER(1);		//采集电池电压
 			updateok = 1;
 			turnonchg();
 			//归位，回到初始流程
@@ -1115,7 +1124,6 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 
 
 }
-
 void STARTMODETASK(void)
 {
 	//注意，这个流程只会在唤醒时运行一次
@@ -1228,10 +1236,6 @@ void ICPX_Standby()
 	PWR_EnterSTANDBYMode();//进入待机
 	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
 }
-
-
-
-
 void setback()
 {
 	hasbak = 1;

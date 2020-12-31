@@ -17,12 +17,13 @@ void dummy() {}
 void setup()
 {
 #define setup_flag
+
 	
 	Hsi_Init();					//内部时钟初始化
+	delay_init();				//按照系统时钟配置软延时
 	ICPX_GPIO_Init();			//GPIO初始化
 	Adc_Init();					//初始化adc
 	NVIC_Configuration();		//中断向量初始化
-	delay_init();				//按照系统时钟配置软延时
 	BspTim2Init();				//按照系统时钟配置计时器（硬件计时）
 	KEY_Init();					//按键io初始化
 	CLI_INIT(9600);				//启动commandline
@@ -33,13 +34,32 @@ void setup()
 //	}
 
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH初始化
+	
+	//测试主板用的代码
 	//turnonh3();
 	//turnonpm3();
 	//while (1) ;
+	
 	STARTMODETASK();			//开机模式判断
 	
-	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);
+	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);	//启动之前先给屏幕刷黑，防止闪烁
+	
 	KFS_POWERON_SEARCH();		//维护文件系统，重建内部文件信息缓存
+	
+	//	测试电压采集用的代码
+	//	ST7789_BL_ON();
+	//	u16 temp, temp2, temp3;
+	//	while (1) 
+	//	{
+	//		temp = Intvolavl;
+	//		temp2 = BATvolavl;
+	//		temp3 = (u16)(4915200 / temp);
+	//		ST7789_ShowIntNum(60, 130, temp, 10, WHITE, BLACK, 24);		//内部基准电压（读出值
+	//		ST7789_ShowIntNum(60, 160, temp3, 10, WHITE, BLACK, 24);	//供电vcc电压
+	//		ST7789_ShowIntNum(60, 200, temp2, 10, WHITE, BLACK, 24);	//电池输入电压
+	//	}
+
+	
 	//printf("%04X\r\n",GetMCUID()); //uuid
 	//MCO_GPIO_Config();
 	//MCO_OUT_Config();
@@ -52,8 +72,9 @@ void setup()
 ******************************************************************************/
 void loop()
 {
-	if (startmode == START_MODE_VCC)
+	if (startmode == START_MODE_VCC)                                         
 	{
+		//vcc唤醒意味着进入充电模式了
 		turnoffh3();
 		ICPX_Charge_Screen(0);
 		//充电动画循环实现
@@ -66,7 +87,7 @@ void loop()
 		}
 	}
 	if (startmode == START_MODE_BAT)
-	{
+	{	//bat唤醒是正常开机
 		static u8 boottimerneedreset = 0;
 		if (!boottimerneedreset)
 		{
@@ -85,6 +106,7 @@ void loop()
 		else if (isstarting == 2)	//2代表开机失败
 		{
 			ICPX_Booting_Error_Screen(0);
+			MAINBATCHECKTASK(0);
 			CLI_RUN();
 		}
 		if (!IS_TIMEOUT_1MS(eTim4, 40000) && isstarting != 0)

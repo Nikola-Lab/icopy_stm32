@@ -169,8 +169,8 @@ typ_fontlib_s ICOPYX_FONTLIBS[20] =
 }
 		
 };
-int32_t ICOPYX_FW_VERSION = 0;
-int32_t ICOPYX_FW_SUBVERSION = 0;
+u16 ICOPYX_FW_VERSION = 0;
+u16 ICOPYX_FW_SUBVERSION = 0;
 //检测关键数据是否为有效数据，返回1为正常
 u8 Check_img_lib()
 {
