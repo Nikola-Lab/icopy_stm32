@@ -371,11 +371,7 @@ void ICPX_Charge_Screen(u8 init)
 		if (showfullstate == 1)
 		{
 			//如果显示了充满图标，那么就不能再接着运行了
-			showpic = 1;
-			ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[0]);
-			//需要重新刷一个底图
-			showfullstate = 0;
-			//还需要标记页面消失
+			return;
 		}
 		ICPX_Diplay_Image(ICOPYX_IMAGES[showpic].x, ICOPYX_IMAGES[showpic].y, ICOPYX_IMAGES[showpic]);
 		CHGKEYTASK(0);
