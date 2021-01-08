@@ -344,6 +344,7 @@ void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas)
 void ICPX_Charge_Screen(u8 init)
 {
 	static u8 firstshow = 0;
+	static u8 showfullstate = 0;
 	static u8 showpic = 1;//1-9
 	if (init)
 	{
@@ -362,10 +363,20 @@ void ICPX_Charge_Screen(u8 init)
 	if (MAINBATCHECKTASK(1) > 4190)
 	{
 		ICPX_Diplay_Image(ICOPYX_IMAGES[11].x, ICOPYX_IMAGES[11].y, ICOPYX_IMAGES[11]);
+		showfullstate = 1;
 		return;
 	}
 	if (g_Tim2Array[eTim2] > 500)
 	{
+		if (showfullstate == 1)
+		{
+			//如果显示了充满图标，那么就不能再接着运行了
+			showpic = 1;
+			ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[0]);
+			//需要重新刷一个底图
+			showfullstate = 0;
+			//还需要标记页面消失
+		}
 		ICPX_Diplay_Image(ICOPYX_IMAGES[showpic].x, ICOPYX_IMAGES[showpic].y, ICOPYX_IMAGES[showpic]);
 		CHGKEYTASK(0);
 		showpic++;
