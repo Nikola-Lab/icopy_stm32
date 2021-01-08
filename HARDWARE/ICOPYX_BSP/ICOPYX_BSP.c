@@ -839,16 +839,25 @@ u8 MAINCHARGETASK(u8 what)
 	}
 	else
 	{
-		if (VCCvol > VCCTHRHIGH && chargestate == 0)
+		if (otgon == 0)
 		{
-			chargestate = 1;
-			printf("CHARGING!\r\n");
+			//otg关闭的时候才可以进行充电判断，不然会有误报
+			if(VCCvol > VCCTHRHIGH && (chargestate == 0 || chargestate == 2))
+			{
+				chargestate = 1;
+				printf("CHARGING!\r\n");
+			}
+			else if(VCCvol <= VCCTHRLOW && (chargestate == 1 || chargestate == 2))
+			{
+				chargestate = 0;
+				printf("DISCHARGIN!\r\n");
+			}
 		}
-		else if (VCCvol <= VCCTHRLOW && chargestate == 1)
+		else
 		{
-			chargestate = 0;
-			printf("DISCHARGIN!\r\n");
+			chargestate = 2;
 		}
+		
 	}
 
 }
