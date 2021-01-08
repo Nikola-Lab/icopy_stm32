@@ -1391,7 +1391,7 @@ void STARTMODETASK(void)
 	else
 	{
 		//电池开机
-		while(KEY_POWER(0) < 3000)
+		while(KEY_POWER(0) < 1500)
 		{
 			if (KEY_POWER(0) == 0)
 			{
