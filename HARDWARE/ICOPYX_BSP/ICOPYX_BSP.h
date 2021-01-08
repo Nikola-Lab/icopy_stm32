@@ -99,17 +99,17 @@
 #define REFVOL								(3.301)
 #define INTREFVOL							(1.200)
 
-#define Intvolavl	((u16)(Get_Adc_Average(ADC_Channel_17, 10)))
+#define Intvolavl	((u16)(Get_Adc_Average(ADC_Channel_17, 1)))
 
-#define VCCvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(REFVOL / 4096) * 1000 * VCCRESNET))
-#define BATvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(REFVOL / 4096) * 1000 * BATRESNET))
-#define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET))
-#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
+//#define VCCvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_1, 2)*(REFVOL / 4096) * 1000 * VCCRESNET))
+//#define BATvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_2, 2)*(REFVOL / 4096) * 1000 * BATRESNET))
+#define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 2)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET))
+#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 2)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
 
-#define VCCvolNOSE   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
-#define BATvolNOSE   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
+//#define VCCvolNOSE   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
+//#define BATvolNOSE   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
 #define VCCvol   ((u16)(Get_Adc(1)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET))
-#define BATvol   ((u16)(Get_Adc(2)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
+//#define BATvol   ((u16)(Get_Adc(2)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
 
 #define turnoffpm3()	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin)
 #define turnoffh3()		GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin)
@@ -175,6 +175,7 @@ void ICPX_write_file_addr_cache(u8 id, u32 addr);
 void ICPX_write_file_para_cache(u8 id, u8 PARAS, u8 length, u8* datas);
 u16 ICPX_BAT_VOL_GATHER(u8 MODE);
 u16 ICPX_BAT_VOL_REVICE(u8 what);
+u16 ICPX_BAT_VOL_REQUEST(u8 what, u8 Step);
 
 void setback();
 u32 map(u32 x, u32 in_min, u32 in_max, u32 out_min, u32 out_max);

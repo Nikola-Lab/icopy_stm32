@@ -55,7 +55,39 @@ u16 Get_Adc(u8 ch)
 	while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));						//等待转换结束
 	
 	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);									//清除转换完成标记（GD需要）
+	ADC_ClearFlag(ADC1, ADC_FLAG_STRT);									//清除转换完成标记（GD需要）
 	
+	return ADC_GetConversionValue(ADC1);								//返回规则组结果
+}
+
+u16 Start_Adc(u8 ch)   
+{
+	if (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC))							//判断转换完成
+	{
+		ADC_ClearFlag(ADC1, ADC_FLAG_EOC);								//清除转换完成标记（GD需要）
+		ADC_ClearFlag(ADC1, ADC_FLAG_STRT);								//清除转换完成标记（GD需要）
+	}
+	
+	//设置指定ADC的规则组通道，一个序列，采样时间
+	ADC_RegularChannelConfig(ADC1, ch, 1, ADC_SampleTime_239Cycles5);		    
+  
+	ADC_SoftwareStartConvCmd(ADC1, ENABLE);								//转换启动
+	
+	return 0;
+}
+
+u16 Read_Adc_Status()   
+{
+	return ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC);						//返回adc采集完成标志
+}
+
+u16 Read_Adc_RUNNING()   
+{
+	return ADC_GetFlagStatus(ADC1, ADC_FLAG_STRT);						//返回adc采集完成标志
+}
+
+u16 Read_Adc_Data()   
+{
 	return ADC_GetConversionValue(ADC1);								//返回规则组结果
 }
 
@@ -69,7 +101,6 @@ u16 Get_Adc_Average(u8 ch, u8 times)
 	for (t = 0;t < times;t++)
 	{
 		temp_val += Get_Adc(ch);
-		delay_ms(5);
 	}
 	return temp_val / times;
 } 	 

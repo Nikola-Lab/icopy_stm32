@@ -176,7 +176,7 @@ static uint8_t cli_presspm3(void *para, uint8_t len)
 //读取电池电压实现
 static uint8_t cli_volbat(void *para, uint8_t len)
 {	
-	printf("#batvol:%d", BATvolavl);
+	printf("#batvol:%d",1234);//BATvolavl);
 	fflush(stdout);
 	return TRUE;
 }
@@ -191,7 +191,7 @@ static uint8_t cli_pctbat(void *para, uint8_t len)
 //读取电源电压实现
 static uint8_t cli_volinput(void *para, uint8_t len)
 {
-	printf("#vccvol:%d", VCCvolavl);
+	printf("#vccvol:%d",1234);//VCCvolavl);
 	fflush(stdout);
 	return TRUE;
 }

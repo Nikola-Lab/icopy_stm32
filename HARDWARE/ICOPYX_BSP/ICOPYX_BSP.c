@@ -908,15 +908,20 @@ u16 MAINBATCHECKTASK(u8 what)
 		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
-			Vcc3v3 = (u16)(4915200 / Intvolavl);		//采集内部电压基准并且计算当前3V3电压
-			batvolsense = ICPX_BAT_VOL_GATHER(1);		//采集电池电压
-			updateok = 1;
-			turnonchg();
-			//归位，回到初始流程
-			step = 0;
-			inprocess = 0;
-			//printf("batvol 0 %d \r\n", batvolsense);
-			//fflush(stdout);
+			//Vcc3v3 = (u16)(4915200 / Intvolavl);		//采集内部电压基准并且计算当前3V3电压
+			u16 tempvol = ICPX_BAT_VOL_GATHER(1);		//采集电池电压
+			if(tempvol != 65535)
+			{
+				//此时采集完成
+				batvolsense = tempvol;
+				updateok = 1;
+				turnonchg();
+				//归位，回到初始流程
+				step = 0;
+				inprocess = 0;
+				//printf("batvol 0 %d \r\n", batvolsense);
+				//fflush(stdout);
+			}
 		}
 	}
 	if (what == 2)
@@ -942,7 +947,7 @@ u16 MAINBATCHECKTASK(u8 what)
 		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
-			batvolsense = ICPX_BAT_VOL_GATHER(1);
+			batvolsense = BATvolavl;
 			updateok = 1;
 			turnonchg();
 			//归位，回到初始流程
@@ -1021,13 +1026,244 @@ u32 BATVOL2PERCENT(u16 VOL)
 		return 1;
 	}
 }
+//电池电压采集请求
+//输入what参数0时采集电池电压，1时采集电源电压，2时采集内部基准电压
+//输入Step参数0时采集电压，1时读出电压
+//Step参数0时输出0代表采集中，输出1代表采集结束
+//Step参数1时输出即是电压
+u16 ICPX_BAT_VOL_REQUEST(u8 what, u8 Step)
+{
+	//VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 10)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET))
+	//BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 10)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
+	//Intvolavl	  ((u16)(Get_Adc_Average(ADC_Channel_17, 10)))
+	static u16 TargetVoltage = 0;
+	static u16 IntrefVoltage = 0;
+	static u8 needcal = 0;
+	static u8 calstep = 0;
+	static u8 readflag = 0;
+	static u8 adcisrunning = 0;
+	static u8 counter = 0;
+	static u32 ACC = 0;
+	
+	if (needcal == 0 && calstep == 0)
+	{
+		Start_Adc(ADC_Channel_17);
+		calstep = 1;
+	}
+	else if (needcal == 0 && calstep == 1)
+	{
+		if (Read_Adc_Status() == 1)
+		{
+			u16 tempvol = Read_Adc_Data();
+			if (counter < 10)
+			{
+				//累加次数不够，累加器求和
+				ACC += tempvol;
+				counter++;	
+			}
+			else
+			{
+				//累加次数够了，求目标值
+				IntrefVoltage = (u16)(ACC / 10);
+				ACC = 0;
+				needcal = 1;
+				counter = 0;
+			}
+			calstep = 0;
+		}
+	}
+	else if (Step == 0 && readflag == 0 && adcisrunning == 0)
+	{
+		switch (what)
+		{
+		case 0 : 
+			Start_Adc(ADC_Channel_2);
+			break;
+		case 1 : 
+			Start_Adc(ADC_Channel_1);
+			break;
+		case 2 :
+			Start_Adc(ADC_Channel_17);
+			break;
+		}
+		adcisrunning = 1;
+	}
+	else if (Step == 0 && readflag == 0 && adcisrunning == 1)
+	{
+		if (Read_Adc_Status() == 1)
+		{
+			u16 tempvol = Read_Adc_Data();
+			if (counter < 10)
+			{
+				//累加次数不够，累加器求和
+				ACC += tempvol;
+				counter++;
+			}
+			else
+			{
+				//累加次数够了，求目标值
+				switch(what)
+				{
+				case 0 : 
+					TargetVoltage = ((u16)(ACC / 10)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET);
+					break;
+				case 1 : 
+					TargetVoltage = ((u16)(ACC / 10)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET);
+					break;
+				case 2 : 
+					TargetVoltage = ((u16)(ACC / 10)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET);
+					break;	
+				}
+				ACC = 0;
+				readflag = 1;
+				counter = 0;
+			}
+			adcisrunning = 0;
+		}
+		return readflag;
+	}
+	else if(Step == 0 && readflag == 1)
+	{
+		return readflag;
+	}
+	else if(Step == 1)
+	{
+		needcal = 0;
+		readflag = 0;
+		return TargetVoltage;
+	}
+	
+	return 0;
+}
 //电池采集流程
 //输入1时启用判断下降沿
 //输入0时直接采集
 //输入2时采集内部基准（直接采集）
+//输入3时采集vcc（直接采集）
+//该函数在采集过程中返回65535，直到采集到有效数据
 u16 ICPX_BAT_VOL_GATHER(u8 MODE)
 {
-	if (MODE == 1)
+	static u8 step = 0;
+	static u16 LASTVOL, THISVOL;
+	/*
+	if (MODE == 0)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(0, 1);
+			return voltemp;
+		}
+	}
+	else if(MODE == 1)
+	{
+		//需要停止充电之后再调用
+		switch (step)
+		{
+		case 0:
+		{
+			if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+			{
+				return 65535;
+			}
+			else
+			{
+				LASTVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+				step = 1;
+				break;
+			}
+		}
+		case 1:
+			{
+				if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+				{
+					return 65535;
+				}
+				else
+				{
+					THISVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+					step = 2;
+					break;
+				}
+			}
+		case 2:
+			{
+				if (THISVOL < LASTVOL)
+				{
+					LASTVOL = THISVOL;
+					step = 3;
+					break;
+				}
+				else
+				{
+					step = 0;
+					return THISVOL;
+					
+				}
+			}
+		case 3:
+			{
+				if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+				{
+					return 65535;
+				}
+				else
+				{
+					THISVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+					step = 2;
+					break;
+				}
+			}
+		}
+		
+		//需要停止充电之后再调用
+		//u16 LASTVOL = BATvolavl;
+		//u16 THISVOL = BATvolavl;
+		//while (THISVOL < LASTVOL)
+		//{
+		//	LASTVOL = THISVOL;
+		//	THISVOL = BATvolavl;
+		//}
+		//return THISVOL;
+		return 65535;
+	}
+	else if (MODE == 2)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(2, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(2, 1);
+			return voltemp;
+		}
+	}
+	else if (MODE == 3)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(1, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(1, 1);
+			return voltemp;
+		}
+	}
+	*/
+	if (MODE == 0)
+	{
+		//此时直接采集
+		return BATvolavl;
+	}
+	else if (MODE == 1)
 	{
 		//需要停止充电之后再调用
 		u16 LASTVOL = BATvolavl;
@@ -1039,16 +1275,17 @@ u16 ICPX_BAT_VOL_GATHER(u8 MODE)
 		}
 		return THISVOL;
 	}
-	else if (MODE == 0)
-	{
-		//此时直接采集
-		return BATvolavl;
-	}
 	else if (MODE == 2)
 	{
 		//此时直接采集
 		return Intvolavl;
 	}
+	else if (MODE == 3)
+	{
+		//此时直接采集
+		return VCCvolavl;
+	}
+	
 	else
 	{
 		//mode是错误值，返回0
@@ -1240,7 +1477,10 @@ void ICPX_Standby()
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//开电源管理时钟PWR_Regulator_LowPower
 
 	PWR_WakeUpPinCmd(ENABLE);//使能唤醒引脚，默认PA0
-
+	
+	RCC->CR &= ((uint32_t)0xFFFEFFFF);  //Reset HSEON 
+	RCC->CR &= ((uint32_t)0xFFFBFFFF); 	//Reset HSEBYP
+	
 	PWR_EnterSTANDBYMode();//进入待机
 	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
 }

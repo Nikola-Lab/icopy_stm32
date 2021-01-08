@@ -260,7 +260,6 @@ void SystemInit (void)
     /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
     /* Configure the Flash Latency cycles and enable prefetch buffer */
     SetSysClock();
-
 #ifdef VECT_TAB_SRAM
     SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
 #else
@@ -431,7 +430,6 @@ static void SetSysClock(void)
 #elif defined SYSCLK_FREQ_72MHz
     SetSysClockTo72();
 #endif
-
     /* If none of the define above is enabled, the HSI is used as System clock
        source (default after reset) */
 }
