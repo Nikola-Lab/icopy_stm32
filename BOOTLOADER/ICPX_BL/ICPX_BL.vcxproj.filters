@@ -129,6 +129,9 @@
     <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_tim.c">
       <Filter>Source files\FWlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_bkp.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <LinkerScript Include="STM32F103C8_flash.lds">

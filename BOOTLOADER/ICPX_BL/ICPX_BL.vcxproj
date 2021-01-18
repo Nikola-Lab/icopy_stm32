@@ -78,6 +78,7 @@
     <ClCompile Include="..\..\HARDWARE\SPI\spi.c" />
     <ClCompile Include="..\..\HARDWARE\W25QXX\w25qxx.c" />
     <ClCompile Include="..\..\STM32F10x_FWLib\src\misc.c" />
+    <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_bkp.c" />
     <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_dma.c" />
     <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_flash.c" />
     <ClCompile Include="..\..\STM32F10x_FWLib\src\stm32f10x_gpio.c" />

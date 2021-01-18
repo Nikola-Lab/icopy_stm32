@@ -19,11 +19,15 @@ void GPIOINIT()
 	
 	GPIO_InitStructure.GPIO_Pin = H3_PWR_ON_OFF_Pin;
 	GPIO_Init(H3_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
-	GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
+	turnonh3();//H3电源开启
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB, GPIO_Pin_11);
+	GPIO_SetBits(GPIOB, GPIO_Pin_11);//FLASH电源开启
+	
+	GPIO_InitStructure.GPIO_Pin = SPI_SEL_Pin;
+	GPIO_Init(SPI_SEL_GPIO_Port, &GPIO_InitStructure);
+	SPISELH3();//SPI切换开关切换到H3
 }
 void UART_Init(void)
 {
@@ -42,7 +46,7 @@ void UART_Init(void)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
 
-	USART_InitStructure.USART_BaudRate = 9600;
+	USART_InitStructure.USART_BaudRate = 57600;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -61,6 +65,7 @@ int main(void)
 	GPIOINIT();
 	UART_Init();
 	SPI1_Init();
+	ICPX_BKP_Init();
 	
 	W25QXX_Init();
 	

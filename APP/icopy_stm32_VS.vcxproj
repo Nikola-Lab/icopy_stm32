@@ -62,6 +62,7 @@
     <ClCompile Include="..\HARDWARE\KEY\key.c" />
     <ClCompile Include="..\HARDWARE\TIMER\timer.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_adc.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_bkp.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_dma.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_exti.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_flash.c" />
@@ -95,6 +96,7 @@
     <ClInclude Include="..\HARDWARE\LCD\lcdfont.h" />
     <ClInclude Include="USER\stm32f10x.h" />
     <ClInclude Include="USER\stm32f10x_conf.h" />
+    <None Include="ClassDiagram.cd" />
     <None Include="stm32.props" />
     <None Include="icopy_stm32_VS-Debug.vgdbsettings" />
     <None Include="icopy_stm32_VS-Release.vgdbsettings" />

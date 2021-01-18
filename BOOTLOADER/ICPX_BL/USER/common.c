@@ -340,8 +340,9 @@ void Main_Menu(void)
             case 0:
 	        SerialPutString("\r\n*********************************************************\r\n");
             SerialPutString( "1.update app\r\n");  
-            SerialPutString( "2.start app\r\n");
-	        SerialPutString( "3.update spi flash\r\n");
+	        SerialPutString( "2.start app with shutdown H3\r\n");
+	        SerialPutString( "3.start app with out shutdown H3\r\n");
+	        SerialPutString( "4.update spi flash\r\n");
             SerialPutString( "*********************************************************\r\n");
             SerialPutString( "choose:\r\n");
             uStatus = 1;
@@ -363,23 +364,38 @@ void Main_Menu(void)
             else if (key == 0x32)
             {
                 SerialPutString("waiting...\r\n");
-	            
 	            g_Tim2Array[eTim2] = 0;
 	            while (IS_TIMEOUT_1MS(eTim2, 10000))
 	            {
 	            }
 	            SerialPutString("sleep!\r\n");
+	            
 	            //延时，等待h3关机
                 BspTim2Close();
                 JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
-
                 /* Jump to user application */
                 Jump_To_Application = (pFunction) JumpAddress;
                 /* Initialize user application's Stack Pointer */
                 __set_MSP(*(__IO uint32_t*) ApplicationAddress);
                 Jump_To_Application();
+	            
             }
-	        else if (key == 0x33)
+		    else if (key == 0x33)
+		    {
+			    SerialPutString("restarting...\r\n");
+
+			    BKP_WriteBackupRegister(BKP_DR1, 0Xabcd);
+			    
+				BspTim2Close();
+			    JumpAddress = *(__IO uint32_t*)(ApplicationAddress + 4);
+
+			    /* Jump to user application */
+			    Jump_To_Application = (pFunction) JumpAddress;
+			    /* Initialize user application's Stack Pointer */
+			    __set_MSP(*(__IO uint32_t*) ApplicationAddress);
+			    Jump_To_Application();
+		    }
+	        else if (key == 0x34)
 	        {
 		        SerialPutString("starting spi flash update\r\n");
 		        SerialPutString(" \r\n");

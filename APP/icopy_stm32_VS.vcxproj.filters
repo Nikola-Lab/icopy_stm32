@@ -122,6 +122,7 @@
     <ClCompile Include="USER\APP.c">
       <Filter>Source files</Filter>
     </ClCompile>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="USER\stm32f10x.h">
@@ -175,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c">
       <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_bkp.c">
+      <Filter>Source files\FWlib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -118,6 +118,7 @@
 
 #define turnonchg()		GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
 #define turnoffchg()	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+#define readchg()       GPIO_ReadOutputDataBit(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
 
 #define SPISELH3()		GPIO_SetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
 #define SPISELST()		GPIO_ResetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
@@ -156,7 +157,7 @@ u8 startmode;
 u8 isstarting;
 void MX_GPIO_Init(void);
 void ICPX_GPIO_Init(void);
-void ICPX_GPIO_Init(void);
+void ICPX_BKP_Init(void);
 void ICPX_Find_25Q80(void);
 void ICPX_Test_25Q80(void);
 void ICPX_BB_25Q80(u16 block);

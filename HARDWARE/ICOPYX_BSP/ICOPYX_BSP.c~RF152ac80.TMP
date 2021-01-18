@@ -4,8 +4,6 @@ u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
 u8 hasbak = 0;
 
-u8 stdnflag = 0;
-
 u16 Vcc3v3 = 0;
 void soft_reset(void)
 {
@@ -46,25 +44,8 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 
 	GPIO_InitStructure.GPIO_Pin = H3_PWR_ON_OFF_Pin;
-	if (BKP_ReadBackupRegister(BKP_DR1) == 0xabcd)
-	{
-		GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
-		//如果开机标志，那么h3需要被开机
-	}
-	else
-	{
-		GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
-	}
 	GPIO_Init(H3_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
-	if (BKP_ReadBackupRegister(BKP_DR1) == 0xabcd)
-	{
-		GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
-		//如果开机标志，那么h3需要被开机
-	}
-	else
-	{
-		GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
-	}
+	GPIO_SetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin);
 
 	GPIO_InitStructure.GPIO_Pin = PM_PWR_ON_OFF_Pin;
 	GPIO_Init(PM_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
@@ -860,11 +841,8 @@ void CHARGE_OTG()
 	}
 	else
 	{
-		if (!MAINBATCHECKTASK(3))
-		{
-			turnonchg();
-			otgon = 0;
-		}
+		turnonchg();
+		otgon = 0;
 	}
 }
 //扫描充电状态流程
@@ -905,7 +883,6 @@ u8 MAINCHARGETASK(u8 what)
 //输入为0的时候进行电量检测
 //输入为1的时候不进行判断，而是直接返回电池电压状态（上个周期采集的）
 //输入为2的时候强制开始新的电压判断（无视充电等待时间）
-//输入为3的时候返回充电状态,1为已关闭充电，0为无效
 u16 MAINBATCHECKTASK(u8 what)
 {
 	static u16 batvolsense = 0;
@@ -920,17 +897,7 @@ u16 MAINBATCHECKTASK(u8 what)
 	//下一个采集流程
 	static u8 inprocess = 0;
 	static u8 updateok = 0;
-	if (what == 3)
-	{
-		if (step == 1)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0; 
-		}
-	}
+
 	if (what == 1)
 	{
 		return batvolsense;    //返回值
@@ -947,11 +914,9 @@ u16 MAINBATCHECKTASK(u8 what)
 			if (VCCvol < VCCTHRLOW || otgon == 1)
 			{
 				//没有在充电（或者OTG打开，这时VCC也很高），那么这一步直接跳过
-				step = 1;
+step = 1;
 				inprocess = 0;
 				updateok = 0;
-				//printf("OTG ON,DO NOT WAIT FOR CHARGE");
-				//fflush(stdout);
 			}
 		}
 		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] >= 10000) //充电等待流程结束
@@ -960,30 +925,30 @@ u16 MAINBATCHECKTASK(u8 what)
 			step = 1;
 			inprocess = 0;
 			updateok = 0;
-			//printf("turnoffchg\r\n");
-			//fflush(stdout);
 		}
 		else if(step == 1 && inprocess == 0) //充电关闭了，等待采集开始
 		{
 			g_Tim2Array[eTimbat] = 0;
 			inprocess = 1;//标志等待流程开始
-			//printf("WAITING FOR VOLDOWN\r\n");
-			//fflush(stdout);
 		}
+
 		else if(step == 1 && inprocess == 1 && g_Tim2Array[eTimbat] >= 1500) //等待电压回落
 		{
 			//采集
 			//Vcc3v3 = (u16)(4915200 / Intvolavl);		//采集内部电压基准并且计算当前3V3电压
 			u16 tempvol = ICPX_BAT_VOL_GATHER(1);		//采集电池电压
-			//此时采集完成
-			batvolsense = tempvol;
-			updateok = 1;
-			turnonchg();
-			//归位，回到初始流程
-			step = 0;
-			inprocess = 0;
-			//printf("batvol 0 %d \r\n", batvolsense);
-			//fflush(stdout);
+			if(tempvol != 65535)
+			{
+				//此时采集完成
+				batvolsense = tempvol;
+				updateok = 1;
+				turnonchg();
+				//归位，回到初始流程
+				step = 0;
+				inprocess = 0;
+				//printf("batvol 0 %d \r\n", batvolsense);
+				//fflush(stdout);
+			}
 		}
 	}
 	if (what == 2)
@@ -1034,11 +999,7 @@ u16 MAINBATCHECKTASK(u8 what)
 			SHUTDOWNMETH();
 		}
 	}
-	if (stdnflag == 1)
-	{
-		stdnflag = 0;
-		SHUTDOWNMETH();
-	}
+
 }
 //电池电压到百分比计算
 u32 BATVOL2PERCENT(u16 VOL)
@@ -1212,6 +1173,119 @@ u16 ICPX_BAT_VOL_GATHER(u8 MODE)
 {
 	static u8 step = 0;
 	static u16 LASTVOL, THISVOL;
+	/*
+	if (MODE == 0)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(0, 1);
+			return voltemp;
+		}
+	}
+	else if(MODE == 1)
+	{
+		//需要停止充电之后再调用
+		switch (step)
+		{
+		case 0:
+		{
+			if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+			{
+				return 65535;
+			}
+			else
+			{
+				LASTVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+				step = 1;
+				break;
+			}
+		}
+		case 1:
+			{
+				if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+				{
+					return 65535;
+				}
+				else
+				{
+					THISVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+					step = 2;
+					break;
+				}
+			}
+		case 2:
+			{
+				if (THISVOL < LASTVOL)
+				{
+					LASTVOL = THISVOL;
+					step = 3;
+					break;
+				}
+				else
+				{
+					step = 0;
+					return THISVOL;
+					
+				}
+			}
+		case 3:
+			{
+				if (ICPX_BAT_VOL_REQUEST(0, 0) == 0)
+				{
+					return 65535;
+				}
+				else
+				{
+					THISVOL = ICPX_BAT_VOL_REQUEST(0, 1);
+					step = 2;
+					break;
+				}
+			}
+		}
+		
+		//需要停止充电之后再调用
+		//u16 LASTVOL = BATvolavl;
+		//u16 THISVOL = BATvolavl;
+		//while (THISVOL < LASTVOL)
+		//{
+		//	LASTVOL = THISVOL;
+		//	THISVOL = BATvolavl;
+		//}
+		//return THISVOL;
+		return 65535;
+	}
+	else if (MODE == 2)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(2, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(2, 1);
+			return voltemp;
+		}
+	}
+	else if (MODE == 3)
+	{
+		//此时直接采集
+		if(ICPX_BAT_VOL_REQUEST(1, 0) == 0)
+		{
+			return 65535;
+		}
+		else
+		{
+			u16 voltemp = ICPX_BAT_VOL_REQUEST(1, 1);
+			return voltemp;
+		}
+	}
+	*/
 	if (MODE == 0)
 	{
 		//此时直接采集
@@ -1314,7 +1388,6 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 					return 0;
 				}
 				//printf("outvol %d aimvol %d\r\n", outvol, aimvol);
-				//printf("outpst %d aimpst %d\r\n", BATVOL2PERCENT(outvol), BATVOL2PERCENT(aimvol));
 				//fflush(stdout);
 			}
 		}
@@ -1330,15 +1403,11 @@ void STARTMODETASK(void)
 	{
 		fflush(stdout);
 		KEY_POWER(1);
-		ICPX_Booting_Screen(1); //初始化开机界面状态
-		ICPX_Charge_Screen(1);  //初始化充电界面状态
-		BKP_WriteBackupRegister(BKP_DR1, 0X0000);
 		startmode = START_MODE_BAT;
-		isstarting = 0;
-		SPISELH3();
-		delay_ms(400);
+		ICPX_Booting_Screen(1);//初始化开机界面状态
+		ICPX_Charge_Screen(1);//初始化充电界面状态
+		BKP_WriteBackupRegister(BKP_DR1, 0X0000);
 		printf("AUTO POWER ON!\r\n");
-		return;
 	}
 	//注意，这个流程只会在唤醒时运行一次
 	if(VCCvol > VCCTHRHIGH) //存在电源输入
@@ -1379,6 +1448,73 @@ void STARTMODETASK(void)
 		ICPX_Charge_Screen(1);//初始化充电界面状态
 	}
 
+}
+//重启实现
+//输入1 关闭H3之后再重启
+//输入0 直接重启（使用bkp保证下次开机状态）
+void REBOOTMETH(u8 needwait)
+{	
+	if (needwait == 1)//询问h3是否活着
+	{
+		printf("SHUTDOWN H3!\r\n");
+		fflush(stdout);
+		u8 TIMES = 0;
+		while (1)
+		{
+			printf("ARE YOU OK?\r\n");
+			fflush(stdout);//询问目标存活状态
+			g_Tim2Array[eTim3] = 0;
+			while (IS_TIMEOUT_1MS(eTim3, 500))
+			{
+				CLI_RUN();
+			}
+			if (hasbak != 0) //有回复
+				{
+					TIMES = 0;
+					hasbak = 0;
+				}
+			else
+			{
+				TIMES++;
+			}
+			if (TIMES > 5)
+			{
+				break;
+			}
+		}
+		printf("OK! You are died\r\n");
+	}
+	printf("Prepare to SHUTDOWN!\r\n");
+	fflush(stdout);
+	if (needwait == 1)//延时一段时间等待关机
+	{
+		//延时一个关机时长
+		g_Tim2Array[eTim1] = 0;
+		while (IS_TIMEOUT_1MS(eTim1, 10000))
+		{
+			ICPX_Shutdown_Screen(0);
+		}
+		printf("I have been waiting for so long! Bye!\r\n");
+		fflush(stdout);
+		SPISELST();
+		turnoffh3();
+		ICPX_Shutdown_Screen(1);
+		if (VCCvol > VCCTHRHIGH)
+		{
+			//充电已插入，不可以休眠
+			startmode = START_MODE_VCC;
+			ICPX_Charge_Screen(1);//初始化第一次显示的变量，防止不刷新全屏
+		}
+		else
+		{
+			ICPX_Standby();
+		}
+	}
+	else
+	{
+		BKP_WriteBackupRegister(BKP_DR1, 0Xabcd);
+		soft_reset();
+	}
 }
 void SHUTDOWNMETH()
 {
@@ -1421,7 +1557,6 @@ void SHUTDOWNMETH()
 	fflush(stdout);
 	SPISELST();
 	turnoffh3();
-	//todo: 判断PM3是否开着，开着就关了
 	ICPX_Shutdown_Screen(1);
 	if (VCCvol > VCCTHRHIGH)
 	{
@@ -1437,10 +1572,6 @@ void SHUTDOWNMETH()
 u32 GetMCUID(void)
 {
 	return (*(u32*)(0x1FFFF7E8));
-}
-void SETSHUTDOWNFLAG()
-{
-	stdnflag = 1;
 }
 void ICPX_Standby()
 {

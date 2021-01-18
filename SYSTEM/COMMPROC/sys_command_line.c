@@ -27,6 +27,7 @@ static uint8_t cli_getid(void *para, uint8_t len);
 static uint8_t cli_lcd2h3(void *para, uint8_t len);
 static uint8_t cli_lcd2st(void *para, uint8_t len);
 static uint8_t cli_shutdowning(void *para, uint8_t len);
+static uint8_t cli_planshutdown(void *para, uint8_t len);
 typedef struct {
 #define HANDLE_LEN 1024
 	u8 buff[HANDLE_LEN];
@@ -79,6 +80,10 @@ const COMMAND_S CLI_Cmd[] = {
 	
 	//多重指令同步传输
 	{ "multicmd", NULL, NULL, cli_multicmd },
+	
+	//关机命令
+	{ "plan2shutdown", NULL, NULL, cli_planshutdown },
+	
 	//询问存活的回复
 	{ "i'm alive", NULL, NULL, cli_targetalive },
 	{ "version", NULL, NULL, cli_getversion },
@@ -785,6 +790,13 @@ static uint8_t cli_getid(void *para, uint8_t len)
 		datatemp[7]);
 	printf("#theid:%s\r\n", dataprint);
 	fflush(stdout);
+	return TRUE;
+}
+//计划关机指令 注意这个指令直接调用SHUTDOWNMETH	,也就是不再会返回，
+static uint8_t cli_planshutdown(void *para, uint8_t len)
+{
+	PRINTF("\r\n-> OK\r\n");//先释放远端调用
+	SHUTDOWNMETH();
 	return TRUE;
 }
 //终端初始化实现

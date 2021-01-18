@@ -26,7 +26,8 @@ void setup()
 	NVIC_Configuration();		//中断向量初始化
 	BspTim2Init();				//按照系统时钟配置计时器（硬件计时）
 	KEY_Init();					//按键io初始化
-	CLI_INIT(9600);				//启动commandline
+	CLI_INIT(57600);			//启动commandline
+	ICPX_BKP_Init();			//初始化备份寄存器
 
 //	if(FLASH_GetReadOutProtectionStatus() != SET)
 //	{
@@ -84,7 +85,8 @@ void loop()
 		{
 			ST7789_BL_ON();
 			ST7789_Fill(0, 0, ST7789_H, ST7789_W, GREEN);	//没有资源的情况下，充电显示绿屏
-		}	
+		}
+		MAINCHARGETASK(0);
 		CHGKEYTASK(1);
 		MAINBATCHECKTASK(0);
 		if (VCCvol < VCCTHRLOW)
