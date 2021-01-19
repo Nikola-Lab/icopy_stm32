@@ -18,6 +18,8 @@
 #include "math.h"
 #include "timer.h"
 #include "sys_command_line.h"
+#include "myiic.h"
+#include "AW87319.h"
 
 #define ICOPYX_SW_VERSION (1)
 #define ICOPYX_SW_SUBVERSION (0)
@@ -127,8 +129,8 @@
 #define START_MODE_BAT		1
 #define START_MODE_VCC		2
 
-#define VCCTHRHIGH			4100
-#define VCCTHRLOW			4000
+#define VCCTHRHIGH			3500//4100 TODO:需要改回
+#define VCCTHRLOW			2000//4000 TODO:需要改回
 #define BATNOLOADTHR		3600
 #define NOBATTHR			1000
 #define BATWITHLOADTHR		3400
@@ -188,5 +190,6 @@ u32 BATVOL2PERCENT(u16 VOL);
 u16 MAINBATCHECKTASK(u8 what);
 void STARTMODETASK(void);	
 void SHUTDOWNMETH();
+void SETSHUTDOWNFLAG();
 void CHARGE_OTG();
 #endif // !__ICPX_BSP_H

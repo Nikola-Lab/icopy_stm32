@@ -180,5 +180,11 @@
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_bkp.c">
       <Filter>Source files\FWlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\HARDWARE\IIC\myiic.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\AW87319\AW87319.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

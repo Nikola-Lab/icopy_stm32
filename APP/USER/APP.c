@@ -28,12 +28,26 @@ void setup()
 	KEY_Init();					//按键io初始化
 	CLI_INIT(57600);			//启动commandline
 	ICPX_BKP_Init();			//初始化备份寄存器
+	//AW87319_Init();				//初始化I2C通信
 
 //	if(FLASH_GetReadOutProtectionStatus() != SET)
 //	{
 //		FLASH_ReadOutProtection(ENABLE);
 //	}
-
+	
+//	//i2c测试
+//	u8 temp = AW87319_Check();
+//	AW87319_WriteOneByte(0x00, 0xaa);
+//	AW87319_WriteOneByte(0x01, 0B00000111);
+//	AW87319_WriteOneByte(0x03, 0B00000100);
+//	AW87319_WriteOneByte(0x04, 0B00000000);
+//	AW87319_WriteOneByte(0x05, 0B00001001);
+//	AW87319_WriteOneByte(0x06, 0B00001010);
+//	AW87319_WriteOneByte(0x08, 0B01010000);
+//	AW87319_WriteOneByte(0x09, 0B00000110);
+//	__NOP();
+	
+	
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH初始化
 	
 	//测试主板用的代码
@@ -41,24 +55,30 @@ void setup()
 	//turnonpm3();
 	//while (1) ;
 	
+	
+
+	
 	STARTMODETASK();			//开机模式判断
 	
 	ST7789_Fill(0, 0, ST7789_H, ST7789_W, BLACK);	//启动之前先给屏幕刷黑，防止闪烁
 	
 	KFS_POWERON_SEARCH();		//维护文件系统，重建内部文件信息缓存
 	
-	//	测试电压采集用的代码
-	//	ST7789_BL_ON();
-	//	u16 temp, temp2, temp3;
-	//	while (1) 
-	//	{
-	//		temp = Intvolavl;
-	//		temp2 = BATvolavl;
-	//		temp3 = (u16)(4915200 / temp);
-	//		ST7789_ShowIntNum(60, 130, temp, 10, WHITE, BLACK, 24);		//内部基准电压（读出值
-	//		ST7789_ShowIntNum(60, 160, temp3, 10, WHITE, BLACK, 24);	//供电vcc电压
-	//		ST7789_ShowIntNum(60, 200, temp2, 10, WHITE, BLACK, 24);	//电池输入电压
-	//	}
+		//测试电压采集用的代码
+		ST7789_BL_ON();
+		u16 temp, temp2, temp3, temp4;
+		while (1) 
+		{
+			temp = Intvolavl;
+			temp2 = BATvolavl;
+			temp3 = (u16)(4915200 / temp);
+			temp4 = VCCvolavl;
+			ST7789_ShowIntNum(60, 100, temp4, 10, WHITE, BLACK, 24);	//usb电压
+			ST7789_ShowIntNum(60, 130, temp, 10, WHITE, BLACK, 24);		//内部基准电压（读出值
+			ST7789_ShowIntNum(60, 160, temp3, 10, WHITE, BLACK, 24);	//供电vcc电压
+			ST7789_ShowIntNum(60, 200, temp2, 10, WHITE, BLACK, 24);	//电池输入电压
+			
+		}
 
 	
 	//printf("%04X\r\n",GetMCUID()); //uuid

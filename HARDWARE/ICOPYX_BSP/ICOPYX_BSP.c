@@ -657,7 +657,7 @@ void MAINKEYTASK(void)
 	static u8 rightlongpress = 0;
 
 	u8 key = 0;
-	if (KEY_POWER(0) > 3000)
+	if (KEY_POWER(0) > 2333)
 	{
 		KEY_POWER(1);
 		if (isstarting != 1)
@@ -1421,7 +1421,7 @@ void SHUTDOWNMETH()
 	fflush(stdout);
 	SPISELST();
 	turnoffh3();
-	//todo: 判断PM3是否开着，开着就关了
+	turnoffpm3();
 	ICPX_Shutdown_Screen(1);
 	if (VCCvol > VCCTHRHIGH)
 	{
