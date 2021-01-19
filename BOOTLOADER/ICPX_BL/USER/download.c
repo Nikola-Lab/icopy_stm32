@@ -18,15 +18,15 @@ void SerialDownload(int files)
     int32_t Size = 0;
 	if (files == 2)
 	{
-		SerialPutString("Waiting for the Address to be write ... \n\r");
+		SerialPutString("Waiting for the Address to be write ... \r\n");
 		GetInputString(WriteAddressStr);
 		Str2Int(WriteAddressStr, &WriteAddress);
 		SerialPutString("ok,address =");
 		Int2Str(WStr, WriteAddress);
 		SerialPutString(WStr);
-		SerialPutString("\n\r");
+		SerialPutString("\r\n");
 	}
-    SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\n\r");
+	//SerialPutString("Waiting for the file to be sent ... (press 'a' to abort)\r\n");
 	if (files == 1)
 	{
 		Size = Ymodem_Receive(&tab_1024[0]);
@@ -37,29 +37,29 @@ void SerialDownload(int files)
 	}
     if (Size > 0)
     {
-        SerialPutString("\n\n\r Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
-        SerialPutString(file_name);
-        Int2Str(Number, Size);
-        SerialPutString("\n\r Size: ");
-        SerialPutString(Number);
-        SerialPutString(" Bytes\r\n");
-        SerialPutString("-------------------\n");
+	    SerialPutString("\r\nUPDATE END!\r\n");
+        //SerialPutString(file_name);
+        //Int2Str(Number, Size);
+        //SerialPutString("\n\r Size: ");
+        //SerialPutString(Number);
+        //SerialPutString(" Bytes\r\n");
+        //SerialPutString("-------------------\n");
     }
     else if (Size == -1)
     {
-        SerialPutString("\n\n\rLARGE!\n\r");
+	    SerialPutString("\r\nLARGE!\r\n");
     }
     else if (Size == -2)
     {
-        SerialPutString("\n\n\rVerification failed!\n\r");
+	    SerialPutString("\r\nVerification failed!\r\n");
     }
     else if (Size == -3)
     {
-        SerialPutString("\r\n\nAborted by user.\n\r");
+	    SerialPutString("\r\nAborted by user.\r\n");
     }
     else
     {
-        SerialPutString("\n\rFailed to receive the file!\n\r");
+	    SerialPutString("\r\nFailed to receive the file!\r\n");
     }
 }
 

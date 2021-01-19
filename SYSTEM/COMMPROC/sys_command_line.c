@@ -112,8 +112,8 @@ static uint8_t cli_bl(void *para, uint8_t len)
 
 	if (((*(__IO uint32_t*)BLAddress) & 0x2FFE0000) == 0x20000000)
 	{
-		PRINTF("\r\n[END]: Execute Bl Program \r\n");
-		PRINTF("------------------------------------------\r\n");
+		PRINTF("BL Starting\r\n");
+		//PRINTF("------------------------------------------\r\n");
 		BspTim2Close();
 		//跳转至bl代码
 		JumpAddress = *(__IO uint32_t*)(BLAddress + 4);
@@ -124,7 +124,7 @@ static uint8_t cli_bl(void *para, uint8_t len)
 	}
 	else
 	{
-		PRINTF("\r\nno Bl Program\r\n");
+		PRINTF("BL Error\r\n");
 	}
 	return TRUE;
 }
@@ -232,7 +232,7 @@ static uint8_t cli_lcd2st(void *para, uint8_t len)
 //h3关机指令
 static uint8_t cli_shutdowning(void *para, uint8_t len)
 {
-	ICPX_Shutdown_Screen(0);
+	ICPX_Shutdown_Screen(1);
 	return TRUE;
 }
 
@@ -796,7 +796,7 @@ static uint8_t cli_getid(void *para, uint8_t len)
 static uint8_t cli_planshutdown(void *para, uint8_t len)
 {
 	PRINTF("\r\n-> OK\r\n");//先释放远端调用
-	SHUTDOWNMETH();
+	SETSHUTDOWNFLAG();
 	return TRUE;
 }
 //终端初始化实现

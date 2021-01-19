@@ -338,17 +338,18 @@ void Main_Menu(void)
        switch(uStatus)
         {
             case 0:
-	        SerialPutString("\r\n*********************************************************\r\n");
-            SerialPutString( "1.update app\r\n");  
-	        SerialPutString( "2.start app with shutdown H3\r\n");
-	        SerialPutString( "3.start app with out shutdown H3\r\n");
-	        SerialPutString( "4.update spi flash\r\n");
-            SerialPutString( "*********************************************************\r\n");
-            SerialPutString( "choose:\r\n");
+	        //SerialPutString("\r\n*********************************************************\r\n");
+            //SerialPutString( "1.update app\r\n");  
+	        //SerialPutString( "2.start app with shutdown H3\r\n");
+	        //SerialPutString( "3.start app with out shutdown H3\r\n");
+	        //SerialPutString( "4.update spi flash\r\n");
+            //SerialPutString( "*********************************************************\r\n");
+            //SerialPutString( "choose:\r\n");
+	        SerialPutString("BL STARTED!\r\n");
             uStatus = 1;
             break;
             case 1:
-			SerialPutString( "......\r\n");//
+			SerialPutString("Wait for SEL\r\n");//
 	        while (1)
 	        {
             key = GetKey();
@@ -359,7 +360,8 @@ void Main_Menu(void)
                 /* Download user application in the Flash */
                 SerialDownload(1);
 		        //FLASH_ReadOutProtection(ENABLE);  
-	            SerialPutString("\rdownload app end\n\r");//
+	            SerialPutString("\r\nSTM32 UPDATE END\r\n");//
+	            SerialPutString("Wait for SEL\r\n");//
             }
             else if (key == 0x32)
             {
@@ -382,7 +384,7 @@ void Main_Menu(void)
             }
 		    else if (key == 0x33)
 		    {
-			    SerialPutString("restarting...\r\n");
+			    //SerialPutString("restarting...\r\n");
 
 			    BKP_WriteBackupRegister(BKP_DR1, 0Xabcd);
 			    
@@ -397,11 +399,12 @@ void Main_Menu(void)
 		    }
 	        else if (key == 0x34)
 	        {
-		        SerialPutString("starting spi flash update\r\n");
-		        SerialPutString(" \r\n");
+		        //SerialPutString("starting spi flash update\r\n");
+		        //SerialPutString("\r\n");
 		        /* Download user application in the Flash */
 		        SerialDownload(2);
-		        SerialPutString("\rdownload flash end\n\r");//
+		        SerialPutString("\r\nFLASH UPDATE END\r\n");//
+		        SerialPutString("Wait for SEL\r\n");//
 	        } 
 					
 			}
