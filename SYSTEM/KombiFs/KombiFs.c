@@ -13,6 +13,11 @@ u32 KFS_Aim_Addr = (u32)0x00000000;
 //从存储器寻找文件系统，并维护相关文件列表
 void KFS_POWERON_SEARCH()
 {
+	if (W25QXX_TYPE != W25Q80)
+	{
+		ICPX_img_data_ok = 0;
+		return;
+	}
 	u8 fs_env = KFS_repair_fs();
 	if (fs_env == 254)			
 		{

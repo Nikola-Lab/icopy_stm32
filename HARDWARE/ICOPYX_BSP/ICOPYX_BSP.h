@@ -17,9 +17,11 @@
 #include "stm32f10x_pwr.h"
 #include "math.h"
 #include "timer.h"
-#include "sys_command_line.h"
 #include "myiic.h"
 #include "AW87319.h"
+#include "AW87318.h"
+
+#define USE_AW87318
 
 #define ICOPYX_SW_VERSION (1)
 #define ICOPYX_SW_SUBVERSION (0)
@@ -106,7 +108,7 @@
 //#define VCCvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_1, 2)*(REFVOL / 4096) * 1000 * VCCRESNET))
 //#define BATvolavlNOSE   ((u16)(Get_Adc_Average(ADC_Channel_2, 2)*(REFVOL / 4096) * 1000 * BATRESNET))
 #define VCCvolavl   ((u16)(Get_Adc_Average(ADC_Channel_1, 2)*(INTREFVOL / Intvolavl) * 1000 * VCCRESNET))
-#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 2)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
+#define BATvolavl   ((u16)(Get_Adc_Average(ADC_Channel_2, 100)*(INTREFVOL / Intvolavl) * 1000 * BATRESNET))
 
 //#define VCCvolNOSE   ((u16)(Get_Adc(1)*(REFVOL / 4096) * 1000 * VCCRESNET))
 //#define BATvolNOSE   ((u16)(Get_Adc(2)*(REFVOL / 4096) * 1000 * BATRESNET))
@@ -157,8 +159,11 @@
 
 u8 startmode;
 u8 isstarting;
+u8 testkeying;
+u8 stdnflag;
 void MX_GPIO_Init(void);
 void ICPX_GPIO_Init(void);
+void ICPX_AMP_Init(void);
 void ICPX_BKP_Init(void);
 void ICPX_Find_25Q80(void);
 void ICPX_Test_25Q80(void);

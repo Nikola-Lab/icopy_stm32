@@ -122,7 +122,6 @@
     <ClCompile Include="USER\APP.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="USER\stm32f10x.h">
@@ -184,6 +183,9 @@
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
     <ClCompile Include="..\HARDWARE\AW87319\AW87319.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\AW87318\AW87318.c">
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include "ICOPYX_BSP.h"
+#include "sys_command_line.h"
 static u8 otgon = 0;
 u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
@@ -7,6 +8,8 @@ u8 hasbak = 0;
 u8 stdnflag = 0;
 
 u16 Vcc3v3 = 0;
+
+u8 testkeying = 0;
 void soft_reset(void)
 {
 	// 关闭所有中断
@@ -42,6 +45,12 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = FLASH_PWR_Pin;				//Flash电源引脚
 	GPIO_Init(FLASH_PWR_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
+	
+#ifdef TESTFIRMWARE
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;					//D1用于下拉OTG
+	GPIO_Init(GPIOD, &GPIO_InitStructure);		 
+	GPIO_ResetBits(GPIOD, GPIO_Pin_1);
+#endif
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 
@@ -73,7 +82,6 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
 	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
 	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
-	
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;					//D0用于拉低电池采集引脚电压
@@ -82,8 +90,12 @@ void ICPX_GPIO_Init(void)
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;		//浮空输入
 	
+#ifndef TESTFIRMWARE
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;					//D1用于检测otg输出状态
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
+	GPIO_Init(GPIOD, &GPIO_InitStructure);		  
+#endif // TESTFIRMWARE
+
+	
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;				//输入，开启下拉
 
@@ -92,7 +104,19 @@ void ICPX_GPIO_Init(void)
 
 	GPIO_InitStructure.GPIO_Pin = CHARG_STATE_Pin;
 	GPIO_Init(CHARG_STATE_GPIO_Port, &GPIO_InitStructure);
-
+	
+	AW87318_Init();
+}
+void ICPX_AMP_Init(void)
+{
+#ifdef USE_AW87319
+	//初始化功放
+	AW87319_Init();
+#endif
+#ifdef USE_AW87318
+	//初始化功放
+	AW87318_START();
+#endif
 }
 void ICPX_BKP_Init(void)
 {
@@ -456,7 +480,7 @@ void ICPX_Shutdown_Screen(u8 init)
 			{
 				//ST7789_Fill(0, 0, 240, 240, ICPX_BLUE_BAK);
 				ICPX_Diplay_Image(0, 0, ICOPYX_IMAGES[10]);
-				ST7789_ShowString(54, 176, "Shutingdown", WHITE, ICPX_BLUE_BAK, 24, 0);
+				ST7789_ShowString(42, 176, "Shutting down", WHITE, ICPX_BLUE_BAK, 24, 0);
 				ST7789_BL_ON();
 			}
 			firstshow = 1;
@@ -886,11 +910,13 @@ u8 MAINCHARGETASK(u8 what)
 			{
 				chargestate = 1;
 				printf("CHARGING!\r\n");
+				fflush(stdout);
 			}
 			else if(VCCvol <= VCCTHRLOW && (chargestate == 1 || chargestate == 2))
 			{
 				chargestate = 0;
 				printf("DISCHARGIN!\r\n");
+				fflush(stdout);
 			}
 		}
 		else
@@ -1055,12 +1081,32 @@ u32 BATVOL2PERCENT(u16 VOL)
 	//10 %	3.68V		5%-20%		红
 	//5 %	3.45V	1				关机
 	//0 %	3.00V
+//#define P100VOL	4200
+//#define P80VOL	3980
+//#define P60VOL	3870
+//#define P40VOL	3790
+//#define P20VOL	3740
+//#define P5VOL	3450
+	
+	//100%	4.20V	1
+	//90 %	4.00V		80%-100%	白
+	//80 %	3.89V	1
+	//70 %	3.79V		60%-80%		白
+	//60 %	3.70V	1
+	//50 %	3.62V		40%-60%		白
+	//40 %	3.57V	1
+	//30 %	3.53V		20%-40%		白
+	//20 %	3.51V	1
+	//10 %	3.46V		5%-20%		红
+	//5 %	3.43V	1				关机
+	//0 %	3.00V
 #define P100VOL	4200
-#define P80VOL	3980
-#define P60VOL	3870
-#define P40VOL	3790
-#define P20VOL	3740
-#define P5VOL	3450
+#define P80VOL	3890
+#define P60VOL	3700
+#define P40VOL	3570
+#define P20VOL	3510
+#define P5VOL	3430
+	
 
 	if(VOL > P80VOL)
 	{
@@ -1411,6 +1457,7 @@ void SHUTDOWNMETH()
 	printf("OK! You are died\r\n");
 	printf("Prepare to SHUTDOWN!\r\n");
 	fflush(stdout);
+
 	//延时一个关机时长
 	g_Tim2Array[eTim1] = 0;
 	while (IS_TIMEOUT_1MS(eTim1, 10000))
@@ -1447,14 +1494,18 @@ void ICPX_Standby()
 	printf("i'm sleepy!\r\n");
 	fflush(stdout);
 	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);//开电源管理时钟PWR_Regulator_LowPower
+#ifdef USE_AW87318
+	//关闭功放
+	AW87318_SLEEP();
+#endif
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+	//开电源管理时钟PWR_Regulator_LowPower
 
 	PWR_WakeUpPinCmd(ENABLE);//使能唤醒引脚，默认PA0
 	
 	RCC->CR &= ((uint32_t)0xFFFEFFFF);  //Reset HSEON 
 	RCC->CR &= ((uint32_t)0xFFFBFFFF); 	//Reset HSEBYP
-	
+
 	PWR_EnterSTANDBYMode();//进入待机
 	//PWR_EnterSTOPMode(PWR_Regulator_ON, PWR_STOPEntry_WFI|PWR_STOPEntry_WFE);//进入停机
 }

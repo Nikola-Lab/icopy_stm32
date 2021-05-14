@@ -1,0 +1,68 @@
+VisualGDB/Debug/stm32f10x_rcc.o: \
+ D:/icopy_stm32/STM32F10x_FWLib/src/stm32f10x_rcc.c \
+ ../STM32F10x_FWLib/inc/stm32f10x_rcc.h ../APP/USER/stm32f10x.h \
+ ../CORE/core_cm3.h \
+ c:\sysgcc\arm-eabi\lib\gcc\arm-none-eabi\9.3.1\include\stdint.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\stdint.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\machine\_default_types.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\features.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\_newlib_version.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\_intsup.h \
+ c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\_stdint.h \
+ ../APP/USER/system_stm32f10x.h ../APP/USER/stm32f10x_conf.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_adc.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_bkp.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_dma.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_exti.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_flash.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_gpio.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_pwr.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_spi.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_tim.h \
+ ../STM32F10x_FWLib/inc/stm32f10x_usart.h ../STM32F10x_FWLib/inc/misc.h
+
+../STM32F10x_FWLib/inc/stm32f10x_rcc.h:
+
+../APP/USER/stm32f10x.h:
+
+../CORE/core_cm3.h:
+
+c:\sysgcc\arm-eabi\lib\gcc\arm-none-eabi\9.3.1\include\stdint.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\stdint.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\machine\_default_types.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\features.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\_newlib_version.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\_intsup.h:
+
+c:\sysgcc\arm-eabi\arm-none-eabi\include\sys\_stdint.h:
+
+../APP/USER/system_stm32f10x.h:
+
+../APP/USER/stm32f10x_conf.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_adc.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_bkp.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_dma.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_exti.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_flash.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_gpio.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_pwr.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_spi.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_tim.h:
+
+../STM32F10x_FWLib/inc/stm32f10x_usart.h:
+
+../STM32F10x_FWLib/inc/misc.h:

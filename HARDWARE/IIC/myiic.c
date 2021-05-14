@@ -13,7 +13,7 @@ void IIC_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_13|GPIO_Pin_14);
+	GPIO_SetBits(GPIOC,GPIO_Pin_13|GPIO_Pin_14);
 	//PWR_BackupAccessCmd(DISABLE);/* 禁止修改RTC和后备寄存器*/
 }
 //产生IIC起始信号

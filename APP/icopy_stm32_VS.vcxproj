@@ -20,6 +20,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <MCUPropertyListFile>$(ProjectDir)stm32.props</MCUPropertyListFile>
+    <GenerateHexFile>true</GenerateHexFile>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <MCUPropertyListFile>$(ProjectDir)stm32.props</MCUPropertyListFile>
@@ -41,7 +42,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;STM32F10X_MD;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <GeneratePreprocessorOutput>true</GeneratePreprocessorOutput>
     </ClCompile>
@@ -58,6 +59,7 @@
   <ItemGroup>
     <ClCompile Include="..\CORE\startup_stm32f10x_md.s" />
     <ClCompile Include="..\HARDWARE\ADC\adc.c" />
+    <ClCompile Include="..\HARDWARE\AW87318\AW87318.c" />
     <ClCompile Include="..\HARDWARE\AW87319\AW87319.c" />
     <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c" />
     <ClCompile Include="..\HARDWARE\IIC\myiic.c" />
@@ -98,7 +100,6 @@
     <ClInclude Include="..\HARDWARE\LCD\lcdfont.h" />
     <ClInclude Include="USER\stm32f10x.h" />
     <ClInclude Include="USER\stm32f10x_conf.h" />
-    <None Include="ClassDiagram.cd" />
     <None Include="stm32.props" />
     <None Include="icopy_stm32_VS-Debug.vgdbsettings" />
     <None Include="icopy_stm32_VS-Release.vgdbsettings" />
