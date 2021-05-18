@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|VisualGDB">
+      <Configuration>Debug</Configuration>
+      <Platform>VisualGDB</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|VisualGDB">
+      <Configuration>Release</Configuration>
+      <Platform>VisualGDB</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{C81B6DF4-4027-46C4-8874-012E9F2118EF}</ProjectGuid>
+    <BSP_ID>com.visualgdb.bsp.in-place</BSP_ID>
+    <BSP_VERSION>1.0</BSP_VERSION>
+    <InPlaceBSPSubdir>BSP</InPlaceBSPSubdir>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <MCUPropertyListFile>$(ProjectDir)stm32.props</MCUPropertyListFile>
+    <GenerateHexFile>true</GenerateHexFile>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
+    <MCUPropertyListFile>$(ProjectDir)stm32.props</MCUPropertyListFile>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <GNUConfigurationType>Debug</GNUConfigurationType>
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>9.3.1/9.2.0/r1</ToolchainVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
+    <ToolchainID>com.visualgdb.arm-eabi</ToolchainID>
+    <ToolchainVersion>9.3.1/9.2.0/r1</ToolchainVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;STM32F10X_MD;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <GeneratePreprocessorOutput>true</GeneratePreprocessorOutput>
+    </ClCompile>
+    <Link>
+      <AdditionalLinkerInputs>;%(Link.AdditionalLinkerInputs)</AdditionalLinkerInputs>
+      <LibrarySearchDirectories>;%(Link.LibrarySearchDirectories)</LibrarySearchDirectories>
+      <AdditionalLibraryNames>;%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
+      <LinkerScript>STM32F103C8_flash.lds</LinkerScript>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\CORE\startup_stm32f10x_md.s" />
+    <ClCompile Include="..\HARDWARE\ADC\adc.c" />
+    <ClCompile Include="..\HARDWARE\AW87318\AW87318.c" />
+    <ClCompile Include="..\HARDWARE\AW87319\AW87319.c" />
+    <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c" />
+    <ClCompile Include="..\HARDWARE\IIC\myiic.c" />
+    <ClCompile Include="..\HARDWARE\KEY\key.c" />
+    <ClCompile Include="..\HARDWARE\TIMER\timer.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_adc.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_bkp.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_dma.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_exti.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_flash.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_gpio.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_pwr.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_rcc.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_spi.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_tim.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_usart.c" />
+    <ClCompile Include="..\CORE\core_cm3.c" />
+    <ClCompile Include="..\HARDWARE\DMA\dma.c" />
+    <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_BSP.c" />
+    <ClCompile Include="..\HARDWARE\LCD\ST7789.c" />
+    <ClCompile Include="..\HARDWARE\LCD\ST7789_init.c" />
+    <ClCompile Include="..\HARDWARE\SPI\spi.c" />
+    <ClCompile Include="..\HARDWARE\W25QXX\w25qxx.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\misc.c" />
+    <ClCompile Include="..\SYSTEM\COMMPROC\sys_command_line.c" />
+    <ClCompile Include="..\SYSTEM\COMMPROC\sys_queue.c" />
+    <ClCompile Include="..\SYSTEM\delay\delay.c" />
+    <ClCompile Include="..\SYSTEM\KombiFs\KombiFs.c" />
+    <ClCompile Include="..\SYSTEM\sys\sys.c" />
+    <ClCompile Include="..\SYSTEM\usart\usart.c" />
+    <ClCompile Include="USER\APP.c" />
+    <ClCompile Include="USER\BspTime.c" />
+    <ClCompile Include="USER\stm32f10x_it.c" />
+    <ClCompile Include="USER\system_stm32f10x.c" />
+    <ClInclude Include="..\CORE\core_cm3.h" />
+    <ClInclude Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_BSP.h" />
+    <ClInclude Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.H" />
+    <ClInclude Include="..\HARDWARE\LCD\lcdfont.h" />
+    <ClInclude Include="USER\stm32f10x.h" />
+    <ClInclude Include="USER\stm32f10x_conf.h" />
+    <None Include="stm32.props" />
+    <None Include="icopy_stm32_VS-Debug.vgdbsettings" />
+    <None Include="icopy_stm32_VS-Release.vgdbsettings" />
+    <None Include="stm32.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <LinkerScript Include="STM32F103C8_flash.lds" />
+  </ItemGroup>
+</Project>

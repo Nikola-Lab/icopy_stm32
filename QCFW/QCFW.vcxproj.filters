@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="VisualGDB settings">
+      <UniqueIdentifier>{b949395b-ddcd-4cd2-87c4-4b017806b997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{f6287b0b-8037-4d96-9180-4f8a6410b0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files\Device-specific files">
+      <UniqueIdentifier>{5acda106-d18a-4b22-9491-3f83db62dab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{6cb8874b-43b9-4191-ac8c-37e7ddbff599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\Device-specific files">
+      <UniqueIdentifier>{9c75af56-f1c5-4735-bdc5-d216769f2dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\CORE">
+      <UniqueIdentifier>{9a07174c-0a48-4c91-a271-912c44f6dd11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\FWlib">
+      <UniqueIdentifier>{2b8c8617-d6c0-4d8d-bd79-6ce3b93ffc5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\SYSTEM">
+      <UniqueIdentifier>{38764db1-4f58-4bca-b97e-ad9105b60e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\HARDWARE">
+      <UniqueIdentifier>{ba237063-7713-4d22-a7dd-5a1d27d6f75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\KombiFs">
+      <UniqueIdentifier>{70bab494-a110-4d50-89ef-27c1f2342d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\COMMPROC">
+      <UniqueIdentifier>{1611ef19-d21e-4c4c-9c6e-1b78b48378af}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="QCFW-Debug.vgdbsettings">
+      <Filter>VisualGDB settings</Filter>
+    </None>
+    <None Include="QCFW-Release.vgdbsettings">
+      <Filter>VisualGDB settings</Filter>
+    </None>
+    <None Include="stm32.xml">
+      <Filter>VisualGDB settings</Filter>
+    </None>
+    <None Include="stm32.props">
+      <Filter>Source files\Device-specific files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_BSP.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.H">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HARDWARE\LCD\lcdfont.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\APP\USER\stm32f10x.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\APP\USER\stm32f10x_conf.h">
+      <Filter>Source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CORE\core_cm3.h">
+      <Filter>Source files\CORE</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\APP\USER\BspTime.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\APP\USER\stm32f10x_it.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\APP\USER\system_stm32f10x.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CORE\startup_stm32f10x_md.s">
+      <Filter>Source files\CORE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CORE\core_cm3.c">
+      <Filter>Source files\CORE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_adc.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_bkp.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_dma.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_exti.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_flash.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_gpio.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_pwr.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_rcc.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_spi.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_tim.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_usart.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\STM32F10x_FWLib\src\misc.c">
+      <Filter>Source files\FWlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\delay\delay.c">
+      <Filter>Source files\SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\sys\sys.c">
+      <Filter>Source files\SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\usart\usart.c">
+      <Filter>Source files\SYSTEM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\ADC\adc.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\AW87318\AW87318.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\AW87319\AW87319.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\IIC\myiic.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\KEY\key.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\TIMER\timer.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\DMA\dma.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_BSP.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\LCD\ST7789.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\LCD\ST7789_init.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\SPI\spi.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HARDWARE\W25QXX\w25qxx.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\KombiFs\KombiFs.c">
+      <Filter>Source files\KombiFs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\COMMPROC\sys_queue.c">
+      <Filter>Source files\COMMPROC</Filter>
+    </ClCompile>
+    <ClCompile Include="QCFW.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SYSTEM\COMMPROC\sys_command_line_test.c">
+      <Filter>Source files\COMMPROC</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <LinkerScript Include="STM32F103C8_flash.lds">
+      <Filter>Source files</Filter>
+    </LinkerScript>
+  </ItemGroup>
+</Project>

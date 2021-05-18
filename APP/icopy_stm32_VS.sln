@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icopy_stm32_VS", "icopy_stm32_VS.vcxproj", "{C81B6DF4-4027-46C4-8874-012E9F2118EF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ICPX_BL", "..\BOOTLOADER\ICPX_BL\ICPX_BL.vcxproj", "{EFEB1A2D-63F6-4849-ACC0-046859F16CE8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QCFW", "..\QCFW\QCFW.vcxproj", "{69B42FB8-20D4-4618-AFE0-EA75DFA11FC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|VisualGDB = Debug|VisualGDB
+		Release|VisualGDB = Release|VisualGDB
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C81B6DF4-4027-46C4-8874-012E9F2118EF}.Debug|VisualGDB.ActiveCfg = Debug|VisualGDB
+		{C81B6DF4-4027-46C4-8874-012E9F2118EF}.Debug|VisualGDB.Build.0 = Debug|VisualGDB
+		{C81B6DF4-4027-46C4-8874-012E9F2118EF}.Release|VisualGDB.ActiveCfg = Release|VisualGDB
+		{C81B6DF4-4027-46C4-8874-012E9F2118EF}.Release|VisualGDB.Build.0 = Release|VisualGDB
+		{EFEB1A2D-63F6-4849-ACC0-046859F16CE8}.Debug|VisualGDB.ActiveCfg = Debug|VisualGDB
+		{EFEB1A2D-63F6-4849-ACC0-046859F16CE8}.Debug|VisualGDB.Build.0 = Debug|VisualGDB
+		{EFEB1A2D-63F6-4849-ACC0-046859F16CE8}.Release|VisualGDB.ActiveCfg = Release|VisualGDB
+		{EFEB1A2D-63F6-4849-ACC0-046859F16CE8}.Release|VisualGDB.Build.0 = Release|VisualGDB
+		{69B42FB8-20D4-4618-AFE0-EA75DFA11FC1}.Debug|VisualGDB.ActiveCfg = Debug|VisualGDB
+		{69B42FB8-20D4-4618-AFE0-EA75DFA11FC1}.Debug|VisualGDB.Build.0 = Debug|VisualGDB
+		{69B42FB8-20D4-4618-AFE0-EA75DFA11FC1}.Release|VisualGDB.ActiveCfg = Release|VisualGDB
+		{69B42FB8-20D4-4618-AFE0-EA75DFA11FC1}.Release|VisualGDB.Build.0 = Release|VisualGDB
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4F2DF65B-F1DC-44F8-AB97-F48E8B84752C}
+	EndGlobalSection
+EndGlobal
