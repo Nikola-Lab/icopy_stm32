@@ -181,6 +181,9 @@
     <ClCompile Include="..\SYSTEM\COMMPROC\sys_command_line_test.c">
       <Filter>Source files\COMMPROC</Filter>
     </ClCompile>
+    <ClCompile Include="..\SYSTEM\debugflag\debugflag.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <LinkerScript Include="STM32F103C8_flash.lds">

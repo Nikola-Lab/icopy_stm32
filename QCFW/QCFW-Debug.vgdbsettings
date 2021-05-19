@@ -104,7 +104,6 @@
           <string>target remote :$$SYS:GDB_PORT$$</string>
           <string>mon reset</string>
           <string>load</string>
-          <string>mon reset</string>
         </StartupCommands>
         <UseUnreliableLiveMemoryEngine>false</UseUnreliableLiveMemoryEngine>
         <ProgramFLASHUsingExternalTool>false</ProgramFLASHUsingExternalTool>
@@ -116,7 +115,7 @@
     <SemihostingPollingDelay>0</SemihostingPollingDelay>
     <StepIntoEntryPoint>false</StepIntoEntryPoint>
     <ReloadFirmwareOnReset>false</ReloadFirmwareOnReset>
-    <ValidateEndOfStackAddress>true</ValidateEndOfStackAddress>
+    <ValidateEndOfStackAddress>false</ValidateEndOfStackAddress>
     <StopAtEntryPoint>false</StopAtEntryPoint>
     <EnableVirtualHalts>false</EnableVirtualHalts>
     <DynamicAnalysisSettings>
@@ -141,6 +140,9 @@
     </DynamicAnalysisSettings>
     <EndOfStackSymbol>_estack</EndOfStackSymbol>
     <TimestampProviderTicksPerSecond>0</TimestampProviderTicksPerSecond>
+    <TraceSettings>
+      <EnableTracing>true</EnableTracing>
+    </TraceSettings>
     <KeepConsoleAfterExit>false</KeepConsoleAfterExit>
     <CheckInterfaceDrivers>true</CheckInterfaceDrivers>
   </Debug>
