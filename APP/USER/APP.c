@@ -38,6 +38,7 @@ void setup()
 	
 	//测试主板用的代码
 	//turnonh3();
+	//turnoffh3();
 	//turnonpm3();
 	//while (1) ;
 	

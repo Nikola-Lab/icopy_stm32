@@ -182,9 +182,6 @@
     <ClCompile Include="..\HARDWARE\IIC\myiic.c">
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
-    <ClCompile Include="..\HARDWARE\AW87319\AW87319.c">
-      <Filter>Source files\HARDWARE</Filter>
-    </ClCompile>
     <ClCompile Include="..\HARDWARE\AW87318\AW87318.c">
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
