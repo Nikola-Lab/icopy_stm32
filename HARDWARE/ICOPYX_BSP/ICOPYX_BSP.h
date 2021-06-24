@@ -20,6 +20,7 @@
 #include "myiic.h"
 #include "AW87318.h"
 #include "debugflag.h"
+#include "rtc.h"
 
 #define USE_AW87318
 

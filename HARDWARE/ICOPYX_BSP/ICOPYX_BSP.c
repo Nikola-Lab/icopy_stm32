@@ -1370,8 +1370,9 @@ u16 ICPX_BAT_VOL_REVICE(u8 what)
 }
 void STARTMODETASK(void)
 {
-	if (BKP_ReadBackupRegister(BKP_DR1) == 0xabcd)
+	if (BKP_ReadBackupRegister(BKP_DR1) == 0xabcd) //abcd为强制开机模式，立即启动H3
 	{
+		
 		fflush(stdout);
 		KEY_POWER(1);
 		ICPX_Booting_Screen(1); //初始化开机界面状态

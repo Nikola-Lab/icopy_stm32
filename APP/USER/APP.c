@@ -28,6 +28,8 @@ void setup()
 	KEY_Init();					//按键io初始化
 	CLI_INIT(57600);			//启动commandline
 	ICPX_BKP_Init();			//初始化备份寄存器
+	RTC_Init();					//初始化rtc
+	
 	if(FLASH_GetReadOutProtectionStatus() != SET)
 	{
 		FLASH_Unlock();
@@ -40,7 +42,14 @@ void setup()
 	//turnonh3();
 	//turnoffh3();
 	//turnonpm3();
-	//while (1) ;
+//	while (1);
+//	while (1) 
+//	{
+//		PRINTF("INT: %d", (INTREFVOL / Intvolavl) * 1000 * 4096);
+//		PRINTF("  BAT: %d", BATvolavl);
+//		PRINTF("  VCC: %d\r\n", VCCvolavl);
+//		PRINTF("  rtc: %ld\r\n", RTC_Get());
+//	}
 	
 	STARTMODETASK();			//开机模式判断
 	
