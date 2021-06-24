@@ -41,15 +41,17 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = SPI_SEL_Pin;					//SPI切换开关
 	GPIO_Init(SPI_SEL_GPIO_Port, &GPIO_InitStructure);
 	GPIO_ResetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin);
-
+	
+#ifdef HW_V15
 	GPIO_InitStructure.GPIO_Pin = FLASH_PWR_Pin;				//Flash电源引脚
 	GPIO_Init(FLASH_PWR_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
+#endif // HW_V15
 	
 #ifdef TESTFIRMWARE
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;					//D1用于下拉OTG
-	GPIO_Init(GPIOD, &GPIO_InitStructure);		 
-	GPIO_ResetBits(GPIOD, GPIO_Pin_1);
+	GPIO_InitStructure.GPIO_Pin = OTGSENSE_Pin;					//下拉OTG
+	GPIO_Init(OTGSENSE_GPIO_Port, &GPIO_InitStructure);		 
+	GPIO_ResetBits(OTGSENSE_GPIO_Port, OTGSENSE_Pin);
 #endif
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
@@ -84,15 +86,15 @@ void ICPX_GPIO_Init(void)
 	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;					//D0用于拉低电池采集引脚电压
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
+	GPIO_InitStructure.GPIO_Pin = BATSAMP_Pin;					//拉低电池采集引脚电压
+	GPIO_Init(BATSAMP_GPIO_Port, &GPIO_InitStructure);
+	GPIO_ResetBits(BATSAMP_GPIO_Port, BATSAMP_Pin);
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;		//浮空输入
 	
 #ifndef TESTFIRMWARE
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;					//D1用于检测otg输出状态
-	GPIO_Init(GPIOD, &GPIO_InitStructure);		  
+	GPIO_InitStructure.GPIO_Pin = OTGSENSE_Pin;					//用于检测otg输出状态
+	GPIO_Init(OTGSENSE_GPIO_Port, &GPIO_InitStructure);		  
 #endif // TESTFIRMWARE
 
 	
@@ -102,17 +104,13 @@ void ICPX_GPIO_Init(void)
 	GPIO_InitStructure.GPIO_Pin = PM_4LED_Pin;
 	GPIO_Init(PM_4LED_GPIO_Port, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_Pin = CHARG_STATE_Pin;
-	GPIO_Init(CHARG_STATE_GPIO_Port, &GPIO_InitStructure);
+	//GPIO_InitStructure.GPIO_Pin = CHARG_STATE_Pin;
+	//GPIO_Init(CHARG_STATE_GPIO_Port, &GPIO_InitStructure);
 	
 	AW87318_Init();
 }
 void ICPX_AMP_Init(void)
 {
-#ifdef USE_AW87319
-	//初始化功放
-	AW87319_Init();
-#endif
 #ifdef USE_AW87318
 	//初始化功放
 	AW87318_START();
@@ -877,7 +875,7 @@ void CHGKEYTASK(u8 en)
 void CHARGE_OTG()
 {
 	//判断是否插入otg,按需控制充电开关
-	if(GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1))
+	if(GPIO_ReadInputDataBit(OTGSENSE_GPIO_Port, OTGSENSE_Pin))
 	{
 		turnoffchg();
 		otgon = 1;
@@ -1493,7 +1491,9 @@ void ICPX_Standby()
 {
 	printf("i'm sleepy!\r\n");
 	fflush(stdout);
-	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
+#ifdef HW_V15
+	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);		  
+#endif // HW_V15
 #ifdef USE_AW87318
 	//关闭功放
 	AW87318_SLEEP();
