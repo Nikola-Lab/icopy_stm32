@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;../SYSTEM/debugflag;../HARDWARE/RTC;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;../SYSTEM/debugflag;../HARDWARE/RTC;../HARDWARE/IP5306;;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;STM32F10X_MD;HW_V16;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <GeneratePreprocessorOutput>true</GeneratePreprocessorOutput>
       <AdditionalOptions />
@@ -63,9 +63,9 @@
   <ItemGroup>
     <ClCompile Include="..\CORE\startup_stm32f10x_md.s" />
     <ClCompile Include="..\HARDWARE\ADC\adc.c" />
-    <ClCompile Include="..\HARDWARE\AW87318\AW87318.c" />
     <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c" />
     <ClCompile Include="..\HARDWARE\IIC\myiic.c" />
+    <ClCompile Include="..\HARDWARE\IP5306\IP5306.c" />
     <ClCompile Include="..\HARDWARE\KEY\key.c" />
     <ClCompile Include="..\HARDWARE\RTC\rtc.c" />
     <ClCompile Include="..\HARDWARE\TIMER\timer.c" />

@@ -81,9 +81,9 @@ void ICPX_GPIO_Init(void)
 	GPIO_Init(PM_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
 
-	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
-	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
-	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
+	//GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
+	//GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
+	//GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	
 	GPIO_InitStructure.GPIO_Pin = BATSAMP_Pin;					//拉低电池采集引脚电压
@@ -107,7 +107,7 @@ void ICPX_GPIO_Init(void)
 	//GPIO_InitStructure.GPIO_Pin = CHARG_STATE_Pin;
 	//GPIO_Init(CHARG_STATE_GPIO_Port, &GPIO_InitStructure);
 	
-	AW87318_Init();
+	//AW87318_Init();
 }
 void ICPX_AMP_Init(void)
 {

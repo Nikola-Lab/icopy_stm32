@@ -225,7 +225,6 @@ static uint8_t cli_lcd2h3(void *para, uint8_t len)
 {
 	isstarting = 0;
 	SPISELH3();
-	ICPX_AMP_Init();			//初始化音频放大器
 	return TRUE;
 }
 
