@@ -33,9 +33,6 @@
     <Filter Include="Source files\COMMPROC">
       <UniqueIdentifier>{b108d857-45d9-4fb7-80a8-3b4bd4a5fdb4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header files\Device-specific files">
-      <UniqueIdentifier>{0c2bd23e-8b3d-40f6-9556-49da40916be2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="stm32.props">
