@@ -18,11 +18,11 @@ void W25QXX_Init(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);//PORTB时钟使能 
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;  // PB2 推挽 
+	GPIO_InitStructure.GPIO_Pin = Q25_EN_Pin;  // PB2 推挽 
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //推挽输出
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB, GPIO_Pin_2);
+	GPIO_Init(Q25_EN_GPIO_Port, &GPIO_InitStructure);
+	GPIO_SetBits(Q25_EN_GPIO_Port, Q25_EN_Pin);
  
 	W25QXX_CS = 1;				//SPI FLASH不选中
 	//SPI1_Init();		   	//初始化SPI

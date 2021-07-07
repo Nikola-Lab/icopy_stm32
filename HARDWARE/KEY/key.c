@@ -14,8 +14,6 @@ void KEY_Init(void) //IO初始化
 	GPIO_InitTypeDef GPIO_InitStructure;
  
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); 
-	//pa15 pb3 pb4 释放为普通io
 
 	//上拉模式
 	GPIO_InitStructure.GPIO_Pin  = BUTRIGHT_Pin;

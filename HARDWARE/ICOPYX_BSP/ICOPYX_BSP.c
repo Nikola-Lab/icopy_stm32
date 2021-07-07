@@ -28,7 +28,8 @@ void ICPX_GPIO_Init(void)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);		//使能复用网络时钟
 
-	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);	//关闭jlink，打开SWJ
+	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);		//关闭jlink，关闭SWJ
+	//pa15 pb3 pb4 释放为普通io
 	GPIO_PinRemapConfig(GPIO_Remap_PD01, ENABLE);				//使能PD0和1复用
 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -42,18 +43,6 @@ void ICPX_GPIO_Init(void)
 	GPIO_Init(SPI_SEL_GPIO_Port, &GPIO_InitStructure);
 	GPIO_ResetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin);
 	
-#ifdef HW_V15
-	GPIO_InitStructure.GPIO_Pin = FLASH_PWR_Pin;				//Flash电源引脚
-	GPIO_Init(FLASH_PWR_GPIO_Port, &GPIO_InitStructure);
-	GPIO_SetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);
-#endif // HW_V15
-	
-#ifdef TESTFIRMWARE
-	GPIO_InitStructure.GPIO_Pin = OTGSENSE_Pin;					//下拉OTG
-	GPIO_Init(OTGSENSE_GPIO_Port, &GPIO_InitStructure);		 
-	GPIO_ResetBits(OTGSENSE_GPIO_Port, OTGSENSE_Pin);
-#endif
-
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 
 	GPIO_InitStructure.GPIO_Pin = H3_PWR_ON_OFF_Pin;
@@ -81,9 +70,9 @@ void ICPX_GPIO_Init(void)
 	GPIO_Init(PM_PWR_ON_OFF_GPIO_Port, &GPIO_InitStructure);
 	GPIO_SetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin);
 
-	//GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
-	//GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
-	//GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
+	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
+	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
+	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	
 	GPIO_InitStructure.GPIO_Pin = BATSAMP_Pin;					//拉低电池采集引脚电压
@@ -92,29 +81,20 @@ void ICPX_GPIO_Init(void)
 	
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;		//浮空输入
 	
-#ifndef TESTFIRMWARE
 	GPIO_InitStructure.GPIO_Pin = OTGSENSE_Pin;					//用于检测otg输出状态
 	GPIO_Init(OTGSENSE_GPIO_Port, &GPIO_InitStructure);		  
-#endif // TESTFIRMWARE
-
-	
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;				//输入，开启下拉
 
 	GPIO_InitStructure.GPIO_Pin = PM_4LED_Pin;
 	GPIO_Init(PM_4LED_GPIO_Port, &GPIO_InitStructure);
 
-	//GPIO_InitStructure.GPIO_Pin = CHARG_STATE_Pin;
-	//GPIO_Init(CHARG_STATE_GPIO_Port, &GPIO_InitStructure);
-	
-	//AW87318_Init();
+	AW87318_Init();
 }
 void ICPX_AMP_Init(void)
 {
-#ifdef USE_AW87318
 	//初始化功放
 	AW87318_START();
-#endif
 }
 void ICPX_BKP_Init(void)
 {
@@ -1492,13 +1472,8 @@ void ICPX_Standby()
 {
 	printf("i'm sleepy!\r\n");
 	fflush(stdout);
-#ifdef HW_V15
-	GPIO_ResetBits(FLASH_PWR_GPIO_Port, FLASH_PWR_Pin);		  
-#endif // HW_V15
-#ifdef USE_AW87318
 	//关闭功放
 	AW87318_SLEEP();
-#endif
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 	//开电源管理时钟PWR_Regulator_LowPower
 

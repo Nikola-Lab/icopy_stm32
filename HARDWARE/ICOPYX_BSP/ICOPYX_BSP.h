@@ -20,7 +20,7 @@
 #include "myiic.h"
 #include "debugflag.h"
 #include "rtc.h"
-#include "ip5306.h"
+#include "AW87318.h"
 
 #define ICOPYX_SW_VERSION (1)
 #define ICOPYX_SW_SUBVERSION (0)
@@ -78,8 +78,11 @@
 	#define PM_PWR_ON_OFF_Pin 					GPIO_Pin_9
 	#define PM_PWR_ON_OFF_GPIO_Port 			GPIOB 
 
-	#define SPI_SEL_Pin 						GPIO_Pin_13
-	#define SPI_SEL_GPIO_Port 					GPIOB 
+	#define Q25_EN_Pin 						    GPIO_Pin_2
+	#define Q25_EN_GPIO_Port 					GPIOB 
+
+	#define VUSB_Pin  							GPIO_Pin_1
+	#define VUSB_GPIO_Port 						GPIOA 
 												  
 	#define PM_BUTTON_Pin 						GPIO_Pin_7
 	#define PM_BUTTON_GPIO_Port 				GPIOB
