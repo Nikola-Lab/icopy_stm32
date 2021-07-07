@@ -629,10 +629,22 @@ void ICPX_DNA_CIRCLE(void)
 	//显示当前帧数据
 	for(node = 0 ; node < max_node_number ; node++)
 	{
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][0] + halfheight, (u8)((nodeslast[node][1] + node_radius) / 2), ICPX_BLUE_BAK);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][0] + halfheight, (u8)((nodes[node][1] + node_radius) / 2), WHITE);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodeslast[node][2] + halfheight, (u8)((nodeslast[node][3] + node_radius) / 2), ICPX_BLUE_BAK);
-		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), nodes[node][2] + halfheight, (u8)((nodes[node][3] + node_radius) / 2), 0xDEFB);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), 
+			nodeslast[node][0] + halfheight, 
+			(u8)((nodeslast[node][1] + node_radius) / 2), 
+			ICPX_BLUE_BAK);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), 
+			nodes[node][0] + halfheight, 
+			(u8)((nodes[node][1] + node_radius) / 2), 
+			WHITE);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), 
+			nodeslast[node][2] + halfheight, 
+			(u8)((nodeslast[node][3] + node_radius) / 2), 
+			ICPX_BLUE_BAK);
+		ST7789_Draw_ALLCircle((u16)(fstnodex + node * nodestep), 
+			nodes[node][2] + halfheight, 
+			(u8)((nodes[node][3] + node_radius) / 2), 
+			0xDEFB);
 	}
 	//保存当前帧数据到上一帧寄存器
 	for(node = 0 ; node < max_node_number ; node++)
