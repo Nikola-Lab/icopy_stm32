@@ -188,8 +188,5 @@
     <ClCompile Include="..\HARDWARE\RTC\rtc.c">
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
-    <ClCompile Include="..\HARDWARE\IP5306\IP5306.c">
-      <Filter>Source files\HARDWARE</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

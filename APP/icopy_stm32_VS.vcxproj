@@ -65,7 +65,6 @@
     <ClCompile Include="..\HARDWARE\ADC\adc.c" />
     <ClCompile Include="..\HARDWARE\ICOPYX_BSP\ICOPYX_IMAGE.c" />
     <ClCompile Include="..\HARDWARE\IIC\myiic.c" />
-    <ClCompile Include="..\HARDWARE\IP5306\IP5306.c" />
     <ClCompile Include="..\HARDWARE\KEY\key.c" />
     <ClCompile Include="..\HARDWARE\RTC\rtc.c" />
     <ClCompile Include="..\HARDWARE\TIMER\timer.c" />

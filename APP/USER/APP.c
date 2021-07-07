@@ -29,7 +29,6 @@ void setup()
 	CLI_INIT(57600);			//启动commandline
 	ICPX_BKP_Init();			//初始化备份寄存器
 	RTC_Init();					//初始化rtc
-	IP5306_Init();				//初始化5306充电器
 	
 //	if(FLASH_GetReadOutProtectionStatus() != SET)
 //	{
@@ -43,15 +42,6 @@ void setup()
 	//turnonh3();
 	//turnoffh3();
 	//turnonpm3();
-//	while (1);
-	while (1) 
-	{
-		PRINTF("5306: %02X", IP5306_ReadOneByte(0x01));
-//		PRINTF("INT: %d", (INTREFVOL / Intvolavl) * 1000 * 4096);
-//		PRINTF("  BAT: %d", BATvolavl);
-//		PRINTF("  VCC: %d\r\n", VCCvolavl);
-//		PRINTF("  rtc: %ld\r\n", RTC_Get());
-	}
 	
 	STARTMODETASK();			//开机模式判断
 	
