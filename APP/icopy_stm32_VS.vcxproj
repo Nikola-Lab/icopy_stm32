@@ -74,6 +74,7 @@
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_gpio.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_pwr.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_rcc.c" />
+    <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_rtc.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_spi.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_tim.c" />
     <ClCompile Include="..\STM32F10x_FWLib\src\stm32f10x_usart.c" />
