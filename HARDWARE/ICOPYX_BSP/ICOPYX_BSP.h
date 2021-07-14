@@ -18,8 +18,8 @@
 #include "math.h"
 #include "timer.h"
 #include "myiic.h"
-#include "AW87319.h"
 #include "AW87318.h"
+#include "rtc.h"
 
 #define USE_AW87318
 

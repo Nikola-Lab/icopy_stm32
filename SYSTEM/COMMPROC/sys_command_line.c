@@ -28,6 +28,8 @@ static uint8_t cli_lcd2h3(void *para, uint8_t len);
 static uint8_t cli_lcd2st(void *para, uint8_t len);
 static uint8_t cli_shutdowning(void *para, uint8_t len);
 static uint8_t cli_planshutdown(void *para, uint8_t len);
+static uint8_t cli_readrtc(void *para, uint8_t len);
+static uint8_t cli_setrtc(void *para, uint8_t len);
 typedef struct {
 #define HANDLE_LEN 1024
 	u8 buff[HANDLE_LEN];
@@ -69,6 +71,10 @@ const COMMAND_S CLI_Cmd[] = {
 	{ "givemelcd", NULL, NULL, cli_lcd2h3},
 	{ "giveyoulcd", NULL, NULL, cli_lcd2st},
 	{ "shutdowning", NULL, NULL, cli_shutdowning},
+	
+	//RTC指令
+	{ "givemetime", NULL, NULL, cli_readrtc},
+	{ "giveyoutime", NULL, NULL, cli_setrtc},
 	
 	//显示操作指令
 	{ "fillscreen", NULL, NULL, cli_fillscreen },
@@ -234,6 +240,67 @@ static uint8_t cli_lcd2st(void *para, uint8_t len)
 static uint8_t cli_shutdowning(void *para, uint8_t len)
 {
 	ICPX_Shutdown_Screen(1);
+	return TRUE;
+}
+
+//读取rtc 发送到H3
+static uint8_t cli_readrtc(void *para, uint8_t len)
+{
+	printf("#rtctime:%lu", RTC_Get());
+	fflush(stdout);
+	return TRUE;
+}
+//获得rtc时间，设置到本地
+//指令         参数时间   参数时间值      
+//giveyoutime  T(0x54)  (0x00)  (0x00)  (0x00)  (0x00) 
+//配置帧结束   
+//A(0x41)
+//67 69 76 65 79 6F 75 74 69 6D 65 54 00 00 00 00 41 0D 0A
+static uint8_t cli_setrtc(void *para, uint8_t len)
+{
+	uint8_t *pTemp;
+	pTemp = (uint8_t *)para;
+	
+	u8 updating = 1;
+	
+	u32 gettime = 0;
+	
+	
+	if ((0 < len) && (NULL != pTemp)) {
+		while (updating && '\r' != *pTemp)
+		{
+			if ('T' == *pTemp) {
+				//颜色帧传输
+				pTemp++;
+				gettime += (*pTemp) << 24;
+				pTemp++;
+				gettime += (*pTemp) << 16;
+				pTemp++;
+				gettime += (*pTemp) << 8;
+				pTemp++;
+				gettime += (*pTemp);
+			}
+			else if ('A' == *pTemp) {
+				//帧传输结束，开始更新
+				updating = 0;
+#ifdef commdebug
+				PRINTF("giveyoutime:time: %08X \r\n ",
+					\
+					gettime);
+#endif
+				if (gettime < 4294967295)
+				{
+					RTC_Set(gettime);
+				}
+				else return FALSE;
+			}
+			else {
+				//错误数据帧
+				return FALSE;
+			}
+			pTemp++;
+		}
+	}
 	return TRUE;
 }
 
