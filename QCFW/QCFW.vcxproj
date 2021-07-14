@@ -42,14 +42,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;..\APP\USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\HARDWARE/DMA;..\HARDWARE/ICOPYX_BSP;..\HARDWARE/LCD;..\HARDWARE/SPI;..\STM32F10x_FWLib/inc;..\SYSTEM/delay;..\SYSTEM/sys;..\SYSTEM/usart;..\APP\USER;..\HARDWARE/W25QXX;..\SYSTEM/KombiFs;../SYSTEM/COMMPROC;../HARDWARE/ADC;../HARDWARE/KEY;../HARDWARE/TIMER;../HARDWARE/IIC;..\CORE;../HARDWARE/AW87319;../HARDWARE/AW87318;../HARDWARE/RTC;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;STM32F10X_MD;TESTFIRMWARE;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions />
+      <CLanguageStandard />
+      <CPPLanguageStandard />
     </ClCompile>
     <Link>
-      <AdditionalLinkerInputs>;%(Link.AdditionalLinkerInputs)</AdditionalLinkerInputs>
-      <LibrarySearchDirectories>;%(Link.LibrarySearchDirectories)</LibrarySearchDirectories>
-      <AdditionalLibraryNames>;%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
+      <AdditionalLinkerInputs>%(Link.AdditionalLinkerInputs)</AdditionalLinkerInputs>
+      <LibrarySearchDirectories>%(Link.LibrarySearchDirectories)</LibrarySearchDirectories>
+      <AdditionalLibraryNames>%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
       <LinkerScript>STM32F103C8_flash.lds</LinkerScript>
+      <AdditionalOptions />
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

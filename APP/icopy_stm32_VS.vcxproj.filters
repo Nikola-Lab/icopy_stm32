@@ -185,5 +185,8 @@
     <ClCompile Include="..\HARDWARE\AW87318\AW87318.c">
       <Filter>Source files\HARDWARE</Filter>
     </ClCompile>
+    <ClCompile Include="..\HARDWARE\RTC\rtc.c">
+      <Filter>Source files\HARDWARE</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
