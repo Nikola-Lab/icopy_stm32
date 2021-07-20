@@ -10,6 +10,7 @@ u8 RTC_Init(void)
 {
 	//检查是不是第一次配置时钟
 	u8 temp = 0;
+	u8 usehse = 0;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);	//使能PWR和BKP外设时钟   
 	PWR_BackupAccessCmd(ENABLE);	//使能后备寄存器访问  
 	if(BKP_ReadBackupRegister(BKP_DR2) != 0x5050) //bkpdr2 数据不正确，意味着是第一次上电
@@ -38,6 +39,7 @@ u8 RTC_Init(void)
 		else//初始化时钟成功	
 		{
 			printf("rtc: use hse\r\n");
+			usehse = 1;
 			fflush(stdout);
 			RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 		}
@@ -49,7 +51,14 @@ u8 RTC_Init(void)
 		//RTC_WaitForLastTask();
 		
 		RTC_EnterConfigMode();
-		RTC_SetPrescaler(32767); //设置预分频
+		if (usehse == 1)
+		{
+			RTC_SetPrescaler(32767); //设置预分频
+		}
+		else
+		{
+			RTC_SetPrescaler(40000); //内部晶振40k
+		}
 		RTC_WaitForLastTask();
 		RTC_Set(0);	
 		RTC_ExitConfigMode();
