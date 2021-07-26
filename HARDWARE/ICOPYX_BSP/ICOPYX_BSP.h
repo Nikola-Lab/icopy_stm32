@@ -46,6 +46,9 @@
 #define CHARG_EN_Pin 						GPIO_Pin_12
 #define CHARG_EN_GPIO_Port 					GPIOB
 
+#define L_CHARG_EN_Pin 						GPIO_Pin_13
+#define L_CHARG_EN_GPIO_Port 				GPIOC
+
 #define AMP_STDN_Pin						GPIO_Pin_6
 #define AMP_STDN_GPIO_Port					GPIOB	
 
@@ -127,9 +130,15 @@
 #define turnonpm3()		GPIO_ResetBits(PM_PWR_ON_OFF_GPIO_Port, PM_PWR_ON_OFF_Pin)
 #define turnonh3()		GPIO_ResetBits(H3_PWR_ON_OFF_GPIO_Port, H3_PWR_ON_OFF_Pin)
 
-#define turnonchg()		GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
-#define turnoffchg()	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
-#define readchg()       GPIO_ReadOutputDataBit(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+#define turnonchg()			ICPX_CHG_CUR_SET(4)
+#define turnoffchg()		ICPX_CHG_CUR_SET(0)
+
+#define turnonchg_high()	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+#define turnoffchg_high()	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
+#define turnonchg_low()		GPIO_SetBits(L_CHARG_EN_GPIO_Port, L_CHARG_EN_Pin)
+#define turnoffchg_low()	GPIO_ResetBits(L_CHARG_EN_GPIO_Port, L_CHARG_EN_Pin)
+
+//#define readchg()       GPIO_ReadOutputDataBit(CHARG_EN_GPIO_Port, CHARG_EN_Pin)
 
 #define SPISELH3()		GPIO_SetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
 #define SPISELST()		GPIO_ResetBits(SPI_SEL_GPIO_Port, SPI_SEL_Pin)
@@ -172,6 +181,8 @@ void MX_GPIO_Init(void);
 void ICPX_GPIO_Init(void);
 void ICPX_AMP_Init(void);
 void ICPX_BKP_Init(void);
+void ICPX_CHG_CUR_SET(u8 mode);
+void ICPX_CHG_CUR_SET_AIM(u8 mode);
 void ICPX_Find_25Q80(void);
 void ICPX_Test_25Q80(void);
 void ICPX_BB_25Q80(u16 block);

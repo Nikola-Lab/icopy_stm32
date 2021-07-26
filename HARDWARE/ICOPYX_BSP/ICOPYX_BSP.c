@@ -1,6 +1,7 @@
 #include "ICOPYX_BSP.h"
 #include "sys_command_line.h"
 static u8 otgon = 0;
+static u8 aim_chg_speed = 0;
 u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
 u8 hasbak = 0;
@@ -31,6 +32,10 @@ void ICPX_GPIO_Init(void)
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);		//关闭jlink，关闭SWJ
 	//pa15 pb3 pb4 释放为普通io
 	GPIO_PinRemapConfig(GPIO_Remap_PD01, ENABLE);				//使能PD0和1复用
+	
+	PWR_BackupAccessCmd(ENABLE);//允许修改RTC和后备寄存器
+	RCC_LSEConfig(RCC_LSE_OFF); //关闭LSE,启用PC14+PC15
+	BKP_TamperPinCmd(DISABLE);  //关闭入侵检测,启用PC13
 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -72,7 +77,12 @@ void ICPX_GPIO_Init(void)
 
 	GPIO_InitStructure.GPIO_Pin = CHARG_EN_Pin;
 	GPIO_Init(CHARG_EN_GPIO_Port, &GPIO_InitStructure);
-	GPIO_ResetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
+	GPIO_SetBits(CHARG_EN_GPIO_Port, CHARG_EN_Pin);
+	
+	GPIO_InitStructure.GPIO_Pin = L_CHARG_EN_Pin;
+	GPIO_Init(L_CHARG_EN_GPIO_Port, &GPIO_InitStructure);
+	GPIO_ResetBits(L_CHARG_EN_GPIO_Port, L_CHARG_EN_Pin);
+	
 	//PD1和0开漏输出或复用开漏输出，不可设置为推挽输出或复用推挽输出
 	
 	GPIO_InitStructure.GPIO_Pin = BATSAMP_Pin;					//拉低电池采集引脚电压
@@ -100,6 +110,58 @@ void ICPX_BKP_Init(void)
 {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 	PWR_BackupAccessCmd(ENABLE);
+}
+// 设置充电电流的模式
+// 传入参数0为停止充电
+// 传入参数1为低速模式
+// 传入参数2为高速模式
+// 传入参数3为超高速模式
+// 传入参数4为按照变量配置自动切换到对应充电模式
+void ICPX_CHG_CUR_SET(u8 mode)
+{
+	switch (mode)
+	{
+	case 0:
+		turnoffchg_high();
+		turnoffchg_low();
+		break;
+	case 1:
+		turnoffchg_high();
+		turnonchg_low();
+		break;
+	case 2:
+		turnonchg_high();
+		turnoffchg_low();
+		break;
+	case 3:
+		turnonchg_high();
+		turnonchg_low();
+		break;
+	case 4:
+		if (aim_chg_speed)
+		{
+			ICPX_CHG_CUR_SET(2);
+		}
+		else
+		{
+			ICPX_CHG_CUR_SET(1);
+		}
+		break;
+	default:
+		break;
+	}
+}
+// 设置计划中充电电流的模式
+// 传入参数0为低速
+// 传入参数1为高速
+void ICPX_CHG_CUR_SET_AIM(u8 mode)
+{
+	if (mode)
+	{
+		aim_chg_speed = TRUE;
+		return;
+	}
+	aim_chg_speed = FALSE;
 }
 void ICPX_Find_25Q80(void)
 {
@@ -900,12 +962,16 @@ u8 MAINCHARGETASK(u8 what)
 			{
 				chargestate = 1;
 				printf("CHARGING!\r\n");
+				ICPX_CHG_CUR_SET_AIM(0);//一旦插入就设置充电为低速
+				turnonchg();//然后启动充电
 				fflush(stdout);
 			}
 			else if(VCCvol <= VCCTHRLOW && (chargestate == 1 || chargestate == 2))
 			{
 				chargestate = 0;
 				printf("DISCHARGIN!\r\n");
+				ICPX_CHG_CUR_SET_AIM(0);//一旦拔出就设置充电为低速
+				turnoffchg();//然后关闭充电
 				fflush(stdout);
 			}
 		}
@@ -960,7 +1026,7 @@ u16 MAINBATCHECKTASK(u8 what)
 		}
 		else if(step == 0 && inprocess == 1 && g_Tim2Array[eTimbat] < 10000) //充电期间，要考虑是否真的在充电
 		{
-			if (VCCvol < VCCTHRLOW || otgon == 1)
+			if (MAINCHARGETASK(1) == 0  || otgon == 1)
 			{
 				//没有在充电（或者OTG打开，这时VCC也很高），那么这一步直接跳过
 				step = 1;
@@ -1071,12 +1137,12 @@ u32 BATVOL2PERCENT(u16 VOL)
 	//10 %	3.68V		5%-20%		红
 	//5 %	3.45V	1				关机
 	//0 %	3.00V
-//#define P100VOL	4200
-//#define P80VOL	3980
-//#define P60VOL	3870
-//#define P40VOL	3790
-//#define P20VOL	3740
-//#define P5VOL	3450
+	//#define P100VOL	4200
+	//#define P80VOL	3980
+	//#define P60VOL	3870
+	//#define P40VOL	3790
+	//#define P20VOL	3740
+	//#define P5VOL	3450
 	
 	//100%	4.20V	1
 	//90 %	4.00V		80%-100%	白

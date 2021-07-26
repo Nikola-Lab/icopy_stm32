@@ -30,6 +30,8 @@ static uint8_t cli_shutdowning(void *para, uint8_t len);
 static uint8_t cli_planshutdown(void *para, uint8_t len);
 static uint8_t cli_readrtc(void *para, uint8_t len);
 static uint8_t cli_setrtc(void *para, uint8_t len);
+static uint8_t cli_highcurr(void *para, uint8_t len);
+static uint8_t cli_lowcurr(void *para, uint8_t len);
 typedef struct {
 #define HANDLE_LEN 1024
 	u8 buff[HANDLE_LEN];
@@ -75,6 +77,10 @@ const COMMAND_S CLI_Cmd[] = {
 	//RTC指令
 	{ "givemetime", NULL, NULL, cli_readrtc},
 	{ "giveyoutime", NULL, NULL, cli_setrtc},
+	
+	//设置充电电流指令
+	{ "sethighcurrent", NULL, NULL, cli_highcurr},
+	{ "setlowcurrent", NULL, NULL, cli_lowcurr},
 	
 	//显示操作指令
 	{ "fillscreen", NULL, NULL, cli_fillscreen },
@@ -300,6 +306,18 @@ static uint8_t cli_setrtc(void *para, uint8_t len)
 			pTemp++;
 		}
 	}
+	return TRUE;
+}
+//设置高电流模式实现
+static uint8_t cli_highcurr(void *para, uint8_t len)
+{
+	ICPX_CHG_CUR_SET_AIM(1);
+	return TRUE;
+}
+//设置低电流模式实现
+static uint8_t cli_lowcurr(void *para, uint8_t len)
+{
+	ICPX_CHG_CUR_SET_AIM(0);
 	return TRUE;
 }
 

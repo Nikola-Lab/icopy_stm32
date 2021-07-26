@@ -92,9 +92,11 @@ void loop()
 			ST7789_BL_ON();
 			ST7789_Fill(0, 0, ST7789_H, ST7789_W, GREEN);	//没有资源的情况下，充电显示绿屏
 		}
+		ICPX_CHG_CUR_SET_AIM(1);//设定高速模式
 		MAINCHARGETASK(0);
 		CHGKEYTASK(1);
 		MAINBATCHECKTASK(0);
+		//检测电压来判断是否关机
 		if (VCCvol < VCCTHRLOW)
 		{
 			//电源拔掉了
@@ -112,6 +114,7 @@ void loop()
 		turnonh3();
 		if (isstarting == 1)		//1代表开机过程
 		{
+			ICPX_CHG_CUR_SET_AIM(0);//设定低速模式
 			if (ICPX_img_data_ok == 1)
 			{
 				ICPX_Booting_Screen(0);
