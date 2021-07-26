@@ -11,6 +11,9 @@ static uint8_t cli_restartpm3(void *para, uint8_t len);
 static uint8_t cli_volbat(void *para, uint8_t len);
 static uint8_t cli_volinput(void *para, uint8_t len);
 
+static uint8_t cli_highcurr(void *para, uint8_t len);
+static uint8_t cli_lowcurr(void *para, uint8_t len);
+
 static uint8_t cli_charge(void *para, uint8_t len);
 static uint8_t cli_h3start(void *para, uint8_t len);
 static uint8_t cli_lcd2h3(void *para, uint8_t len);
@@ -69,6 +72,9 @@ const COMMAND_S CLI_Cmd[] = {
 	{ "screentest_start", NULL, NULL, cli_screentest},
 	
 	{ "flashtest", NULL, NULL, cli_flashtest},
+	
+	{ "highspeed", NULL, NULL, cli_highcurr},
+	{ "lowspeed", NULL, NULL, cli_lowcurr},
 	
 	{ "turnonh3", NULL, NULL, cli_turnonh3},
 	{ "turnoffh3", NULL, NULL, cli_turnoffh3},
@@ -208,6 +214,21 @@ static uint8_t cli_audioon(void *para, uint8_t len)
 	ICPX_AMP_Init();			//初始化音频放大器
 	return TRUE;
 }
+//设置高电流模式实现
+static uint8_t cli_highcurr(void *para, uint8_t len)
+{
+	ICPX_CHG_CUR_SET_AIM(1);
+	ICPX_CHG_CUR_SET(4);
+	return TRUE;
+}
+//设置低电流模式实现
+static uint8_t cli_lowcurr(void *para, uint8_t len)
+{
+	ICPX_CHG_CUR_SET_AIM(0);
+	ICPX_CHG_CUR_SET(4);
+	return TRUE;
+}
+
 
 
 //终端初始化实现
