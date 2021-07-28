@@ -30,8 +30,10 @@ static uint8_t cli_shutdowning(void *para, uint8_t len);
 static uint8_t cli_planshutdown(void *para, uint8_t len);
 static uint8_t cli_readrtc(void *para, uint8_t len);
 static uint8_t cli_setrtc(void *para, uint8_t len);
+static uint8_t cli_whitchrtc(void *para, uint8_t len);
 static uint8_t cli_highcurr(void *para, uint8_t len);
 static uint8_t cli_lowcurr(void *para, uint8_t len);
+
 typedef struct {
 #define HANDLE_LEN 1024
 	u8 buff[HANDLE_LEN];
@@ -77,6 +79,7 @@ const COMMAND_S CLI_Cmd[] = {
 	//RTC指令
 	{ "givemetime", NULL, NULL, cli_readrtc},
 	{ "giveyoutime", NULL, NULL, cli_setrtc},
+	{ "whitchrtc", NULL, NULL, cli_whitchrtc},
 	
 	//设置充电电流指令
 	{ "sethighcurrent", NULL, NULL, cli_highcurr},
@@ -306,6 +309,13 @@ static uint8_t cli_setrtc(void *para, uint8_t len)
 			pTemp++;
 		}
 	}
+	return TRUE;
+}
+//查询rtc晶振来源
+static uint8_t cli_whitchrtc(void *para, uint8_t len)
+{
+	if (rtc_ext == 1) {PRINTF("#usertcxtal:OUT");}
+	else {PRINTF("#usertcxtal:INT");}
 	return TRUE;
 }
 //设置高电流模式实现
