@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>USER;../../HARDWARE/W25QXX;../../HARDWARE/SPI;../../HARDWARE/LCD;../../HARDWARE/ICOPYX_BSP;../../HARDWARE/DMA;../../CORE;../../SYSTEM/delay;../../SYSTEM/KombiFs;../../SYSTEM/sys;../../SYSTEM/usart;../../STM32F10x_FWLib/inc;../../SYSTEM/COMMPROC;../../HARDWARE/ADC;../../HARDWARE/KEY;../../HARDWARE/TIMER;../../HARDWARE/IIC;../../HARDWARE/AW87319;../../HARDWARE/AW87318;../../SYSTEM/debugflag;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>USER;../../HARDWARE/W25QXX;../../HARDWARE/SPI;../../HARDWARE/LCD;../../HARDWARE/ICOPYX_BSP;../../HARDWARE/DMA;../../CORE;../../SYSTEM/delay;../../SYSTEM/KombiFs;../../SYSTEM/sys;../../SYSTEM/usart;../../STM32F10x_FWLib/inc;../../SYSTEM/COMMPROC;../../HARDWARE/ADC;../../HARDWARE/KEY;../../HARDWARE/TIMER;../../HARDWARE/IIC;../../HARDWARE/AW87319;../../HARDWARE/AW87318;../../SYSTEM/debugflag;../../HARDWARE/RTC;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;USE_STDPERIPH_DRIVER;STM32F10X_MD;HW_V16;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions />
       <CLanguageStandard />
