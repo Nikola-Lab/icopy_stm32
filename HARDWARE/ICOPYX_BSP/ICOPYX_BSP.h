@@ -172,7 +172,7 @@
 #define PII 3.14159265
 #define y_frame   (max_y_hight - node_radius)
 /////////////////////////////////////////////////dna动画end////////////////////////
-
+u8 rtc_ext;
 u8 startmode;
 u8 isstarting;
 u8 testkeying;

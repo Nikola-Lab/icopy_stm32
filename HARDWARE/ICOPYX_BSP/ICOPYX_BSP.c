@@ -4,6 +4,9 @@ static u8 otgon = 0;
 static u8 aim_chg_speed = 0;
 u8 startmode = START_MODE_NONE;
 u8 isstarting = 1;
+
+u8 rtc_ext = 0;
+
 u8 hasbak = 0;
 
 u8 stdnflag = 0;
@@ -931,8 +934,11 @@ void CHARGE_OTG()
 	//判断是否插入otg,按需控制充电开关
 	if(GPIO_ReadInputDataBit(OTGSENSE_GPIO_Port, OTGSENSE_Pin))
 	{
-		turnoffchg();
 		otgon = 1;
+		printf("DISCHARGIN!\r\n");
+		ICPX_CHG_CUR_SET_AIM(0);//一旦拔出就设置充电为低速
+		turnoffchg();//然后关闭充电
+		fflush(stdout);
 	}
 	else
 	{
@@ -958,7 +964,9 @@ u8 MAINCHARGETASK(u8 what)
 		if (otgon == 0)
 		{
 			//otg关闭的时候才可以进行充电判断，不然会有误报
-			if(VCCvol > VCCTHRHIGH && (chargestate == 0 || chargestate == 2))
+			if(VCCvol > VCCTHRHIGH && 
+				(chargestate == 0 || chargestate == 2)&& 
+				!GPIO_ReadInputDataBit(OTGSENSE_GPIO_Port, OTGSENSE_Pin))
 			{
 				chargestate = 1;
 				printf("CHARGING!\r\n");
@@ -1555,6 +1563,22 @@ void ICPX_Standby()
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 	//开电源管理时钟PWR_Regulator_LowPower
 
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);		//使能A端口时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);		//使能B端口时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);		//使能C端口时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);		//使能D端口时钟
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);		//使能复用网络时钟
+	
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;				//PM3按钮
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
 	PWR_WakeUpPinCmd(ENABLE);//使能唤醒引脚，默认PA0
 	
 	RCC->CR &= ((uint32_t)0xFFFEFFFF);  //Reset HSEON 
