@@ -33,6 +33,8 @@ void setup()
 	
 	ST7789_Fill(0, 0, ST7789_H, ST7789_W, GREEN);
 	
+	ICPX_CHG_CUR_SET_AIM(1);	//设定高速模式
+	ICPX_CHG_CUR_SET(4);	//设定高速模式
 	//测试主板用的代码
 	//turnonh3();
 	//turnonpm3();
