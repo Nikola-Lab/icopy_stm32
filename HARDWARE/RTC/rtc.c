@@ -2,7 +2,7 @@
 #include "delay.h"
 #include "rtc.h"
 #include <stdio.h>
-
+#include "ICOPYX_BSP.h"
 //实时时钟配置
 //初始化RTC时钟,同时检测时钟是否工作正常
 //BKP->DR2用于保存是否第一次配置的设置
@@ -22,7 +22,8 @@ u8 RTC_Init(void)
 			}
 		if (temp >= 250)//初始化时钟失败,晶振有问题		
 		{
-			printf("rtc: use hsi\r\n");
+			//printf("rtc: use hsi\r\n");
+			rtc_ext = 0;
 			fflush(stdout);
 			RCC_LSEConfig(RCC_LSE_OFF);
 			RCC_LSICmd(ENABLE);
@@ -37,7 +38,8 @@ u8 RTC_Init(void)
 		}
 		else//初始化时钟成功	
 		{
-			printf("rtc: use hse\r\n");
+			rtc_ext = 1;
+			//printf("rtc: use hse\r\n");
 			fflush(stdout);
 			RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 		}
