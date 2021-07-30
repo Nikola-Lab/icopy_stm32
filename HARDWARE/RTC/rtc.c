@@ -13,7 +13,13 @@ u8 RTC_Init(void)
 	u8 usehse = 0;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);	//使能PWR和BKP外设时钟   
 	PWR_BackupAccessCmd(ENABLE);	//使能后备寄存器访问  
-	if(BKP_ReadBackupRegister(BKP_DR2) != 0x5050) //bkpdr2 数据不正确，意味着是第一次上电
+	if(
+		(BKP_ReadBackupRegister(BKP_DR2) != 0x5050) ||
+		(
+			(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) && 
+			(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET)
+		)
+	  ) //bkpdr2 数据不正确,或者是两个时钟都失效了，意味着是第一次上电或者时钟失效后的上电
 	{	 			
 		RCC_LSEConfig(RCC_LSE_ON);
 		while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET&&temp < 250)	//检查指定的RCC标志位设置与否,等待低速晶振就绪
@@ -66,6 +72,11 @@ u8 RTC_Init(void)
 	}
 	else//到这里说明系统已经配置过了
 	{
+		printf("rtc: already setup,time:%lu,LSE:%d,LSI:%d\r\n",
+			RTC_Get(),
+			RCC_GetFlagStatus(RCC_FLAG_LSERDY),
+			RCC_GetFlagStatus(RCC_FLAG_LSIRDY));
+		fflush(stdout);
 	}				     
 	return 0;
 }
