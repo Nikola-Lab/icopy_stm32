@@ -1,6 +1,7 @@
 #include "common.h"
 #include "ymodem.h"
 #include "stm32f10x_flash.h"
+#include "w25qxx.h"
 
 uint8_t file_name[FILE_NAME_LENGTH];
 //用户程序Flash偏移
