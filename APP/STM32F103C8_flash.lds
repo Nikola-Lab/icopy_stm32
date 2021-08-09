@@ -22,6 +22,12 @@ SECTIONS
 		. = ALIGN(4);
 	} > FLASH
 
+	.product_info :
+	{
+		. = 0x0;
+		KEEP(*(.version_section))
+	} > FLASH
+
 	.text :
 	{
 		. = ALIGN(4);
