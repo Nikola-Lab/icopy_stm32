@@ -2,7 +2,11 @@
 #include "sys_command_line.h"
 static u8 otgon = 0;
 u8 startmode = START_MODE_NONE;
+
+u_int16_t __attribute__((section(".version_section"))) ICOPYX_SW_VERSION_FULL = ((u_int8_t)ICOPYX_SW_VERSION << 8) | (u_int8_t)ICOPYX_SW_SUBVERSION;
+
 u8 isstarting = 1;
+
 u8 hasbak = 0;
 
 u8 stdnflag = 0;
