@@ -938,7 +938,7 @@ void CHARGE_OTG()
 	if(GPIO_ReadInputDataBit(OTGSENSE_GPIO_Port, OTGSENSE_Pin))
 	{
 		otgon = 1;
-		printf("DISCHARGIN!\r\n");
+		//printf("DISCHARGIN!\r\n");
 		ICPX_CHG_CUR_SET_AIM(0);//一旦拔出就设置充电为低速
 		turnoffchg();//然后关闭充电
 		fflush(stdout);
