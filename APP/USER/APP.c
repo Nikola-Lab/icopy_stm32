@@ -29,19 +29,7 @@ void setup()
 	CLI_INIT(57600);			//启动commandline
 	ICPX_BKP_Init();			//初始化备份寄存器
 	RTC_Init();					//初始化rtc
-	
-//	if(FLASH_GetReadOutProtectionStatus() != SET)
-//	{
-//		FLASH_Unlock();
-//		FLASH_ReadOutProtection(ENABLE);
-//	}
-	
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH初始化
-	
-	//测试主板用的代码
-	//turnonh3();
-	//turnoffh3();
-	//turnonpm3();
 	
 	STARTMODETASK();			//开机模式判断
 	
