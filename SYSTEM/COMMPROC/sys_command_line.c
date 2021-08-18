@@ -112,6 +112,7 @@ static uint8_t cli_bl(void *para, uint8_t len)
 	while (IS_TIMEOUT_1MS(eTim1, 500))
 	{
 	}
+	//FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
 	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;//IRQ通道关闭
 	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器

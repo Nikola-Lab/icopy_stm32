@@ -147,6 +147,15 @@ int32_t Ymodem_Receive (uint8_t *buf)
                                 for (EraseCounter = 0; (EraseCounter < NbrOfPage) && (FLASHStatus == FLASH_COMPLETE); EraseCounter++)
                                 {
                                     FLASHStatus = FLASH_ErasePage(FlashDestination + (PageSize * EraseCounter));
+//	                                if (FLASHStatus == FLASH_COMPLETE)
+//	                                {
+//		                                printf("wipe ok:page %lu,address %lu\r\n", EraseCounter, FlashDestination + (PageSize * EraseCounter)); 
+//	                                }
+//	                                else
+//	                                {
+//		                                printf("wipe error:page %lu,address %lu\r\n", EraseCounter, FlashDestination + (PageSize * EraseCounter)); 
+//	                                }
+//	                                fflush(stdout);
                                 }
                                 Send_Byte(ACK);
                                 Send_Byte(CRC16);

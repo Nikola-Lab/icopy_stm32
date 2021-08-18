@@ -356,6 +356,7 @@ void Main_Menu(void)
             if (key == 0x31)
             {
 	            FLASH_Unlock();
+	            //FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
 	            //FLASH_ReadOutProtection(DISABLE);
                 /* Download user application in the Flash */
                 SerialDownload(1);
