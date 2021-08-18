@@ -30,11 +30,11 @@ void setup()
 	ICPX_BKP_Init();			//初始化备份寄存器
 	RTC_Init();					//初始化rtc
 	
-	if(FLASH_GetReadOutProtectionStatus() != SET)
-	{
-		FLASH_Unlock();
-		FLASH_ReadOutProtection(ENABLE);
-	}
+	//if(FLASH_GetReadOutProtectionStatus() != SET)
+	//{
+	//	FLASH_Unlock();
+	//	FLASH_ReadOutProtection(ENABLE);
+	//}
 	
 	ICPX_Init_Spi_Bus();		//lcd和25 FLASH初始化
 	
