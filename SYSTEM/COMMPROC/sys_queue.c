@@ -23,7 +23,7 @@ uint8_t queue_init(uint16_t *Front, uint16_t *Rear, uint8_t *PBase, uint16_t Len
     uint16_t index;
 
     for(index = 0; index < Len; index++) {
-        PBase[index] = NULL;
+	    PBase[index] = (uint8_t)0x00;
     }
 
     *Front = *Rear = 0;
