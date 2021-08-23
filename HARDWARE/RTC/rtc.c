@@ -57,7 +57,15 @@ u8 RTC_Init(void)
 		//RTC_WaitForLastTask();
 		
 		RTC_EnterConfigMode();
-		RTC_SetPrescaler(40000); //设置预分频
+		if (rtc_ext == 1)
+		{
+			RTC_SetPrescaler(32767); //外部晶振是32k的
+		}
+		else
+		{
+			RTC_SetPrescaler(39999); //内部晶振是40k的
+		}
+		
 		RTC_WaitForLastTask();
 		RTC_Set(0);	
 		printf("rtc: set zero\r\n");
