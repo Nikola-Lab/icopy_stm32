@@ -13,6 +13,8 @@ u8 RTC_Init(void)
 	u8 usehse = 0;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);	//使能PWR和BKP外设时钟   
 	PWR_BackupAccessCmd(ENABLE);	//使能后备寄存器访问  
+	//BKP_TamperPinCmd(DISABLE);
+	//BKP_RTCOutputConfig(BKP_RTCOutputSource_CalibClock);
 	if(
 		(BKP_ReadBackupRegister(BKP_DR2) != 0x5050) ||
 		(
@@ -59,7 +61,7 @@ u8 RTC_Init(void)
 		RTC_EnterConfigMode();
 		if (usehse == 1)
 		{
-			RTC_SetPrescaler(32767); //设置预分频
+			RTC_SetPrescaler(32768); //设置预分频
 		}
 		else
 		{
@@ -77,7 +79,7 @@ u8 RTC_Init(void)
 			RCC_GetFlagStatus(RCC_FLAG_LSERDY),
 			RCC_GetFlagStatus(RCC_FLAG_LSIRDY));
 		fflush(stdout);
-	}				     
+	}
 	return 0;
 }
 
