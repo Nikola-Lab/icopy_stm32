@@ -59,7 +59,7 @@ u8 RTC_Init(void)
 		RTC_EnterConfigMode();
 		if (rtc_ext == 1)
 		{
-			RTC_SetPrescaler(32767); //外部晶振是32k的
+			RTC_SetPrescaler(32772); //外部晶振是32k的
 		}
 		else
 		{
