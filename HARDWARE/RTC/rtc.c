@@ -60,6 +60,7 @@ u8 RTC_Init(void)
 		if (rtc_ext == 1)
 		{
 			RTC_SetPrescaler(32772); //外部晶振是32k的
+			BKP_SetRTCCalibrationValue(9);
 		}
 		else
 		{
@@ -80,7 +81,8 @@ u8 RTC_Init(void)
 			RCC_GetFlagStatus(RCC_FLAG_LSIRDY)
 			);
 		fflush(stdout);
-	}				     
+	}	
+	//BKP_RTCOutputConfig(BKP_RTCOutputSource_CalibClock);
 	return 0;
 }
 
