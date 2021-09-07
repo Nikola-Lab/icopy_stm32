@@ -59,8 +59,8 @@ u8 RTC_Init(void)
 		RTC_EnterConfigMode();
 		if (rtc_ext == 1)
 		{
-			RTC_SetPrescaler(32772); //外部晶振是32k的
-			BKP_SetRTCCalibrationValue(9);
+			RTC_SetPrescaler(32772); //外部晶振是32k的，32772是硬件偏差后统计值
+			BKP_SetRTCCalibrationValue(9);//偏差修正也是硬件统计值，修正9ppm，查表后得到修正值为9，一个月修22秒
 		}
 		else
 		{
