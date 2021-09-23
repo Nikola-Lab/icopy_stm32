@@ -61,7 +61,7 @@ u8 RTC_Init(void)
 		RTC_EnterConfigMode();
 		if (usehse == 1)
 		{
-			RTC_SetPrescaler(32768); //设置预分频
+			RTC_SetPrescaler(32767); //设置预分频
 		}
 		else
 		{
