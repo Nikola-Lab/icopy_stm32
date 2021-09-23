@@ -23,7 +23,7 @@
 #include "AW87318.h"
 
 #define ICOPYX_SW_VERSION (1)
-#define ICOPYX_SW_SUBVERSION (3)
+#define ICOPYX_SW_SUBVERSION (4)
 
 #define BLAddress 0x0800B400
 
