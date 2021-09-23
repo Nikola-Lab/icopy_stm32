@@ -24,7 +24,7 @@
 #define USE_AW87318
 
 #define ICOPYX_SW_VERSION (1)
-#define ICOPYX_SW_SUBVERSION (1)
+#define ICOPYX_SW_SUBVERSION (2)
 
 #define BLAddress 0x0800B400
 
