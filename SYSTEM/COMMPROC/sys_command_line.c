@@ -10,6 +10,8 @@ static uint8_t cli_showsimbol(void *para, uint8_t len);
 static uint8_t cli_showstring(void *para, uint8_t len);
 static uint8_t cli_showpicture(void *para, uint8_t len);
 static uint8_t cli_presspm3(void *para, uint8_t len);
+static uint8_t cli_presspm3on(void *para, uint8_t len);
+static uint8_t cli_presspm3off(void *para, uint8_t len);
 static uint8_t cli_ledpm3(void *para, uint8_t len);
 static uint8_t cli_turnoffpm3(void *para, uint8_t len);
 static uint8_t cli_turnonpm3(void *para, uint8_t len);
@@ -60,6 +62,8 @@ const COMMAND_S CLI_Cmd[] = {
 	//pm3状态操作指令序列
 	{ "ledpm3", NULL, NULL, cli_ledpm3},
 	{ "presspm3", NULL, NULL, cli_presspm3},
+	{ "butonpm3", NULL, NULL, cli_presspm3on},
+	{ "butoffpm3", NULL, NULL, cli_presspm3off},
 	//pm3电源指令序列
 	{ "turnonpm3", NULL, NULL, cli_turnonpm3},
 	{ "turnoffpm3", NULL, NULL, cli_turnoffpm3},
@@ -181,7 +185,7 @@ static uint8_t cli_restartpm3(void *para, uint8_t len)
 	turnonpm3();
 	return TRUE;
 }
-//按下pm3按钮实现
+//按一下pm3按钮实现
 static uint8_t cli_presspm3(void *para, uint8_t len)
 {
 	//pm3按钮拉高有效，拉高300ms后拉低
@@ -190,6 +194,16 @@ static uint8_t cli_presspm3(void *para, uint8_t len)
 	{
 		GPIO_SetBits(PM_BUTTON_GPIO_Port, PM_BUTTON_Pin);
 	}
+	GPIO_ResetBits(PM_BUTTON_GPIO_Port, PM_BUTTON_Pin);
+	return TRUE;
+}
+//按下pm3按钮实现
+static uint8_t cli_presspm3on(void *para, uint8_t len) {
+	GPIO_SetBits(PM_BUTTON_GPIO_Port, PM_BUTTON_Pin);
+	return TRUE;
+}
+//抬起pm3按钮实现
+static uint8_t cli_presspm3off(void *para, uint8_t len) {
 	GPIO_ResetBits(PM_BUTTON_GPIO_Port, PM_BUTTON_Pin);
 	return TRUE;
 }
